@@ -1,0 +1,741 @@
+import { Component, OnInit } from '@angular/core';
+import { ProdutoService } from '../produto/produto.service';
+import { VendaService } from '../venda/venda/venda.service';
+import { ColaboradorService } from '../colaborador/colaborador.service';
+import { Comanda } from './model/comanda';
+import { Venda } from '../venda/venda/model/venda';
+import { Produto } from '../produto/model/produto';
+import { Colaborador } from 'src/app/model/colaborador';
+import { ItemComanda } from './model/item-comanda';
+import { StatusComanda } from './model/status-comanda';
+import { ComandaService } from './comanda.service';
+import { ProdutoPostPut } from '../produto/model/produto-post-put';
+
+@Component({
+  selector: 'app-comanda',
+  templateUrl: './comanda.component.html',
+  styleUrls: ['./comanda.component.css']
+})
+
+
+
+export class ComandaComponent implements OnInit {
+  mensagem: string = "";
+  exibirMensagem = false;
+  tipoMensagem = 'info';
+  tipoIcone = 'info';
+  public novaComanda: boolean = false;
+  public editarComanda: boolean = false;
+  public abrirModalComanda: boolean = false;
+  public abrirModalItens: boolean = false;
+  public abrirModalVerificar: boolean = false;
+  public listaVaziaProdutos: boolean = false;
+  public desabilitarVendedor: boolean = false;
+  public desabilitarBotoes: boolean = false;
+  public listaVazia: boolean = false;
+  public camposVazios: boolean = false;
+  public valorTotalComanda: number = 0;
+  public colaboradorSelecionado: any;
+  public formaPagamentoSelecionada: any;
+  public vendedorModal: any;
+  public comanda: Comanda = new Comanda();
+  public comandaEdicao: Comanda = new Comanda();
+  public produto: Produto = new Produto();
+  public vendedor: Colaborador = new Colaborador();
+  public itemComanda: ItemComanda = new ItemComanda();
+  public vendedorFiltrado: any[] = [];
+  public formaFiltrada: any[] = [];
+  public colaboradorFiltrado: any[] = [];
+  public listaComandas: Comanda[] = [];
+  public listaProdutos: Produto[] = [];
+  public listaVendedores: Colaborador[] = [];
+  public listaItens: ItemComanda[] = [];
+  public listaItensAux: ItemComanda[] = [];
+  public listaColaboradores: Colaborador[] = [];
+  public formaPagamentoComanda: StatusComanda[] = [];
+  public produtosClonados: { [s: string]: Produto; } = {};
+  public dataInicial: string = "";
+  public dataFinal: string = "";
+  public descricao: string = "";
+  public vendedorComanda: any;
+  public taxa = 0;
+
+
+
+  constructor(
+    private produtoService: ProdutoService,
+    private vendaService: VendaService,
+    private colaboradorService: ColaboradorService,
+    private comandaService: ComandaService) { }
+
+  ngOnInit(): void {
+    this.listarVendedores();
+    this.listarPorDataEVendedor();
+    this.formaPagamentoComanda = [
+      { descricao: 'CREDITO' },
+      { descricao: 'DEBITO' },
+      { descricao: 'DINHEIRO' },
+      { descricao: 'PIX' }];
+  }
+
+  listarPorDataEVendedor() {
+    let dataInicial = new Date();
+    let dataFinal = new Date();
+    let codVendedor = "";
+
+    if (this.vendedorComanda !== undefined) {
+      codVendedor = this.vendedorComanda.cod;
+    }
+    if (this.dataInicial !== "") {
+      dataInicial = new Date(this.dataInicial);
+      let dataI = dataInicial.getDate() + 1;
+      dataInicial.setDate(dataI);
+    }
+    if (this.dataFinal !== "") {
+      dataFinal = new Date(this.dataFinal)
+      let dataF = dataFinal.getDate() + 1;
+      dataFinal.setDate(dataF);
+    }
+    this.comandaService.listarPorDataEVendedor(dataInicial, dataFinal, codVendedor).subscribe((response: Comanda[]) => {
+      if (response.length > 0) {
+        this.listaComandas = response;
+        this.listaVazia = false;
+        this.calcularValorTotalComanda();
+      } else {
+        this.listaVazia = true;
+        this.listaComandas = [];
+      }
+    })
+  }
+
+  salvar(fechaComanda: boolean) {
+    let comanda: Comanda = new Comanda();
+    if ((!this.camposVazios) && (this.novaComanda)) {
+      this.comanda.vendedor = this.vendedorModal;
+      this.comanda.itens = this.listaItens;
+      if (fechaComanda) {
+        this.comanda.status = "FECHADA";
+        this.comanda.formaPagamento = this.comanda.forma.descricao;
+      } else {
+        this.comanda.formaPagamento = "AGUARDANDO";
+        this.comanda.status = "ABERTA";
+      }
+      this.comanda.valorTotal = this.valorTotalComanda;
+      this.comanda.valorVendedor = this.calcularValorVendedor(this.comanda);
+      comanda = this.comanda;
+      this.comandaService.salvar(comanda).subscribe(() => {
+        this.mensagem = "Comanda cadastrada com sucesso!";
+        if (!fechaComanda) {
+          this.fecharModalVerificacao();
+          this.fecharModalComanda();
+          this.fecharModalItens();
+          this.listarPorDataEVendedor();
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+        } else {
+          this.transfomarComandaEmVenda(comanda, fechaComanda);
+          this.fecharModalVerificacao();
+          this.fecharModalComanda();
+          this.fecharModalItens();
+          this.listarPorDataEVendedor();
+        }
+      }, error => {
+        if (error) {
+          this.mensagem = error.message;
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
+        }
+      })
+    }
+    if ((!this.camposVazios) && (this.editarComanda)) {
+      if (fechaComanda) {
+        this.comandaEdicao.status = "FECHADA";
+        this.comandaEdicao.formaPagamento = this.comandaEdicao.forma.descricao;
+      } else {
+        this.comandaEdicao.status = "ABERTA";
+        this.comandaEdicao.formaPagamento = "AGUARDANDO";
+      }
+      this.comandaEdicao.itens = this.listaItens;
+      this.comandaEdicao.valorTotal = this.valorTotalComanda;
+      this.comandaEdicao.valorVendedor = this.calcularValorVendedor(this.comandaEdicao);
+      comanda.percentualDesconto = this.comandaEdicao.percentualDesconto;
+      comanda = this.comandaEdicao;
+      this.comandaService.editar(comanda).subscribe(() => {
+        this.mensagem = "Comanda editada com sucesso!";
+        if (!fechaComanda) {
+          this.fecharModalVerificacao();
+          this.fecharModalComanda();
+          this.fecharModalItens();
+          this.listarPorDataEVendedor();
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+        } else {
+          this.transfomarComandaEmVenda(comanda, fechaComanda);
+          this.fecharModalVerificacao();
+          this.fecharModalComanda();
+          this.fecharModalItens();
+          this.listarPorDataEVendedor();
+        }
+
+      }, error => {
+        if (error) {
+          this.mensagem = error.message;
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
+        }
+      })
+    }
+  }
+
+  transfomarComandaEmVenda(comanda: Comanda, fechaComanda: Boolean) {
+    let venda: Venda = new Venda()
+    venda.formaPagamento = comanda.formaPagamento
+    venda.valorTotal = comanda.valorTotal;
+    venda.valorVendedor = comanda.valorVendedor;
+    venda.vendedor = comanda.vendedor;
+    venda.taxa = comanda.taxa;
+    venda.itens = comanda.itens;
+    venda.itens.forEach(i => {
+      i.cod = "";
+    })
+    this.vendaService.salvar(venda).subscribe(() => {
+      this.mensagem = "Venda cadastrada com sucesso!";
+      if (fechaComanda) {
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+      }
+    }, error => {
+      if (error) {
+        this.mensagem = error.message;
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
+      }
+    })
+  }
+
+  validarCampos() {
+    if (this.novaComanda) {
+      if ((this.comanda.vendedor === undefined)
+        || (this.comanda.vendedor === null)
+        || (this.vendedorModal === "")
+        || (this.comanda.nomeCliente === "")
+        || (this.listaItens.length === 0)) {
+        this.mensagem = "Favor preencher os campos obrigatórios antes de incluir um registro!"
+        this.camposVazios = true;
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+      }
+    }
+    if (this.editarComanda) {
+      if ((this.comandaEdicao.vendedor === undefined)
+        || (this.comandaEdicao.vendedor === null)
+        || (this.comandaEdicao.nomeCliente === "")
+        || (this.listaItens.length === 0)) {
+        this.mensagem = "Favor preencher os campos obrigatórios antes de incluir um registro!"
+        this.camposVazios = true;
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+      }
+    }
+  }
+
+  validarEdicaoPreco(produto: Produto) {
+    let entrou = false;
+    let valor: any = produto.valor;
+    if ((valor === "") || (valor === 0)) {
+      entrou = true;
+      this.mensagem = "Favor preencher o valor do produto!"
+      this.camposVazios = true;
+      this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+    }
+    return entrou;
+  }
+
+  diminuirQuantidade(produto: Produto) {
+    let quantidade = produto.quantidade - produto.quantidadeDesconto;
+    return quantidade;
+  }
+
+  setarQuantidadeItem(itemComanda: ItemComanda) {
+    let entrou = false;
+    if (this.editarComanda) {
+      this.listaItensAux = this.listaItens;
+      this.listaItensAux.push(itemComanda);
+      this.listaItensAux.filter((it) => it.cod !== "").forEach(i => {
+        if (i.codProduto === itemComanda.codProduto) {
+          entrou = true;
+          i.quantidade = itemComanda.quantidadeDesconto + i.quantidade;
+          this.comandaService.setarQuantidade(i).subscribe(() => {
+            this.listarItensComanda(this.comandaEdicao.cod, false);
+          });
+        }
+      });
+    }
+    return entrou;
+  }
+
+  atualizarValorItem(event: any, itemComanda: ItemComanda) {
+    if (event !== "") {
+      if (this.editarComanda) {
+        itemComanda.valor = event;
+        itemComanda.valorColaborador = this.calcularValorColaboradorAoEditarValorItem(itemComanda);
+        this.comandaService.setarValorItem(itemComanda).subscribe(() => { });
+        this.calcularValorTotalComanda();
+      } else {
+        itemComanda.valor = event;
+        itemComanda.valorColaborador = this.calcularValorColaboradorAoEditarValorItem(itemComanda);
+        this.calcularValorTotalComanda();
+      }
+    }
+  }
+
+  atualizarQuantidadeItemComanda(itemComanda: ItemComanda) {
+    let produto: ProdutoPostPut = new ProdutoPostPut();
+    produto.cod = itemComanda.codProduto;
+    this.listaItens.forEach(i => {
+      if (i.codProduto === itemComanda.codProduto) {
+        this.produtoService.devolverQuantidadeProduto(itemComanda.codProduto).subscribe((response: Produto) => {
+          if (response.tem_Estoque === 1) {
+            if (response.quantidade > 0) {
+              produto.quantidade = response.quantidade - 1;
+              this.produtoService.setarQuantidade(produto).subscribe(() => { });
+              i.quantidade = this.aumentarQuantidade(i.quantidade);
+              if (this.editarComanda) {
+                this.comandaService.setarQuantidade(i).subscribe(() => {
+                  this.listarItensComanda(this.comandaEdicao.cod, false);
+                });
+              } else {
+                this.calcularValorTotalComanda();
+              }
+            } else {
+              this.mensagem = "Produto: " + itemComanda.descricao + " sem estoque, favor cadastrar quantidade para o produto";
+              this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+            }
+          } else {
+            i.quantidade = this.aumentarQuantidade(i.quantidade);
+            if (this.editarComanda) {
+              this.comandaService.setarQuantidade(i).subscribe(() => {
+                this.listarItensComanda(this.comandaEdicao.cod, false);
+              });
+            } else {
+              this.calcularValorTotalComanda();
+            }
+          }
+        })
+      }
+    })
+  }
+
+  habilitarAdicionar(produto: Produto, event: any) {
+    this.listaProdutos.forEach(p => {
+      if ((p.cod_Produto === produto.cod_Produto)) {
+        if (event !== null) {
+          p.escolheu = true;
+        } else {
+          p.escolheu = false;
+        }
+      }
+    })
+  }
+
+  adicionar(itemComanda: ItemComanda) {
+    this.comandaService.adicionarItem(itemComanda, this.comandaEdicao.cod).subscribe(() => {
+      this.listarItensComanda(this.comandaEdicao.cod, false);
+      this.mensagem = "Produto: " + itemComanda.descricao + " adicionado com sucesso!";
+      this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+      // this.fecharModalItens();
+      // this.limparFiltroColaborador();
+    }, error => {
+      if (error) {
+        this.mensagem = error.message;
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
+      }
+    })
+  }
+
+  calcularValorColaboradorAoEditarValorItem(itemComanda: ItemComanda) {
+    let valorColaborador = Number(itemComanda.valor) * (itemComanda.porcentagemColaborador / 100)
+    return valorColaborador;
+  }
+
+  adicionarItem(produto: Produto) {
+    let temItemNaLista = false;
+    let prod: ProdutoPostPut = new ProdutoPostPut();
+    if (!this.validarEdicaoPreco(produto)) {
+      this.itemComanda = new ItemComanda();
+      this.itemComanda.codProduto = produto.cod_Produto;
+      this.itemComanda.descricao = produto.descricao_Produto;
+      this.itemComanda.valor = produto.valor;
+      this.itemComanda.porcentagemColaborador = produto.porcentagem_Colaborador
+      this.itemComanda.valorColaborador = produto.valor_Colaborador;
+      this.itemComanda.quantidadeDesconto = produto.quantidadeDesconto;
+      // quantidade de estoque do produto
+      prod.cod = produto.cod_Produto;
+
+      if (this.editarComanda) {
+        if ((produto.quantidade > 0)
+          && (produto.tem_Estoque === 1)
+          && (produto.quantidade >= produto.quantidadeDesconto)) {
+          prod.quantidade = this.diminuirQuantidade(produto);
+          temItemNaLista = this.setarQuantidadeItem(this.itemComanda);
+          this.produtoService.setarQuantidade(prod).subscribe(() => { });
+
+          if (!temItemNaLista) {
+            this.itemComanda.quantidade = produto.quantidadeDesconto;
+            this.adicionar(this.itemComanda);
+          } else {
+            this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+            // this.fecharModalItens();
+            // this.limparFiltroColaborador();
+          }
+        } else {
+          this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+          this.listaItensAux = [];
+          this.listarItensComanda(this.comandaEdicao.cod, false);
+        }
+
+        if (produto.tem_Estoque === 0) {
+          temItemNaLista = this.setarQuantidadeItem(this.itemComanda);
+          if (!temItemNaLista) {
+            this.itemComanda.quantidade = produto.quantidadeDesconto;
+            this.adicionar(this.itemComanda);
+          } else {
+            this.listarItensComanda(this.comandaEdicao.cod, false);
+            this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+            // this.fecharModalItens();
+            // this.limparFiltroColaborador();
+          }
+        }
+      }
+
+      if (this.novaComanda) {
+        if ((produto.quantidade > 0)
+          && (produto.tem_Estoque === 1)
+          && (produto.quantidade >= produto.quantidadeDesconto)) {
+          if (this.listaItens.length === 0) {
+            prod.quantidade = this.diminuirQuantidade(produto);
+            this.produtoService.setarQuantidade(prod).subscribe(() => { });
+            this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
+            this.listaItens.push(this.itemComanda);
+          } else {
+            this.listaItens.forEach(item => {
+              if (item.codProduto === this.itemComanda.codProduto) {
+                prod.quantidade = this.diminuirQuantidade(produto);
+                this.produtoService.setarQuantidade(prod).subscribe(() => { });
+                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+              } else {
+                prod.quantidade = this.diminuirQuantidade(produto);
+                this.produtoService.setarQuantidade(prod).subscribe(() => { });
+                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                this.listaItens.push(this.itemComanda);
+              }
+            })
+          }
+          this.calcularValorTotalComanda();
+          this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+          //this.fecharModalItens();
+          //this.limparFiltroColaborador();
+        } else {
+          this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+        }
+
+        if (produto.tem_Estoque === 0) {
+          if (this.listaItens.length === 0) {
+            this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
+            this.listaItens.push(this.itemComanda);
+          } else {
+            this.listaItens.forEach(item => {
+              if (item.codProduto === this.itemComanda.codProduto) {
+                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+              } else {
+                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                this.listaItens.push(this.itemComanda);
+              }
+            })
+          }
+          this.calcularValorTotalComanda();
+          this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+          //this.fecharModalItens();
+          //this.limparFiltroColaborador();
+        }
+      }
+      this.listarProdutos();
+    }
+  }
+
+  listarItensComanda(codComanda: any, remover: Boolean) {
+    this.comandaService.listarPorCodComanda(codComanda).subscribe((response: ItemComanda[]) => {
+      if (response.length > 0) {
+        this.listaItens = response;
+        if (remover) {
+          this.listaItens.forEach(i => {
+            if (i.quantidade === 0) {
+              let indice = this.listaItens.indexOf(i);
+              this.listaItens.splice(indice, 1);
+              this.comandaService.removerItem(i.cod).subscribe(() => { });
+            }
+          })
+        }
+      }
+      this.calcularValorTotalComanda();
+    })
+  }
+
+  aumentarQuantidade(quantidadeProduto: any) {
+    let quantidade = quantidadeProduto + 1;
+    return quantidade;
+  }
+
+
+  removerItem(item: ItemComanda) {
+    let prod: ProdutoPostPut = new ProdutoPostPut();
+    prod.cod = item.codProduto;
+    if (this.listaItens.length > 0) {
+      this.listaItens.forEach(i => {
+        if (i.codProduto === item.codProduto) {
+          this.produtoService.devolverQuantidadeProduto(prod.cod).subscribe((response: Produto) => {
+            if (response.tem_Estoque === 1) {
+              prod.quantidade = this.aumentarQuantidade(response.quantidade);
+              this.produtoService.setarQuantidade(prod).subscribe(() => { });
+            }
+            i.quantidade = i.quantidade - 1;
+            this.comandaService.setarQuantidade(i).subscribe(() => {
+              if (this.editarComanda) {
+                this.listarItensComanda(this.comandaEdicao.cod, true);
+              } else {
+                if (i.quantidade === 0) {
+                  let indice = this.listaItens.indexOf(i);
+                  this.listaItens.splice(indice, 1);
+                }
+                this.calcularValorTotalComanda();
+              }
+            });
+          });
+        }
+      })
+    }
+    this.mensagem = "Produto: " + item.descricao + " removido com sucesso!"
+    this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+  }
+
+  calcularValorTotalComDesconto(porcentagemDesconto: number) {
+    this.calcularValorTotalComanda();
+    let valorTotalComDesconto = this.valorTotalComanda;
+    if (this.listaItens.length > 0) {
+      if ((porcentagemDesconto !== null) && (porcentagemDesconto !== 0)) {
+        valorTotalComDesconto = valorTotalComDesconto * (1 - porcentagemDesconto / 100);
+        this.valorTotalComanda = valorTotalComDesconto;
+      }
+    }
+  }
+
+  calcularValorTotalComanda() {
+    this.valorTotalComanda = 0;
+    this.listaItens.forEach(item => {
+      this.valorTotalComanda = this.valorTotalComanda + Number(item.valor) * Number(item.quantidade);
+    })
+  }
+
+  listarProdutos() {
+    let colaboradorCod = "";
+    let descricao = "";
+    this.listaProdutos = [];
+    if ((this.colaboradorFiltrado !== undefined) && (this.colaboradorSelecionado !== undefined)) {
+      colaboradorCod = this.colaboradorSelecionado.cod;
+    }
+    if (this.descricao !== "") {
+      descricao = this.descricao;
+    }
+    // alert(descricao)
+    this.produtoService.listarProdutosPorColaboradorESecao(colaboradorCod, "", descricao).subscribe((response: Produto[]) => {
+      if (response.length > 0) {
+        this.listaProdutos = response;
+        this.listaVaziaProdutos = false;
+      } else {
+        this.listaVaziaProdutos = true;
+      }
+    })
+  }
+
+  listarVendedores() {
+    this.colaboradorService.listarColaboradores().subscribe((response: Colaborador[]) => {
+      if (response.length > 0) {
+        this.listaVendedores = response;
+      }
+    })
+  }
+
+  listarColaboradores() {
+    this.colaboradorService.listarColaboradores().subscribe((response: Colaborador[]) => {
+      if (response.length > 0) {
+        this.listaColaboradores = response;
+      }
+    })
+  }
+
+  filtroVendedor(event: any) {
+    let filtrados: any[] = [];
+    let query = event.query;
+    for (let i = 0; i < this.listaVendedores.length; i++) {
+      let vendedor = this.listaVendedores[i];
+      if (vendedor.nome.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtrados.push(vendedor);
+      }
+    }
+    this.vendedorFiltrado = filtrados;
+  }
+
+  filtroFormaPagamento(event: any) {
+    let filtrados: any[] = [];
+    let query = event.query;
+    for (let i = 0; i < this.formaPagamentoComanda.length; i++) {
+      let forma = this.formaPagamentoComanda[i];
+      if (forma.descricao.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtrados.push(forma);
+      }
+    }
+    this.formaFiltrada = filtrados;
+  }
+
+  calcularTaxa(event: any) {
+    let calculo = 0;
+    let taxa = 0;
+    if (event.descricao === "CREDITO") {
+      calculo = 0.95 / 100;
+      taxa = this.valorTotalComanda * calculo;
+      if (this.editarComanda) {
+        this.comandaEdicao.taxa = taxa;
+      } else {
+        this.comanda.taxa = taxa;
+      }
+    }
+    if (event.descricao === "DEBITO") {
+      calculo = 0.75 / 100;
+      taxa = this.valorTotalComanda * calculo;
+      if (this.editarComanda) {
+        this.comandaEdicao.taxa = taxa;
+      } else {
+        this.comanda.taxa = taxa;
+      }
+    }
+  }
+
+  filtroColaborador(event: any) {
+    let filtrados: any[] = [];
+    let query = event.query;
+    for (let i = 0; i < this.listaColaboradores.length; i++) {
+      let colaborador = this.listaColaboradores[i];
+      if (colaborador.nome.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtrados.push(colaborador);
+      }
+    }
+    this.colaboradorFiltrado = filtrados;
+  }
+
+  getExibirMensagemAlerta(mensagem: string, icone: string, tipo: string, fixarMsg: boolean) {
+    this.mensagem = mensagem;
+    this.tipoIcone = icone;
+    this.tipoMensagem = tipo;
+    this.exibirMensagem = true;
+    if (!fixarMsg) {
+      setInterval(() => {
+        this.exibirMensagem = false;
+      }, 10000);
+    }
+  }
+
+  calcularValorVendedor(comanda: Comanda) {
+    let calculo = 10 / 100;
+    let valorVendedor = comanda.valorTotal * calculo;
+    return valorVendedor;
+  }
+
+  limparFiltroColaborador() {
+    this.colaboradorSelecionado = undefined;
+    this.listaVaziaProdutos = false;
+    this.listaProdutos = [];
+    this.descricao = "";
+  }
+
+  limparFiltrosComanda() {
+    this.dataInicial = "";
+    this.dataFinal = "";
+    this.vendedorComanda = undefined;
+    this.listaComandas = [];
+  }
+
+  abrirModalEditar(comanda: any) {
+    if (comanda.status === 'FECHADA') {
+      this.desabilitarBotoes = true;
+    }
+    this.desabilitarVendedor = true;
+    this.comandaEdicao.cod = comanda.cod;
+    this.comandaEdicao.dataComanda = comanda.dataComanda;
+    this.comandaEdicao.vendedor = comanda.vendedor;
+    this.comandaEdicao.nomeCliente = comanda.nomeCliente;
+    this.comandaEdicao.percentualDesconto = comanda.percentualDesconto;
+    this.comandaEdicao.valorTotal = comanda.valorTotal;
+    this.comandaEdicao.forma.descricao = comanda.formaPagamento;
+    this.comandaEdicao.itens = comanda.itens;
+    this.listaItens = this.comandaEdicao.itens;
+    this.valorTotalComanda = this.comandaEdicao.valorTotal;
+    this.editarComanda = true;
+    this.novaComanda = false;
+    this.abrirModalComanda = true;
+    if (comanda.percentualDesconto !== null) {
+      this.calcularValorTotalComDesconto(comanda.percentualDesconto)
+    } else {
+      this.calcularValorTotalComanda();
+    }
+  }
+
+  abrirModalIncluir() {
+    this.abrirModalComanda = true;
+    this.novaComanda = true;
+    this.editarComanda = false;
+  }
+
+  fecharModalComanda() {
+    if (this.editarComanda) {
+      this.comandaEdicao.formaPagamento = "AGUARDANDO";
+      this.comandaEdicao.status = "ABERTA"
+      this.comandaEdicao.valorTotal = this.valorTotalComanda;
+      this.comandaService.setarValorVenda(this.comandaEdicao).subscribe(() => {
+        this.listarPorDataEVendedor();
+      })
+      this.limparFiltroColaborador();
+      this.listaItens = [];
+      this.valorTotalComanda = 0;
+      this.comanda = new Comanda();
+      this.comandaEdicao = new Comanda();
+      this.vendedorModal = null;
+      this.desabilitarVendedor = false;
+      this.desabilitarBotoes = false;
+    }
+    this.abrirModalComanda = false;
+  }
+
+  abrirModalItensComanda() {
+    this.abrirModalItens = true;
+    this.listarColaboradores();
+  }
+
+  fecharModalItens() {
+    this.abrirModalItens = false;
+    this.limparFiltroColaborador();
+  }
+
+  abrirModalVerificacao() {
+    this.camposVazios = false;
+    if (this.novaComanda) {
+      this.comanda.vendedor = this.vendedorModal;
+    }
+    this.validarCampos();
+    if (!this.camposVazios) {
+      this.abrirModalVerificar = true;
+    }
+  }
+
+  fecharModalVerificacao() {
+    this.abrirModalVerificar = false;
+  }
+
+}

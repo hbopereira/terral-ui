@@ -1,0 +1,454 @@
+<div class="container">
+    <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
+        <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
+        {{ mensagem }}
+    </div>
+    <h2 class="text-center">Gestão de Comandas</h2>
+    <div class="crud--conten-title_table">
+        <label class="crud--content-label">FILTROS</label>
+        <div class="crud--content-line"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <input type="date" class="form-control" placeholder="data inicial" [(ngModel)]="dataInicial">
+            <!-- <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
+                [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
+                (completeMethod)="filtroColaborador($event)" field="nome">
+                <ng-template let-colaborador pTemplate="colab">
+                    <div>{{colaborador.nome}}</div>
+                </ng-template>
+            </p-autoComplete> -->
+        </div>
+        <div class="col-3">
+            <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
+            <!--<p-autoComplete placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
+                [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
+                (completeMethod)="filtroSecao($event)" field="descricaoSecao">
+                <ng-template let-secao pTemplate="colab">
+                    <div>{{secao.descricaoSecao}}</div>
+                </ng-template>
+            </p-autoComplete> -->
+        </div>
+        <div class="col-3">
+            <p-autoComplete placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorComanda"
+                [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
+                (completeMethod)="filtroVendedor($event)" field="nome">
+                <ng-template let-vendedor pTemplate="colab">
+                    <div>{{vendedor.nome}}</div>
+                </ng-template>
+            </p-autoComplete>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" (click)="listarPorDataEVendedor()">Consultar</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-secondary" (click)="limparFiltrosComanda()">limpar</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-success" (click)="abrirModalIncluir()">Incluir</button>
+        </div>
+    </div>
+    <div *ngIf="listaVazia">
+        <label>Não existem produtos para os filtros selecionados</label>
+    </div>
+    <div class="crud--conten-title_table">
+        <label class="crud--content-label">LISTAGEM DE COMANDAS</label>
+        <div class="crud--content-line"></div>
+    </div>
+    <br />
+    <p-table class="table table-striped" [value]="listaComandas" emptyMessage="Não existem comandas cadastradas"
+        [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
+
+        <ng-template pTemplate="header">
+            <tr>
+            <tr>
+                <th scope="col" pSortableColumn="nome">
+                    Vendedor<p-sortIcon field="vendedor.nome"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="nomeCliente">
+                    Cliente<p-sortIcon field="nomeCliente"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="dataVenda">
+                    Data <p-sortIcon field="dataVenda"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="formaPagamento">
+                    F.Pagamento <p-sortIcon field="formaPagamento"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="valorTotal">
+                    Vr.Total <p-sortIcon field="valorTotal"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="status">
+                    Status <p-sortIcon field="status"></p-sortIcon>
+                </th>
+                <!-- <th scope="col" pSortableColumn="valorTotalComDesconto">
+                    Vr.Tot.Desc <p-sortIcon field="valorTotalComDesconto"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="valorVendedor">
+                    Vr.Vendedor <p-sortIcon field="valorVendedor"></p-sortIcon>
+                </th>
+                <th scope="col" pSortableColumn="valorDesconto">
+                    Vr.Desconto <p-sortIcon field="valorDesconto"></p-sortIcon>
+                </th> -->
+                <th scope="col">Ações</th>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <p-columnFilter type="text" field="vendedor.nome" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
+                    <p-columnFilter type="text" field="nomeCliente" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
+                    <p-columnFilter type="text" field="dataComanda" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
+                    <p-columnFilter type="text" field="formaPagamento" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
+                    <p-columnFilter type="text" field="valorTotal" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+
+                <th scope="row">
+                    <p-columnFilter type="text" field="status" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+
+                <!--<th scope="row">
+                    <p-columnFilter type="text" field="valorTotalComDesconto" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
+                    <p-columnFilter type="text" field="valorVendedor" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
+                    <p-columnFilter type="text" field="valorDesconto" [showMenu]="false">
+                    </p-columnFilter>
+                </th> -->
+                <th scope="row"></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-comanda>
+            <tr>
+                <td>{{comanda.vendedor.nome}}</td>
+                <td>{{comanda.nomeCliente}}</td>
+                <td>{{comanda.dataComanda |date : 'dd/MM/yyyy'}}</td>
+                <td>{{comanda.formaPagamento}}</td>
+                <td>{{comanda.valorTotal | currency}}</td>
+                <td>{{comanda.status}}</td>
+                <!--- <td>{{venda.valorTotalComDesconto | currency}}</td>
+                <td>{{venda.valorVendedor | currency}}</td>
+                <td>{{venda.valorDesconto}}%</td> -->
+                <td>
+                    <p-button pTooltip="Editar" icon="pi pi-file-edit" (click)="abrirModalEditar(comanda)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog (onHide)="fecharModalComanda()" [(visible)]="abrirModalComanda"
+        [style]="{width: '1000px', height: '1200px'}" [modal]=true styleClass="p-fluid">
+
+        <ng-template pTemplate="content">
+            <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
+                <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
+                {{ mensagem }}
+            </div>
+            <div>
+                <h3 class="text-center" *ngIf="novaComanda">Cadastrar Comanda</h3>
+                <h3 class="text-center" *ngIf="editarComanda">Editar Comanda</h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-3" *ngIf="novaComanda">
+                        <label>Vendedor</label>
+                        <p-autoComplete placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorModal"
+                            [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
+                            (completeMethod)="filtroVendedor($event)" field="nome">
+                            <ng-template let-vendedor pTemplate="colab">
+                                <div>{{vendedor.nome}}</div>
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-3" *ngIf="editarComanda">
+                        <label>Vendedor</label>
+                        <p-autoComplete [disabled]="desabilitarVendedor" placeholder="Informe um vendedor"
+                            (onSelect)="true" [(ngModel)]="comandaEdicao.vendedor" [dropdown]="true"
+                            [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
+                            (completeMethod)="filtroVendedor($event)" field="nome">
+                            <ng-template let-vendedor pTemplate="colab">
+                                <div>{{vendedor.nome}}</div>
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+
+                    <div class="col-3" *ngIf="novaComanda">
+                        <label>Cliente</label>
+                        <input class="form-control" [(ngModel)]="comanda.nomeCliente"
+                            placeholder="Informe o nome do cliente" />
+                    </div>
+                    <div class="col-3" *ngIf="editarComanda">
+                        <label>Cliente</label>
+                        <input [disabled]="desabilitarBotoes" class="form-control"
+                            [(ngModel)]="comandaEdicao.nomeCliente" placeholder="Informe o nome do cliente" />
+                    </div>
+
+                    <div class="col-3" *ngIf="novaComanda">
+                        <label>Forma Pagamento</label>
+                        <p-autoComplete placeholder="Forma de pagamento" (onSelect)="true" [(ngModel)]="comanda.forma"
+                            [dropdown]="true" [suggestions]="formaFiltrada" [style]="{'width': '100%'}"
+                            (completeMethod)="filtroFormaPagamento($event)" (ngModelChange)="calcularTaxa(comanda.forma)"
+                            field="descricao">
+                            <ng-template let-forma pTemplate="colab">
+                                <div>{{forma.descricao}}</div>
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-3" *ngIf="editarComanda">
+                        <label>Forma Pagamento</label>
+                        <p-autoComplete [disabled]="desabilitarBotoes" placeholder="Forma de pagamento"
+                            (onSelect)="true" [(ngModel)]="comandaEdicao.forma" [dropdown]="true"
+                            [suggestions]="formaFiltrada" [style]="{'width': '100%'}"
+                            (completeMethod)="filtroFormaPagamento($event)" (ngModelChange)="calcularTaxa($event)"
+                            field="descricao">
+                            <ng-template let-forma pTemplate="colab">
+                                <div>{{forma.descricao}}</div>
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+
+                    <div class="col-3" *ngIf="novaComanda">
+                        <label>Percentual Desconto%</label>
+                        <input class="form-control" [(ngModel)]="comanda.percentualDesconto"
+                            (ngModelChange)="calcularValorTotalComDesconto($event)" type="number"
+                            placeholder="Informe o percentual" />
+                    </div>
+                    <div class="col-3" *ngIf="editarComanda">
+                        <label>Percentual Desconto%</label>
+                        <input [disabled]="desabilitarBotoes" class="form-control"
+                            [(ngModel)]="comandaEdicao.percentualDesconto"
+                            (ngModelChange)="calcularValorTotalComDesconto($event)" type="number"
+                            placeholder="Informe o percentual" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-success" [disabled]="desabilitarBotoes"
+                            (click)="abrirModalItensComanda()">Adicionar
+                            Item</button>
+                    </div>
+                </div>
+                <div class="crud--conten-title_table">
+                    <label class="crud--content-label">LISTAGEM DE ITENS</label>
+                    <div class="crud--content-line"></div>
+                </div>
+                <p-table class="table table-striped" [value]="listaItens"
+                    emptyMessage="Não existem itens para esta comanda" [rows]="5" [paginator]="true"
+                    [rowsPerPageOptions]="[2,10,15,20]">
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th scope="col" pSortableColumn="descricao">Descrição</th>
+                            <th scope="col" pSortableColumn="valor">Valor</th>
+                            <th scope="col" pSortableColumn="quantidade">Quantidade</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-item>
+                        <tr>
+                            <td>{{item.descricao}}</td>
+                            <td pEditableColumn> <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" (ngModelChange)="atualizarValorItem($event, item)" [(ngModel)]="item.valor" required>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{item.valor | currency}}
+                                    </ng-template>
+                                </p-cellEditor></td>
+                            <td>{{item.quantidade}}</td>
+                            <td>
+                                <p-button icon="pi pi-plus" pTooltip="Adicionar"
+                                    [disabled]="desabilitarBotoes" (click)="atualizarQuantidadeItemComanda(item)"></p-button>
+                                <p-button icon="pi pi-trash" pTooltip="Remover" [disabled]="desabilitarBotoes"
+                                    (click)="removerItem(item)"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+                <div class="row">
+                    <div class="col-9">
+                    </div>
+                    <div class="col-3">
+                        <h4>Valor total: {{valorTotalComanda | currency}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="crud--close-modal">
+                <div class="crud-label-line-bottom"></div>
+                <div class="crud--edit-button">
+                    <button id="crud-btn-fechar" type="button" (click)="fecharModalComanda()"
+                        class="btn p-button-outlined p-button-secondary p-ripple crud--botao-fechar">
+                        Fechar
+                    </button>
+                    <button id="crud-btn-salvar" type="button" class="btn btn-success buttons" *ngIf="novaComanda"
+                        (click)="abrirModalVerificacao()">
+                        Salvar
+                    </button>
+                    <button [disabled]="desabilitarBotoes" id="crud-btn-salvar" type="button"
+                        class="btn btn-success buttons" *ngIf="editarComanda" (click)="abrirModalVerificacao()">
+                        Editar
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog (onHide)="fecharModalItens()" [(visible)]="abrirModalItens" [style]="{width: '810px'}" [modal]=true
+        styleClass="p-fluid">
+
+        <ng-template pTemplate="content">
+            <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
+                <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
+                {{ mensagem }}
+            </div>
+            <div>
+                <h3 class="text-center">Produtos</h3>
+                <br />
+                <div class="row">
+                    <div class="col-4">
+                        <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true"
+                            [(ngModel)]="colaboradorSelecionado" [dropdown]="true" [suggestions]="colaboradorFiltrado"
+                            [style]="{'width': '100%'}" (completeMethod)="filtroColaborador($event)" field="nome">
+                            <ng-template let-colaborador pTemplate="colab">
+                                <div>{{colaborador.nome}}</div>
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" class="form-control" placeholder="informe o produto" [(ngModel)]="descricao">
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary" (click)="listarProdutos()">Consultar</button>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-secondary"
+                            (click)="limparFiltroColaborador()">Limpar</button>
+                    </div>
+                </div>
+                <br />
+                <div *ngIf="listaVaziaProdutos">
+                    <label>Não existem produtos para os filtros selecionados</label>
+                </div>
+                <p-table class="table table-striped" [value]="listaProdutos" emptyMessage="Não existem itens "
+                    [rows]="3" [paginator]="true" [rowsPerPageOptions]="[3,10,15,20]">
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th scope="col" pSortableColumn="descricao">Colaborador</th>
+                            <th scope="col" pSortableColumn="descricao">Descrição</th>
+                            <th scope="col" pSortableColumn="valor">Valor</th>
+                            <th scope="col" pSortableColumn="quantidadeDesconto">Quantidade</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <p-columnFilter type="text" field="nome" [showMenu]="false">
+                                </p-columnFilter>
+                            </th>
+                            <th scope="row">
+                                <p-columnFilter type="text" field="descricao_Produto" [showMenu]="false">
+                                </p-columnFilter>
+                            </th>
+                            <th scope="row">
+                                <p-columnFilter type="text" field="valor" [showMenu]="false">
+                                </p-columnFilter>
+                            </th>
+                            <th scope="row"></th>
+                            <th scope="row"></th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-item>
+                        <tr>
+                            <td>{{item.nome}}</td>
+                            <td>{{item.descricao_Produto}}</td>
+
+                            <td pEditableColumn>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="item.valor" required>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{item.valor | currency}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control"
+                                    (ngModelChange)="habilitarAdicionar(item, $event)"
+                                    [(ngModel)]="item.quantidadeDesconto" />
+                            </td>
+                            <td>
+                                <p-button icon="pi pi-plus" pTooltip="Adicionar" [disabled]="!item.escolheu"
+                                    (click)="adicionarItem(item)"></p-button>
+                            </td>
+
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class="container">
+            </div>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="abrirModalVerificar" [style]="{width: '600px'}" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="crud--modal-sucesso">
+                <div class="crud--modal-sucesso-title">
+                    <!--<i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: rgb(255, 0, 0)"> 
+                    </i> -->
+                    <label class="crud--modal-sucesso-label">
+                        <h3>Deseja fechar a comanda e transformar em venda ?</h3>
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <button type="button" class="btn btn-success botaoEnviar" (click)="salvar(true)">Sim</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-danger botaoEnviar" (click)="salvar(false)">Não</button>
+                    </div>
+                </div>
+                <div class="crud--modal-sucesso-botao-line">
+                    <div class="crud--modal-sucesso-line"></div>
+                    <div class="crud--modal-sucesso-botao">
+                        <button class="btn p-button-outlined p-button-secondary p-ripple p-button p-component buttons"
+                            pButton id="crud-btn-fechar" type="button" (click)="fecharModalVerificacao()"
+                            label="Fechar">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+
+</div>
