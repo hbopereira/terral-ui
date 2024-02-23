@@ -7,6 +7,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
 import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
@@ -17,8 +18,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
         FormsModule,
         CommonModule,
         DialogModule,
-        InputNumberModule
-
+        InputNumberModule,
+        TooltipModule
     ],
     declarations: [
         VendaComponent,

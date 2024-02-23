@@ -21,6 +21,8 @@ export class ColaboradorComponent implements OnInit {
   public colaboradorEdicao: Colaborador = new Colaborador();
   public colaborador: Colaborador = new Colaborador();
   public listaColaboradores: Colaborador[] = [];
+  public colaboradorFiltrado: any[] = [];
+  public colaboradorSelecionado: any;
 
   constructor(private service: ColaboradorService) { }
 
@@ -33,10 +35,26 @@ export class ColaboradorComponent implements OnInit {
     this.service.listarColaboradores().subscribe((response: Colaborador[]) => {
       if (response.length > 0) {
         this.listaColaboradores = response;
-      } else {
-        // fazer alguma coisa
       }
     })
+  }
+
+  listarPorCod() {
+    if (this.colaboradorSelecionado !== undefined && this.colaboradorSelecionado !== null) {
+      this.service.listarPorCod(this.colaboradorSelecionado.cod).subscribe((response: Colaborador) => {
+        if (response != null) {
+          this.listaColaboradores = [];
+          this.listaColaboradores.push(response);
+        }
+      })
+    } else {
+      this.listarColaboradores();
+    }
+  }
+
+  limparFiltros() {
+    this.colaboradorSelecionado = null;
+    this.listaColaboradores = [];
   }
 
   validarCampos() {
@@ -88,6 +106,18 @@ export class ColaboradorComponent implements OnInit {
         }
       })
     }
+  }
+
+  filtroColaborador(event: any) {
+    let filtrados: any[] = [];
+    let query = event.query;
+    for (let i = 0; i < this.listaColaboradores.length; i++) {
+      let colaborador = this.listaColaboradores[i];
+      if (colaborador.nome.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtrados.push(colaborador);
+      }
+    }
+    this.colaboradorFiltrado = filtrados;
   }
 
 

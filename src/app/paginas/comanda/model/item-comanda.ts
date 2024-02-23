@@ -8,4 +8,7 @@ export class ItemComanda {
     codProduto: string = "";
     quantidadeDesconto: number = 0;
     porcentagemColaborador: number = 0;
+    nomeColaborador: string = "";
+    dataVenda: string = "";
+    nomeVendedor: string = "";
 }

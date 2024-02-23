@@ -5,4 +5,8 @@ export class ItemVenda {
     valorColaborador: number = 0;
     quantidade: number = 0;
     codProduto: string = "";
+    nomeColaborador: string = "";
+    dataVenda: string = "";
+    porcentagemColaborador: number = 0;
+    nomeVendedor: string = "";
 }

@@ -14,7 +14,7 @@ export class MenuComponent implements OnInit {
       {
         label: 'Colaboradores',
         routerLink: 'colaboradores'
-        
+
       },
       {
         label: 'Seções',
@@ -35,9 +35,15 @@ export class MenuComponent implements OnInit {
       {
         label: 'Relatorios',
         items: [
-          {label: 'Comissão de vendedores'},
-          {label: 'Vendas por colaborador'}
-      ]
+          {
+            label: 'Comissão Vendedor',
+            routerLink: 'comissao-vendedores'
+          },
+          {
+            label: 'Produtos Colaborador',
+            routerLink: 'produto-colaborador'
+          }
+        ]
       }
 
     ];

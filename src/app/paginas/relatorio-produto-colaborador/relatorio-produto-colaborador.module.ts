@@ -1,6 +1,5 @@
-
 import { NgModule } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { RelatorioProdutoColaboradorComponent } from './relatorio-produto-colaborador.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -8,13 +7,12 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
 import { DialogModule } from 'primeng/dialog';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
-import { SecaoComponent } from './secao.component';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
     imports: [
-        HttpClientModule,
         TableModule,
         ButtonModule,
         AutoCompleteModule,
@@ -22,12 +20,13 @@ import { SecaoComponent } from './secao.component';
         CommonModule,
         DialogModule,
         InputNumberModule,
-        TooltipModule
+        TooltipModule,
+        InputSwitchModule
     ],
     declarations: [
-        SecaoComponent,
+        RelatorioProdutoColaboradorComponent,
     ],
     exports: [],
-    bootstrap: [SecaoComponent]
+    bootstrap: [RelatorioProdutoColaboradorComponent]
 })
-export class SecaoModule { }
+export class RelatorioProdutoColaboradorModule { }

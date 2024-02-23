@@ -15,10 +15,14 @@ import { SecaoService } from './paginas/secao/secao.service';
 import { VendaService } from './paginas/venda/venda/venda.service';
 import { ComandaService } from './paginas/comanda/comanda.service';
 import { ComandaModule } from './paginas/comanda/comanda.module';
+import { LoginComponent } from './paginas/login/login.component';
+import { RelatorioComissaoVendedorModule } from './paginas/relatorio-comissao-vendedor/relatorio-comissao-vendedor.module';
+import { RelatorioProdutoColaboradorModule } from './paginas/relatorio-produto-colaborador/relatorio-produto-colaborador.module';
 
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -30,6 +34,8 @@ import { ComandaModule } from './paginas/comanda/comanda.module';
     ColaboradorModule,
     MenuModule,
     ComandaModule,
+    RelatorioComissaoVendedorModule,
+    RelatorioProdutoColaboradorModule,
     AppRoutingModule
   ],
   providers: [

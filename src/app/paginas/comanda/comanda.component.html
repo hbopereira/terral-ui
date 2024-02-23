@@ -12,23 +12,9 @@
     <div class="row">
         <div class="col-3">
             <input type="date" class="form-control" placeholder="data inicial" [(ngModel)]="dataInicial">
-            <!-- <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
-                [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
-                (completeMethod)="filtroColaborador($event)" field="nome">
-                <ng-template let-colaborador pTemplate="colab">
-                    <div>{{colaborador.nome}}</div>
-                </ng-template>
-            </p-autoComplete> -->
         </div>
         <div class="col-3">
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
-            <!--<p-autoComplete placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
-                [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
-                (completeMethod)="filtroSecao($event)" field="descricaoSecao">
-                <ng-template let-secao pTemplate="colab">
-                    <div>{{secao.descricaoSecao}}</div>
-                </ng-template>
-            </p-autoComplete> -->
         </div>
         <div class="col-3">
             <p-autoComplete placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorComanda"
@@ -50,13 +36,12 @@
         </div>
     </div>
     <div *ngIf="listaVazia">
-        <label>Não existem produtos para os filtros selecionados</label>
+        <label>Não existem comandas para os filtros selecionados</label>
     </div>
     <div class="crud--conten-title_table">
         <label class="crud--content-label">LISTAGEM DE COMANDAS</label>
         <div class="crud--content-line"></div>
     </div>
-    <br />
     <p-table class="table table-striped" [value]="listaComandas" emptyMessage="Não existem comandas cadastradas"
         [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
 
@@ -208,7 +193,7 @@
 
                     <div class="col-3" *ngIf="novaComanda">
                         <label>Forma Pagamento</label>
-                        <p-autoComplete placeholder="Forma de pagamento" (onSelect)="true" [(ngModel)]="comanda.forma"
+                        <p-autoComplete [disabled]="!habilitarFormaPagamento" placeholder="Forma de pagamento" (onSelect)="true" [(ngModel)]="comanda.forma"
                             [dropdown]="true" [suggestions]="formaFiltrada" [style]="{'width': '100%'}"
                             (completeMethod)="filtroFormaPagamento($event)" (ngModelChange)="calcularTaxa(comanda.forma)"
                             field="descricao">
@@ -232,7 +217,7 @@
 
                     <div class="col-3" *ngIf="novaComanda">
                         <label>Percentual Desconto%</label>
-                        <input class="form-control" [(ngModel)]="comanda.percentualDesconto"
+                        <input [disabled]="!habilitarFormaPagamento" class="form-control" [(ngModel)]="comanda.percentualDesconto"
                             (ngModelChange)="calcularValorTotalComDesconto($event)" type="number"
                             placeholder="Informe o percentual" />
                     </div>

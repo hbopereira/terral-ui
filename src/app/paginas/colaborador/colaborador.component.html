@@ -1,46 +1,34 @@
 <div class="container">
     <h2 class="text-center">Gestão de Colaboradores</h2>
-    <br />
     <div class="crud--conten-title_table">
         <label class="crud--content-label">FILTROS</label>
         <div class="crud--content-line"></div>
     </div>
 
     <div class="row">
-        <div class="col-4">
-            <!-- <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
+        <div class="col-8">
+            <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
                 [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroColaborador($event)" field="nome">
                 <ng-template let-colaborador pTemplate="colab">
                     <div>{{colaborador.nome}}</div>
                 </ng-template>
-            </p-autoComplete> -->
-        </div>
-        <div class="col-4">
-            <!--<p-autoComplete placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
-                [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
-                (completeMethod)="filtroSecao($event)" field="descricaoSecao">
-                <ng-template let-secao pTemplate="colab">
-                    <div>{{secao.descricaoSecao}}</div>
-                </ng-template>
-            </p-autoComplete> -->
+            </p-autoComplete>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-primary">Consultar</button>
+            <button type="button" class="btn btn-primary" (click)="listarPorCod()">Consultar</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-secondary">limpar</button>
+            <button type="button" class="btn btn-secondary" (click)="limparFiltros()">limpar</button>
         </div>
         <div class="col">
             <button type="button" class="btn btn-success" (click)="abrirModalIncluir()">Incluir</button>
         </div>
     </div>
-    <br />
     <div class="crud--conten-title_table">
         <label class="crud--content-label">LISTAGEM DE COLABORADORES</label>
         <div class="crud--content-line"></div>
     </div>
-    <br />
     <p-table class="table table-striped" [value]="listaColaboradores"
         emptyMessage="Não existem colaboradores cadastrados" [rows]="5" [paginator]="true"
         [rowsPerPageOptions]="[5,10,15,20]">
@@ -48,6 +36,7 @@
         <ng-template pTemplate="header">
             <tr>
                 <th scope="col" pSortableColumn="nome">Colaborador</th>
+                <th scope="col" pSortableColumn="senha">Senha</th>
                 <th scope="col">Ações</th>
             </tr>
         </ng-template>
@@ -55,10 +44,11 @@
         <ng-template pTemplate="body" let-colaborador>
             <tr>
                 <td>{{colaborador.nome}}</td>
+                <td>{{colaborador.senha}}</td>
                 <td>
-                    <p-button icon="pi pi-check" (click)="abrirModalEditar(colaborador)"></p-button>
+                    <p-button pTooltip="Editar" icon="pi pi-file-edit"
+                        (click)="abrirModalEditar(colaborador)"></p-button>
                 </td>
-
             </tr>
         </ng-template>
     </p-table>
@@ -76,14 +66,30 @@
                 <h3 class="text-center" *ngIf="editarColaborador">Editar Colaborador</h3>
             </div>
             <br />
-            <div>
-                <div class="crud--detalhes-parametro-sistema" *ngIf="novoColaborador">
-                    <label>Colaborador</label>
-                    <input class="form-control" [(ngModel)]="colaborador.nome" placeholder="informe o colaborador" />
+            <div class="row">
+                <div class="col-6">
+                    <div class="crud--detalhes-parametro-sistema" *ngIf="novoColaborador">
+                        <label>Colaborador</label>
+                        <input class="form-control" [(ngModel)]="colaborador.nome"
+                            placeholder="informe o colaborador" />
+                    </div>
+                    <div class="crud--detalhes-parametro-sistema" *ngIf="editarColaborador">
+                        <label>Colaborador</label>
+                        <input class="form-control" [(ngModel)]="colaboradorEdicao.nome"
+                            placeholder="informe o colaborador" />
+                    </div>
                 </div>
-                <div class="crud--detalhes-parametro-sistema" *ngIf="editarColaborador">
-                    <label>Colaborador</label>
-                    <input class="form-control" [(ngModel)]="colaboradorEdicao.nome" placeholder="informe o produto" />
+                <div class="col-6">
+                    <div class="crud--detalhes-parametro-sistema" *ngIf="novoColaborador">
+                        <label>Senha</label>
+                        <input class="form-control" [(ngModel)]="colaborador.senha"
+                            placeholder="informe a senha" />
+                    </div>
+                    <div class="crud--detalhes-parametro-sistema" *ngIf="editarColaborador">
+                        <label>Senha</label>
+                        <input class="form-control" [(ngModel)]="colaboradorEdicao.senha"
+                            placeholder="informe a senha" />
+                    </div>
                 </div>
             </div>
             <div class="crud--close-modal">

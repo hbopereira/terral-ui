@@ -1,46 +1,16 @@
 <div class="container">
     <h2 class="text-center">Gestão de Seções</h2>
-    <br />
-    <div class="crud--conten-title_table">
-        <label class="crud--content-label">FILTROS</label>
-        <div class="crud--content-line"></div>
-    </div>
-
     <div class="row">
-        <div class="col-4">
-            <!-- <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
-                [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
-                (completeMethod)="filtroColaborador($event)" field="nome">
-                <ng-template let-colaborador pTemplate="colab">
-                    <div>{{colaborador.nome}}</div>
-                </ng-template>
-            </p-autoComplete> -->
-        </div>
-        <div class="col-4">
-            <!--<p-autoComplete placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
-                [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
-                (completeMethod)="filtroSecao($event)" field="descricaoSecao">
-                <ng-template let-secao pTemplate="colab">
-                    <div>{{secao.descricaoSecao}}</div>
-                </ng-template>
-            </p-autoComplete> -->
-        </div>
-        <div class="col">
-            <button type="button" class="btn btn-primary">Consultar</button>
-        </div>
-        <div class="col">
-            <button type="button" class="btn btn-secondary">limpar</button>
+        <div class="col-11">
         </div>
         <div class="col">
             <button type="button" class="btn btn-success" (click)="abrirModalIncluir()">Incluir</button>
         </div>
     </div>
-    <br />
     <div class="crud--conten-title_table">
         <label class="crud--content-label">LISTAGEM DE SEÇÕES</label>
         <div class="crud--content-line"></div>
     </div>
-    <br />
     <p-table class="table table-striped" [value]="listaSecoes" emptyMessage="Não existem seções cadastradas" [rows]="5"
         [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
 
@@ -55,7 +25,7 @@
             <tr>
                 <td>{{secao.descricaoSecao}}</td>
                 <td>
-                    <p-button icon="pi pi-check" (click)="abrirModalEditar(secao)"></p-button>
+                    <p-button pTooltip="Editar" icon="pi pi-file-edit" (click)="abrirModalEditar(secao)"></p-button>
                 </td>
 
             </tr>

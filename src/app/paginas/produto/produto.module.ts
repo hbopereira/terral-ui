@@ -10,6 +10,7 @@ import { FormsModule }   from '@angular/forms';
 import { CommonModule } from "@angular/common";
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
       FormsModule,
       CommonModule,
       DialogModule,
+      TooltipModule,
       InputNumberModule
     ],
     declarations: [

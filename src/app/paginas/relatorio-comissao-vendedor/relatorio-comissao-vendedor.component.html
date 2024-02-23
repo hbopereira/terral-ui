@@ -1,9 +1,10 @@
 <div class="container">
-    <h2 class="text-center">Gestão de Vendas</h2>
+    <h2 class="text-center">Relatório Comissão de Vendedores</h2>
     <div class="crud--conten-title_table">
         <label class="crud--content-label">FILTROS</label>
         <div class="crud--content-line"></div>
     </div>
+
 
     <div class="row">
         <div class="col-3">
@@ -12,21 +13,34 @@
         <div class="col-3">
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
-        <div class="col-3">
-            <p-autoComplete placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorVenda"
-                [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
-                (completeMethod)="filtroVendedor($event)" field="nome">
+        <div class="col-2">
+            <p-autoComplete placeholder="vendedor" (ngModelChange)="habilitarBotaoConsultar($event)" (onSelect)="true"
+                [(ngModel)]="vendedorVenda" [dropdown]="true" [suggestions]="vendedorFiltrado"
+                [style]="{'width': '100%'}" (completeMethod)="filtroVendedor($event)" field="nome">
                 <ng-template let-vendedor pTemplate="colab">
                     <div>{{vendedor.nome}}</div>
                 </ng-template>
             </p-autoComplete>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-primary" (click)="listarPorDataEVendedor()">Consultar</button>
+            <button type="button" class="btn btn-primary" [disabled]="!habilitarConsultar"
+                (click)="listarDadosRelatorioComissaoVendedores()">Consultar</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-secondary" (click)="limparFiltrosVenda()">limpar</button>
+            <button type="button" class="btn btn-secondary" (click)="limparFiltros()">limpar</button>
         </div>
+        <div class="col">
+            <p-button pTooltip="Marcar todos" icon="pi pi-check-circle" [disabled]="!habilitarMarcarTodos"
+                (click)="marcarDesmarcarTodos(true)"></p-button>
+        </div>
+        <div class="col">
+            <p-button pTooltip="Desmarcar todos" icon="pi pi-delete-left" [disabled]="!habilitarMarcarTodos"
+                (click)="marcarDesmarcarTodos(false)"></p-button>
+        </div>
+    </div>
+
+    <div>
+        <h4>Vendedor(a): {{vendedorVenda.nome}}</h4>
     </div>
     <div *ngIf="listaVazia">
         <label>Não existem vendas para os filtros selecionados</label>
@@ -35,20 +49,12 @@
         <label class="crud--content-label">LISTAGEM DE VENDAS</label>
         <div class="crud--content-line"></div>
     </div>
-    <p-table class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="5"
+    <p-table class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="10"
         [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
 
         <ng-template pTemplate="header">
             <tr>
             <tr>
-                <th scope="col" pSortableColumn="nome">
-                    Vendedor<p-sortIcon field="vendedor.nome"></p-sortIcon>
-                </th>
-
-                <th scope="col" pSortableColumn="nomeCliente">
-                    Cliente<p-sortIcon field="nomeCliente"></p-sortIcon>
-                </th>
-
                 <th scope="col" pSortableColumn="dataVenda">
                     Data <p-sortIcon field="dataVenda"></p-sortIcon>
                 </th>
@@ -57,66 +63,43 @@
                     F.Pagamento <p-sortIcon field="formaPagamento"></p-sortIcon>
                 </th>
 
+                <th scope="col" pSortableColumn="taxa">
+                    Vr.Taxa<p-sortIcon field="taxa"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="valorVendedor">
+                    Vr.Vend <p-sortIcon field="valorVendedor"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="valorVendedorComTaxa">
+                    Vr.Vend.Taxa <p-sortIcon field="valorVendedorComTaxa"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="percentualDesconto">
+                    P.Desc <p-sortIcon field="percentualDesconto"></p-sortIcon>
+                </th>
+
                 <th scope="col" pSortableColumn="valorTotal">
                     Vr.Total <p-sortIcon field="valorTotal"></p-sortIcon>
                 </th>
 
-                <!-- <th scope="col" pSortableColumn="valorTotalComDesconto">
-                    Vr.Tot.Desc <p-sortIcon field="valorTotalComDesconto"></p-sortIcon>
-                </th> 
-
-                <th scope="col" pSortableColumn="valorVendedor">
-                    Vr.Vendedor <p-sortIcon field="valorVendedor"></p-sortIcon>
-                </th> -->
-                <!---  <th scope="col" pSortableColumn="valorDesconto">
-                    Vr.Desconto <p-sortIcon field="valorDesconto"></p-sortIcon>
-                </th> -->
+                <th scope="col"></th>
                 <th scope="col">Ações</th>
-            </tr>
-            <tr>
-                <th scope="row">
-                    <p-columnFilter type="text" field="vendedor.nome" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="nomeCliente" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="dataVenda" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="formaPagamento" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="valorTotal" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <!--<th scope="row">
-                    <p-columnFilter type="text" field="valorTotalComDesconto" [showMenu]="false">
-                    </p-columnFilter>
-                </th> 
-                <th scope="row">
-                    <p-columnFilter type="text" field="valorVendedor" [showMenu]="false">
-                    </p-columnFilter>
-                </th> -->
-                <!--  <th scope="row">
-                    <p-columnFilter type="text" field="valorDesconto" [showMenu]="false">
-                    </p-columnFilter>
-                </th> -->
-                <th scope="row"></th>
             </tr>
         </ng-template>
 
         <ng-template pTemplate="body" let-venda>
             <tr>
-                <td>{{venda.vendedor.nome}}</td>
-                <td>{{venda.nomeCliente}}</td>
                 <td>{{venda.dataVenda |date : 'dd/MM/yyyy'}}</td>
                 <td>{{venda.formaPagamento}}</td>
+                <td>{{venda.taxa | currency}}</td>
+                <td>{{venda.valorVendedor | currency}}</td>
+                <td>{{venda.valorVendedorComTaxa | currency}}</td>
+                <td>{{venda.percentualDesconto}}%</td>
                 <td>{{venda.valorTotal | currency}}</td>
+                <td>
+                    <p-inputSwitch [(ngModel)]="venda.escolheu"></p-inputSwitch>
+                </td>
                 <!--<td>{{venda.valorTotalComDesconto | currency}}</td> -->
                 <!-- <td>{{venda.valorVendedor | currency}}</td> -->
                 <!-- <td>{{venda.valorDesconto}}%</td> -->
@@ -132,9 +115,17 @@
         <div class="col-8">
         </div>
         <div class="col-4">
-            <h4>Valor Total Vendas: {{somaValorTotalVenda | currency}}</h4>
+            <h4>Valor Total Comissão: {{comissaoVendedor | currency}}</h4>
         </div>
     </div>
+    <div class="row">
+        <div class="col-11">
+        </div>
+        <div class="col-1">
+            <button type="button" class="btn btn-success">Pagar</button>
+        </div>
+    </div>
+
 
     <p-dialog (onHide)="fecharModal()" [(visible)]="abrirModalItens" [style]="{width: '726px'}" [modal]=true
         styleClass="p-fluid">
@@ -161,8 +152,8 @@
                     <tr>
                         <td>{{item.nomeColaborador}}</td>
                         <td>{{item.descricao}}</td>
-                        <td>{{item.valor | currency}}</td>
-                        <td>{{item.quantidade}}</td>
+                        <td> {{item.valor | currency}}</td>
+                        <td> {{item.quantidade}}</td>
                     </tr>
                 </ng-template>
             </p-table>

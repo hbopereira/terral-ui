@@ -34,6 +34,7 @@ export class ComandaComponent implements OnInit {
   public desabilitarBotoes: boolean = false;
   public listaVazia: boolean = false;
   public camposVazios: boolean = false;
+  public habilitarFormaPagamento: boolean = false;
   public valorTotalComanda: number = 0;
   public colaboradorSelecionado: any;
   public formaPagamentoSelecionada: any;
@@ -189,6 +190,8 @@ export class ComandaComponent implements OnInit {
     venda.valorTotal = comanda.valorTotal;
     venda.valorVendedor = comanda.valorVendedor;
     venda.vendedor = comanda.vendedor;
+    venda.nomeCliente = comanda.nomeCliente;
+    venda.percentualDesconto = comanda.percentualDesconto;
     venda.taxa = comanda.taxa;
     venda.itens = comanda.itens;
     venda.itens.forEach(i => {
@@ -212,7 +215,6 @@ export class ComandaComponent implements OnInit {
       if ((this.comanda.vendedor === undefined)
         || (this.comanda.vendedor === null)
         || (this.vendedorModal === "")
-        || (this.comanda.nomeCliente === "")
         || (this.listaItens.length === 0)) {
         this.mensagem = "Favor preencher os campos obrigatórios antes de incluir um registro!"
         this.camposVazios = true;
@@ -222,7 +224,6 @@ export class ComandaComponent implements OnInit {
     if (this.editarComanda) {
       if ((this.comandaEdicao.vendedor === undefined)
         || (this.comandaEdicao.vendedor === null)
-        || (this.comandaEdicao.nomeCliente === "")
         || (this.listaItens.length === 0)) {
         this.mensagem = "Favor preencher os campos obrigatórios antes de incluir um registro!"
         this.camposVazios = true;
@@ -335,8 +336,6 @@ export class ComandaComponent implements OnInit {
       this.listarItensComanda(this.comandaEdicao.cod, false);
       this.mensagem = "Produto: " + itemComanda.descricao + " adicionado com sucesso!";
       this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-      // this.fecharModalItens();
-      // this.limparFiltroColaborador();
     }, error => {
       if (error) {
         this.mensagem = error.message;
@@ -351,6 +350,7 @@ export class ComandaComponent implements OnInit {
   }
 
   adicionarItem(produto: Produto) {
+    let entrou = false;
     let temItemNaLista = false;
     let prod: ProdutoPostPut = new ProdutoPostPut();
     if (!this.validarEdicaoPreco(produto)) {
@@ -361,6 +361,7 @@ export class ComandaComponent implements OnInit {
       this.itemComanda.porcentagemColaborador = produto.porcentagem_Colaborador
       this.itemComanda.valorColaborador = produto.valor_Colaborador;
       this.itemComanda.quantidadeDesconto = produto.quantidadeDesconto;
+      this.itemComanda.nomeColaborador = produto.nome;
       // quantidade de estoque do produto
       prod.cod = produto.cod_Produto;
 
@@ -378,8 +379,6 @@ export class ComandaComponent implements OnInit {
           } else {
             this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
             this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-            // this.fecharModalItens();
-            // this.limparFiltroColaborador();
           }
         } else {
           this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
@@ -397,8 +396,6 @@ export class ComandaComponent implements OnInit {
             this.listarItensComanda(this.comandaEdicao.cod, false);
             this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
             this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-            // this.fecharModalItens();
-            // this.limparFiltroColaborador();
           }
         }
       }
@@ -412,25 +409,25 @@ export class ComandaComponent implements OnInit {
             this.produtoService.setarQuantidade(prod).subscribe(() => { });
             this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
             this.listaItens.push(this.itemComanda);
+            this.habilitarFormaPagamento = true;
           } else {
-            this.listaItens.forEach(item => {
-              if (item.codProduto === this.itemComanda.codProduto) {
-                prod.quantidade = this.diminuirQuantidade(produto);
-                this.produtoService.setarQuantidade(prod).subscribe(() => { });
-                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
-              } else {
-                prod.quantidade = this.diminuirQuantidade(produto);
-                this.produtoService.setarQuantidade(prod).subscribe(() => { });
-                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
-                this.listaItens.push(this.itemComanda);
-              }
+            this.listaItens.filter(i => i.codProduto === this.itemComanda.codProduto).forEach(item => {
+              prod.quantidade = this.diminuirQuantidade(produto);
+              this.produtoService.setarQuantidade(prod).subscribe(() => { });
+              item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+              entrou = true;
             })
+            if (!entrou) {
+              prod.quantidade = this.diminuirQuantidade(produto);
+              this.produtoService.setarQuantidade(prod).subscribe(() => {
+                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                this.listaItens.push(this.itemComanda)
+              });
+            }
           }
           this.calcularValorTotalComanda();
           this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-          //this.fecharModalItens();
-          //this.limparFiltroColaborador();
         } else {
           this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
@@ -440,21 +437,20 @@ export class ComandaComponent implements OnInit {
           if (this.listaItens.length === 0) {
             this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
             this.listaItens.push(this.itemComanda);
+            this.habilitarFormaPagamento = true;
           } else {
-            this.listaItens.forEach(item => {
-              if (item.codProduto === this.itemComanda.codProduto) {
-                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
-              } else {
-                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
-                this.listaItens.push(this.itemComanda);
-              }
+            this.listaItens.filter(i => i.codProduto === this.itemComanda.codProduto).forEach(item => {
+              item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+              entrou = true;
             })
+            if (!entrou) {
+              this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
+              this.listaItens.push(this.itemComanda);
+            }
           }
           this.calcularValorTotalComanda();
           this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-          //this.fecharModalItens();
-          //this.limparFiltroColaborador();
         }
       }
       this.listarProdutos();
@@ -511,6 +507,9 @@ export class ComandaComponent implements OnInit {
           });
         }
       })
+    }
+    if(this.listaItens.length === 1){
+       this.habilitarFormaPagamento = false;
     }
     this.mensagem = "Produto: " + item.descricao + " removido com sucesso!"
     this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
@@ -675,6 +674,7 @@ export class ComandaComponent implements OnInit {
     this.comandaEdicao.valorTotal = comanda.valorTotal;
     this.comandaEdicao.forma.descricao = comanda.formaPagamento;
     this.comandaEdicao.itens = comanda.itens;
+    this.comandaEdicao.status = comanda.status;
     this.listaItens = this.comandaEdicao.itens;
     this.valorTotalComanda = this.comandaEdicao.valorTotal;
     this.editarComanda = true;
@@ -694,7 +694,7 @@ export class ComandaComponent implements OnInit {
   }
 
   fecharModalComanda() {
-    if (this.editarComanda) {
+    if ((this.editarComanda) && (this.comandaEdicao.status !== "FECHADA")) {
       this.comandaEdicao.formaPagamento = "AGUARDANDO";
       this.comandaEdicao.status = "ABERTA"
       this.comandaEdicao.valorTotal = this.valorTotalComanda;

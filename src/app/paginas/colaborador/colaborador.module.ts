@@ -10,6 +10,7 @@ import { CommonModule } from "@angular/common";
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ColaboradorComponent } from './colaborador.component';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
     imports: [
@@ -20,6 +21,7 @@ import { ColaboradorComponent } from './colaborador.component';
       FormsModule,
       CommonModule,
       DialogModule,
+      TooltipModule,
       InputNumberModule
     ],
     declarations: [

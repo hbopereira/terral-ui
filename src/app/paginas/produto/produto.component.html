@@ -1,6 +1,5 @@
 <div class="container">
     <h2 class="text-center">Gestão de Produtos</h2>
-    <br />
     <div class="crud--conten-title_table">
         <label class="crud--content-label">FILTROS</label>
         <div class="crud--content-line"></div>
@@ -35,7 +34,6 @@
             <button type="button" class="btn btn-success" (click)="abrirModalIncluir()">Incluir</button>
         </div>
     </div>
-    <br />
     <div *ngIf="listaVazia">
         <label>Não existem produtos para os filtros selecionados</label>
     </div>
@@ -43,7 +41,6 @@
         <label class="crud--content-label">LISTAGEM DE PRODUTOS</label>
         <div class="crud--content-line"></div>
     </div>
-    <br />
     <p-table class="table table-striped" [value]="listaProdutos" emptyMessage="Não existem produtos cadastrados"
         [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
 
@@ -104,7 +101,7 @@
                 <td>{{produto.valor_Colaborador | currency}}</td>
                 <td>{{produto.descricao_Secao}}</td>
                 <td>
-                    <p-button icon="pi pi-check" (click)="abrirModalEditar(produto)"></p-button>
+                    <p-button pTooltip="Editar" icon="pi pi-file-edit" (click)="abrirModalEditar(produto)"></p-button>
                 </td>
 
             </tr>
