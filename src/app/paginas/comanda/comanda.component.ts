@@ -58,10 +58,7 @@ export class ComandaComponent implements OnInit {
   public dataInicial: string = "";
   public dataFinal: string = "";
   public descricao: string = "";
-  public vendedorComanda: any;
-  public taxa = 0;
-
-
+  public vendedorComanda: any;;
 
   constructor(
     private produtoService: ProdutoService,

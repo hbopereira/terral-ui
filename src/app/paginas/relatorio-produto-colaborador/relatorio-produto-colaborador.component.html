@@ -4,9 +4,6 @@
         <label class="crud--content-label">FILTROS</label>
         <div class="crud--content-line"></div>
     </div>
-
-
-
     <div class="row">
         <div class="col-3">
             <input type="date" class="form-control" placeholder="data Inicial" [(ngModel)]="dataInicial">
@@ -58,63 +55,49 @@
         <ng-template pTemplate="header">
             <tr>
             <tr>
-                <th scope="col" pSortableColumn="dataVenda">
-                    D.V.Produto<p-sortIcon field="dataVenda"></p-sortIcon>
+                <th scope="col">
+                    D.V.Produto
                 </th>
 
-                <th scope="col" pSortableColumn="formaPagamento">
-                    F.Pagamento <p-sortIcon field="formaPagamento"></p-sortIcon>
+                <th scope="col">
+                    F.Pagamento
                 </th>
 
-                <th scope="col" pSortableColumn="nomeVendedor">
-                    Vend <p-sortIcon field="nomeVendedor"></p-sortIcon>
+                <th scope="col">
+                    Vendedor
                 </th>
 
-                <th scope="col" pSortableColumn="descricao">
-                    Produto <p-sortIcon field="descricao"></p-sortIcon>
+                <th scope="col">
+                    Produto
                 </th>
 
-                <th scope="col" pSortableColumn="quantidade">
-                    Quantidade <p-sortIcon field="quantidade"></p-sortIcon>
+                <th scope="col">
+                    Qtd
                 </th>
 
-                <th scope="col" pSortableColumn="taxa">
-                    Vr.Taxa<p-sortIcon field="taxa"></p-sortIcon>
+                <th scope="col">
+                    Vr.Unitário
                 </th>
 
-                <th scope="col" pSortableColumn="valorColaborador">
-                    Vr.Colab<p-sortIcon field="valorColaborador"></p-sortIcon>
+                <th scope="col">
+                    Vr.Colab.Taxa
                 </th>
 
-                <th scope="col" pSortableColumn="porcentagemColaborador">
-                    P.Colab<p-sortIcon field="porcentagemColaborador"></p-sortIcon>
+                <th scope="col">
+                    Vr.Taxa
                 </th>
 
-                <th scope="col" pSortableColumn="valor">
-                    Vr.Final<p-sortIcon field="valor"></p-sortIcon>
+                <th scope="col">
+                    Vr.Colab
                 </th>
 
-                <!-- <th scope="col" pSortableColumn="taxa">
-                    Vr.Taxa<p-sortIcon field="taxa"></p-sortIcon>
+                <th scope="col">
+                    P.Colab
                 </th>
 
-                <th scope="col" pSortableColumn="valorVendedor">
-                    Vr.Vend <p-sortIcon field="valorVendedor"></p-sortIcon>
+                <th scope="col">
+                    Vr.Total
                 </th>
-
-                <th scope="col" pSortableColumn="valorVendedorComTaxa">
-                    Vr.Vend.Taxa <p-sortIcon field="valorVendedorComTaxa"></p-sortIcon>
-                </th>
-
-                <th scope="col" pSortableColumn="percentualDesconto">
-                    P.Desc <p-sortIcon field="percentualDesconto"></p-sortIcon>
-                </th>
-
-                <th scope="col" pSortableColumn="valorTotal">
-                    Vr.Total <p-sortIcon field="valorTotal"></p-sortIcon>
-                </th> 
-                <th scope="col"></th>
-                <th scope="col">Ações</th> -->
             </tr>
         </ng-template>
 
@@ -125,15 +108,12 @@
                 <td>{{item.nomeVendedor}}</td>
                 <td>{{item.descricao}}</td>
                 <td>{{item.quantidade}}</td>
-                <td>{{item.taxa | currency}}</td>
-                <td>{{item.valorColaborador | currency}}</td>
-                <td>{{item.porcentagemColaborador}}%</td>
                 <td>{{item.valor | currency}}</td>
-                <!--<td>{{venda.taxa | currency}}</td>
-                <td>{{venda.valorVendedor | currency}}</td>
-                <td>{{venda.valorVendedorComTaxa | currency}}</td>
-                <td>{{venda.percentualDesconto}}%</td>
-                <td>{{venda.valorTotal | currency}}</td> -->
+                <td>{{item.valorColaboradorComTaxa | currency}}</td>
+                <td>{{item.taxa | currency}}</td>
+                <td>{{item.valorFinalColaborador | currency}}</td>
+                <td>{{item.porcentagemColaborador}}%</td>
+                <td>{{item.valorFinal | currency}}</td>
             </tr>
         </ng-template>
     </p-table>

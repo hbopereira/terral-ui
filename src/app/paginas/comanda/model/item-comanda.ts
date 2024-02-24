@@ -13,4 +13,7 @@ export class ItemComanda {
     nomeVendedor: string = "";
     taxa: number = 0;
     formaPagamento: string = "";
+    valorColaboradorComTaxa: number = 0;
+    valorFinal: number = 0;
+    valorFinalColaborador: number = 0;
 }

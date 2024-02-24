@@ -24,6 +24,8 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   public habilitarConsultar: boolean = false;
   public habilitarMarcarTodos: boolean = false;
   public valorTotalColaborador: number = 0;
+  public calculoTaxaDebito : number = 0.75 / 100;
+  public calculoTaxaCredito: number = 0.95 / 100;
 
   constructor(private vendaService: VendaService,
     private colaboradorService: ColaboradorService) { }
@@ -33,8 +35,8 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   }
 
   listarDadosRelatorioProdutoColaborador() {
-    let calculo = 0;
     let taxa = 0;
+    let valor = 0;
     this.listaVendas = [];
     this.valorTotalColaborador = 0;
     let dataInicial = new Date();
@@ -59,21 +61,27 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
         this.habilitarMarcarTodos = true;
         this.listaItensVenda = response;
         this.listaItensVenda.forEach(item => {
-          let valor = item.valorColaborador * item.quantidade;
+          valor = item.valorColaborador * item.quantidade;
           if (item.formaPagamento === "CREDITO") {
-            calculo = 0.95 / 100;
-            taxa = valor * calculo;
+            taxa = valor * this.calculoTaxaCredito;
             item.taxa = taxa;
-            valor = valor - taxa;
+            valor = valor - item.taxa;
+            item.valorColaborador = this.calcularValorColaborador(item);
+            item.valorColaboradorComTaxa = item.valorColaborador * item.quantidade - item.taxa;
           }
-          if (item.formaPagamento === "DEBITO") {
-            calculo = 0.75 / 100;
-            taxa = valor * calculo;
+          else if (item.formaPagamento === "DEBITO") {
+            taxa = valor * this.calculoTaxaDebito;
             item.taxa = taxa;
-            valor = valor - taxa;
+            valor = valor - item.taxa;
+            item.valorColaborador = this.calcularValorColaborador(item);
+            item.valorColaboradorComTaxa = item.valorColaborador * item.quantidade - item.taxa;
+          } else {
+            item.taxa = 0;
+            item.valorColaboradorComTaxa = item.valorColaborador * item.quantidade;
           }
+          item.valorFinal = item.valor * item.quantidade;
+          item.valorFinalColaborador = item.valorColaborador * item.quantidade
           this.valorTotalColaborador = this.valorTotalColaborador + valor;
-          item.valorColaborador = this.calcularValorColaborador(item);
         })
         this.listaVazia = false;
       } else {
@@ -82,6 +90,10 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
         this.habilitarMarcarTodos = false;
       }
     })
+  }
+
+  getTaxa(){
+
   }
 
   calcularValorColaborador(itemVenda: ItemVenda) {
