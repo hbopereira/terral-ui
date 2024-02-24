@@ -63,16 +63,8 @@
                     F.Pagamento <p-sortIcon field="formaPagamento"></p-sortIcon>
                 </th>
 
-                <th scope="col" pSortableColumn="taxa">
-                    Vr.Taxa<p-sortIcon field="taxa"></p-sortIcon>
-                </th>
-
                 <th scope="col" pSortableColumn="valorVendedor">
                     Vr.Vend <p-sortIcon field="valorVendedor"></p-sortIcon>
-                </th>
-
-                <th scope="col" pSortableColumn="valorVendedorComTaxa">
-                    Vr.Vend.Taxa <p-sortIcon field="valorVendedorComTaxa"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="percentualDesconto">
@@ -92,9 +84,7 @@
             <tr>
                 <td>{{venda.dataVenda |date : 'dd/MM/yyyy'}}</td>
                 <td>{{venda.formaPagamento}}</td>
-                <td>{{venda.taxa | currency}}</td>
                 <td>{{venda.valorVendedor | currency}}</td>
-                <td>{{venda.valorVendedorComTaxa | currency}}</td>
                 <td>{{venda.percentualDesconto}}%</td>
                 <td>{{venda.valorTotal | currency}}</td>
                 <td>

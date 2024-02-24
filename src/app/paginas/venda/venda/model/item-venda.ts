@@ -9,4 +9,6 @@ export class ItemVenda {
     dataVenda: string = "";
     porcentagemColaborador: number = 0;
     nomeVendedor: string = "";
+    taxa: number = 0;
+    formaPagamento: string = "";
 }

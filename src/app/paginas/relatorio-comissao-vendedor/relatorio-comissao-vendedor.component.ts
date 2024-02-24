@@ -43,6 +43,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
 
 
   listarDadosRelatorioComissaoVendedores() {
+    let valor = 0;
     this.listaVendas = [];
     this.comissaoVendedor = 0;
     let dataInicial = new Date();
@@ -70,8 +71,8 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
           if(v.percentualDesconto === null){
              v.percentualDesconto = 0;
           }
-        })
-        this.calcularComissaoVendedor();
+          this.comissaoVendedor = this.comissaoVendedor + v.valorVendedor;
+        }) 
         this.listaVazia = false;
       } else {
         this.listaVazia = true;
@@ -80,14 +81,6 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     })
   }
 
-  calcularComissaoVendedor(){
-    let valor = 0;
-     this.listaVendas.forEach(venda => {
-      valor = Number(venda.valorVendedor) - Number(venda.taxa);
-      venda.valorVendedorComTaxa = valor;
-      this.comissaoVendedor = this.comissaoVendedor + valor; 
-     })
-  }
 
   filtroVendedor(event: any) {
     let filtrados: any[] = [];

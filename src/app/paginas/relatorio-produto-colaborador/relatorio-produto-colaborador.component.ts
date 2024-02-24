@@ -33,6 +33,8 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   }
 
   listarDadosRelatorioProdutoColaborador() {
+    let calculo = 0;
+    let taxa = 0;
     this.listaVendas = [];
     this.valorTotalColaborador = 0;
     let dataInicial = new Date();
@@ -58,6 +60,18 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
         this.listaItensVenda = response;
         this.listaItensVenda.forEach(item => {
           let valor = item.valorColaborador * item.quantidade;
+          if (item.formaPagamento === "CREDITO") {
+            calculo = 0.95 / 100;
+            taxa = valor * calculo;
+            item.taxa = taxa;
+            valor = valor - taxa;
+          }
+          if (item.formaPagamento === "DEBITO") {
+            calculo = 0.75 / 100;
+            taxa = valor * calculo;
+            item.taxa = taxa;
+            valor = valor - taxa;
+          }
           this.valorTotalColaborador = this.valorTotalColaborador + valor;
           item.valorColaborador = this.calcularValorColaborador(item);
         })
@@ -75,7 +89,7 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
     return valorColaborador;
   }
 
-  limparFiltros(){
+  limparFiltros() {
     this.dataFinal = "";
     this.dataInicial = "";
     this.listaItensVenda = [];

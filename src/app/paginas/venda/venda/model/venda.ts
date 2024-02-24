@@ -8,7 +8,6 @@ export class Venda {
     valorTotalComDesconto: number = 0;
     percentualDesconto: number = 0;
     taxa: number = 0;
-    valorVendedorComTaxa : number = 0;
     valorDesconto: number = 0;
     formaPagamento: string = "";
     nomeCliente: string = "";

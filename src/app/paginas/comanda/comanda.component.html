@@ -195,7 +195,7 @@
                         <label>Forma Pagamento</label>
                         <p-autoComplete [disabled]="!habilitarFormaPagamento" placeholder="Forma de pagamento" (onSelect)="true" [(ngModel)]="comanda.forma"
                             [dropdown]="true" [suggestions]="formaFiltrada" [style]="{'width': '100%'}"
-                            (completeMethod)="filtroFormaPagamento($event)" (ngModelChange)="calcularTaxa(comanda.forma)"
+                            (completeMethod)="filtroFormaPagamento($event)"
                             field="descricao">
                             <ng-template let-forma pTemplate="colab">
                                 <div>{{forma.descricao}}</div>
@@ -207,7 +207,7 @@
                         <p-autoComplete [disabled]="desabilitarBotoes" placeholder="Forma de pagamento"
                             (onSelect)="true" [(ngModel)]="comandaEdicao.forma" [dropdown]="true"
                             [suggestions]="formaFiltrada" [style]="{'width': '100%'}"
-                            (completeMethod)="filtroFormaPagamento($event)" (ngModelChange)="calcularTaxa($event)"
+                            (completeMethod)="filtroFormaPagamento($event)"
                             field="descricao">
                             <ng-template let-forma pTemplate="colab">
                                 <div>{{forma.descricao}}</div>
@@ -284,6 +284,10 @@
                         <h4>Valor total: {{valorTotalComanda | currency}}</h4>
                     </div>
                 </div>
+                <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
+                    <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
+                    {{ mensagem }}
+                </div>
             </div>
             <div class="crud--close-modal">
                 <div class="crud-label-line-bottom"></div>
@@ -305,7 +309,7 @@
         </ng-template>
     </p-dialog>
 
-    <p-dialog (onHide)="fecharModalItens()" [(visible)]="abrirModalItens" [style]="{width: '810px'}" [modal]=true
+    <p-dialog (onHide)="fecharModalItens()" [(visible)]="abrirModalItens" [style]="{width: '870px'}" [modal]=true
         styleClass="p-fluid">
 
         <ng-template pTemplate="content">
@@ -317,8 +321,8 @@
                 <h3 class="text-center">Produtos</h3>
                 <br />
                 <div class="row">
-                    <div class="col-4">
-                        <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true"
+                    <div class="col-2">
+                        <p-autoComplete placeholder="Colaborador" (onSelect)="true"
                             [(ngModel)]="colaboradorSelecionado" [dropdown]="true" [suggestions]="colaboradorFiltrado"
                             [style]="{'width': '100%'}" (completeMethod)="filtroColaborador($event)" field="nome">
                             <ng-template let-colaborador pTemplate="colab">
@@ -326,13 +330,19 @@
                             </ng-template>
                         </p-autoComplete>
                     </div>
-                    <div class="col-4">
-                        <input type="text" class="form-control" placeholder="informe o produto" [(ngModel)]="descricao">
+                    <div class="col-2">
+                        <input type="text" class="form-control" placeholder="Produto" [(ngModel)]="descricao">
                     </div>
                     <div class="col-2">
+                        <input type="text" class="form-control" placeholder="cod loja">
+                    </div>
+                    <div class="col-2">
+                        <input type="text" class="form-control" placeholder="cod fabricante">
+                    </div>
+                    <div class="col-2" style="text-align: right;">
                         <button type="button" class="btn btn-primary" (click)="listarProdutos()">Consultar</button>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2" style="text-align: right;">
                         <button type="button" class="btn btn-secondary"
                             (click)="limparFiltroColaborador()">Limpar</button>
                     </div>

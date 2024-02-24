@@ -59,11 +59,15 @@
             <tr>
             <tr>
                 <th scope="col" pSortableColumn="dataVenda">
-                    D.Venda Produto<p-sortIcon field="dataVenda"></p-sortIcon>
+                    D.V.Produto<p-sortIcon field="dataVenda"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="formaPagamento">
+                    F.Pagamento <p-sortIcon field="formaPagamento"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="nomeVendedor">
-                    Vendedor <p-sortIcon field="nomeVendedor"></p-sortIcon>
+                    Vend <p-sortIcon field="nomeVendedor"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="descricao">
@@ -74,16 +78,20 @@
                     Quantidade <p-sortIcon field="quantidade"></p-sortIcon>
                 </th>
 
+                <th scope="col" pSortableColumn="taxa">
+                    Vr.Taxa<p-sortIcon field="taxa"></p-sortIcon>
+                </th>
+
                 <th scope="col" pSortableColumn="valorColaborador">
-                    V.Colaborador<p-sortIcon field="valorColaborador"></p-sortIcon>
+                    Vr.Colab<p-sortIcon field="valorColaborador"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="porcentagemColaborador">
-                    P.Colaborador<p-sortIcon field="porcentagemColaborador"></p-sortIcon>
+                    P.Colab<p-sortIcon field="porcentagemColaborador"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="valor">
-                    V.Final<p-sortIcon field="valor"></p-sortIcon>
+                    Vr.Final<p-sortIcon field="valor"></p-sortIcon>
                 </th>
 
                 <!-- <th scope="col" pSortableColumn="taxa">
@@ -113,9 +121,11 @@
         <ng-template pTemplate="body" let-item>
             <tr>
                 <td>{{item.dataVenda |date : 'dd/MM/yyyy'}}</td>
+                <td>{{item.formaPagamento}}</td>
                 <td>{{item.nomeVendedor}}</td>
                 <td>{{item.descricao}}</td>
                 <td>{{item.quantidade}}</td>
+                <td>{{item.taxa | currency}}</td>
                 <td>{{item.valorColaborador | currency}}</td>
                 <td>{{item.porcentagemColaborador}}%</td>
                 <td>{{item.valor | currency}}</td>

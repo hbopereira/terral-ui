@@ -109,6 +109,16 @@ export class ComandaComponent implements OnInit {
     })
   }
 
+  validarComandaAoFechar(fechaComanda: boolean, comanda: Comanda) {
+    let salvarOuEditarComanda = false;
+    if (fechaComanda) {
+      if (comanda.formaPagamento !== "AGUARDANDO") {
+        salvarOuEditarComanda = true;
+      }
+    }
+    return salvarOuEditarComanda;
+  }
+
   salvar(fechaComanda: boolean) {
     let comanda: Comanda = new Comanda();
     if ((!this.camposVazios) && (this.novaComanda)) {
@@ -116,7 +126,11 @@ export class ComandaComponent implements OnInit {
       this.comanda.itens = this.listaItens;
       if (fechaComanda) {
         this.comanda.status = "FECHADA";
-        this.comanda.formaPagamento = this.comanda.forma.descricao;
+        if (this.comanda.forma.descricao === "") {
+          this.comanda.formaPagamento = "AGUARDANDO"
+        } else {
+          this.comanda.formaPagamento = this.comanda.forma.descricao;
+        }
       } else {
         this.comanda.formaPagamento = "AGUARDANDO";
         this.comanda.status = "ABERTA";
@@ -124,6 +138,49 @@ export class ComandaComponent implements OnInit {
       this.comanda.valorTotal = this.valorTotalComanda;
       this.comanda.valorVendedor = this.calcularValorVendedor(this.comanda);
       comanda = this.comanda;
+
+      if (fechaComanda) {
+        if (this.validarComandaAoFechar(fechaComanda, comanda)) {
+          this.salvarOuEditarComanda(comanda, fechaComanda);
+        } else {
+          this.fecharModalVerificacao();
+          this.mensagem = "Favor escolher uma forma de pagamento!";
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+        }
+      } else {
+        this.salvarOuEditarComanda(comanda, fechaComanda);
+      }
+    }
+
+    if ((!this.camposVazios) && (this.editarComanda)) {
+      if (fechaComanda) {
+        this.comandaEdicao.status = "FECHADA";
+        this.comandaEdicao.formaPagamento = this.comandaEdicao.forma.descricao;
+      } else {
+        this.comandaEdicao.status = "ABERTA";
+        this.comandaEdicao.formaPagamento = "AGUARDANDO";
+      }
+      this.comandaEdicao.itens = this.listaItens;
+      this.comandaEdicao.valorTotal = this.valorTotalComanda;
+      this.comandaEdicao.valorVendedor = this.calcularValorVendedor(this.comandaEdicao);
+      comanda.percentualDesconto = this.comandaEdicao.percentualDesconto;
+      comanda = this.comandaEdicao;
+      if (fechaComanda) {
+        if (this.validarComandaAoFechar(fechaComanda, comanda)) {
+          this.salvarOuEditarComanda(comanda, fechaComanda);
+        } else {
+          this.fecharModalVerificacao();
+          this.mensagem = "Favor escolher uma forma de pagamento!";
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+        }
+      } else {
+        this.salvarOuEditarComanda(comanda, fechaComanda);
+      }
+    }
+  }
+
+  salvarOuEditarComanda(comanda: Comanda, fechaComanda: boolean) {
+    if (this.novaComanda) {
       this.comandaService.salvar(comanda).subscribe(() => {
         this.mensagem = "Comanda cadastrada com sucesso!";
         if (!fechaComanda) {
@@ -146,19 +203,7 @@ export class ComandaComponent implements OnInit {
         }
       })
     }
-    if ((!this.camposVazios) && (this.editarComanda)) {
-      if (fechaComanda) {
-        this.comandaEdicao.status = "FECHADA";
-        this.comandaEdicao.formaPagamento = this.comandaEdicao.forma.descricao;
-      } else {
-        this.comandaEdicao.status = "ABERTA";
-        this.comandaEdicao.formaPagamento = "AGUARDANDO";
-      }
-      this.comandaEdicao.itens = this.listaItens;
-      this.comandaEdicao.valorTotal = this.valorTotalComanda;
-      this.comandaEdicao.valorVendedor = this.calcularValorVendedor(this.comandaEdicao);
-      comanda.percentualDesconto = this.comandaEdicao.percentualDesconto;
-      comanda = this.comandaEdicao;
+    if (this.editarComanda) {
       this.comandaService.editar(comanda).subscribe(() => {
         this.mensagem = "Comanda editada com sucesso!";
         if (!fechaComanda) {
@@ -192,7 +237,6 @@ export class ComandaComponent implements OnInit {
     venda.vendedor = comanda.vendedor;
     venda.nomeCliente = comanda.nomeCliente;
     venda.percentualDesconto = comanda.percentualDesconto;
-    venda.taxa = comanda.taxa;
     venda.itens = comanda.itens;
     venda.itens.forEach(i => {
       i.cod = "";
@@ -508,8 +552,8 @@ export class ComandaComponent implements OnInit {
         }
       })
     }
-    if(this.listaItens.length === 1){
-       this.habilitarFormaPagamento = false;
+    if (this.listaItens.length === 1) {
+      this.habilitarFormaPagamento = false;
     }
     this.mensagem = "Produto: " + item.descricao + " removido com sucesso!"
     this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
@@ -592,29 +636,6 @@ export class ComandaComponent implements OnInit {
       }
     }
     this.formaFiltrada = filtrados;
-  }
-
-  calcularTaxa(event: any) {
-    let calculo = 0;
-    let taxa = 0;
-    if (event.descricao === "CREDITO") {
-      calculo = 0.95 / 100;
-      taxa = this.valorTotalComanda * calculo;
-      if (this.editarComanda) {
-        this.comandaEdicao.taxa = taxa;
-      } else {
-        this.comanda.taxa = taxa;
-      }
-    }
-    if (event.descricao === "DEBITO") {
-      calculo = 0.75 / 100;
-      taxa = this.valorTotalComanda * calculo;
-      if (this.editarComanda) {
-        this.comandaEdicao.taxa = taxa;
-      } else {
-        this.comanda.taxa = taxa;
-      }
-    }
   }
 
   filtroColaborador(event: any) {
