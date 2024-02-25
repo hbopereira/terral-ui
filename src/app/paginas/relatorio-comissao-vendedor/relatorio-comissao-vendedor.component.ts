@@ -13,6 +13,10 @@ import { Colaborador } from 'src/app/model/colaborador';
 })
 export class RelatorioComissaoVendedorComponent implements OnInit {
 
+  mensagem: string = "";
+  exibirMensagem = false;
+  tipoMensagem = 'info';
+  tipoIcone = 'info';
   public dataInicial: string = "";
   public dataFinal: string = "";
   public descricao: string = "";
@@ -21,11 +25,15 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
   public listaVendedores: Colaborador[] = [];
   public vendedorFiltrado: any[] = [];
   public listaVendas: Venda[] = [];
+  public listaCodVendaASeremPagas: string[] = [];
   public listaItensVenda: ItemVenda[] = [];
   public abrirModalItens: boolean = false;
+  public abrirModalVerificar: boolean = false;
   public habilitarConsultar: boolean = false;
   public habilitarMarcarTodos: boolean = false;
-  public comissaoVendedor : number = 0;
+  public habilitarPagar: boolean = false;
+  public valorTotalComissaoVendedor: number = 0;
+  public valorPagoComissaoVendedor: number = 0;
   public valorTotal = 0;
 
   constructor(private vendaService: VendaService,
@@ -35,17 +43,18 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     this.listarVendedores();
   }
 
-  habilitarBotaoConsultar(event : any){
-    if((event !== undefined) && (event !== null)){
-       this.habilitarConsultar = true;
+  habilitarBotaoConsultar(event: any) {
+    if ((event !== undefined) && (event !== null)) {
+      this.habilitarConsultar = true;
     }
   }
 
 
   listarDadosRelatorioComissaoVendedores() {
-    let valor = 0;
+    this.habilitarPagar = false;
     this.listaVendas = [];
-    this.comissaoVendedor = 0;
+    this.valorTotalComissaoVendedor = 0;
+    this.valorPagoComissaoVendedor = 0;
     let dataInicial = new Date();
     let dataFinal = new Date();
     let codVendedor = "";
@@ -68,17 +77,55 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.habilitarMarcarTodos = true;
         this.listaVendas = response;
         this.listaVendas.forEach(v => {
-          if(v.percentualDesconto === null){
-             v.percentualDesconto = 0;
+          if (v.percentualDesconto === null) {
+            v.percentualDesconto = 0;
           }
-          this.comissaoVendedor = this.comissaoVendedor + v.valorVendedor;
-        }) 
+          if (v.pago) {
+            v.desabilitar = true;
+            this.valorPagoComissaoVendedor = this.valorPagoComissaoVendedor + v.valorVendedor;
+          }
+          this.valorTotalComissaoVendedor = this.valorTotalComissaoVendedor + v.valorVendedor;
+        })
         this.listaVazia = false;
       } else {
         this.listaVazia = true;
         this.habilitarMarcarTodos = false;
       }
     })
+  }
+
+  setarPagoVendas(event: any, venda: Venda) {
+    this.listaVendas.filter(v => v.cod === venda.cod).forEach(ve => {
+      ve.pago = event;
+      if (event) {
+        this.listaCodVendaASeremPagas.push(ve.cod);
+      } else {
+        this.remover(ve.cod);
+      }
+    })
+    if(this.listaCodVendaASeremPagas.length === 0){
+      this.habilitarPagar = false;
+    } else {
+      this.habilitarPagar = true;;
+    }
+  }
+
+  atualizarVendasComoPagas(atualizar: boolean) {
+    if (atualizar) {
+      this.vendaService.setarVendasComoPago(this.listaCodVendaASeremPagas).subscribe(() => {
+        this.listarDadosRelatorioComissaoVendedores();
+        this.mensagem = "Comissao paga sucesso!";
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+        this.fecharModalVerificacao();
+      });
+    } else {
+       this.fecharModalVerificacao();
+    }
+  }
+
+  remover(cod: string) {
+    let indice = this.listaCodVendaASeremPagas.indexOf(cod);
+    this.listaCodVendaASeremPagas.splice(indice, 1);
   }
 
 
@@ -94,14 +141,19 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     this.vendedorFiltrado = filtrados;
   }
 
-  marcarDesmarcarTodos(marcou: boolean){
+  marcarDesmarcarTodos(marcou: boolean) {
     this.listaVendas.forEach(venda => {
-      if(marcou){
-        venda.escolheu = true;
+      if (marcou) {
+        if (!venda.desabilitar) {
+          venda.pago = true;
+          this.listaCodVendaASeremPagas.push(venda.cod);
+        }
       } else {
-        venda.escolheu = false;
+        if (!venda.desabilitar) {
+          venda.pago = false;
+          this.listaCodVendaASeremPagas = [];
+        }
       }
-    
     })
   }
 
@@ -110,6 +162,26 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     this.valorTotal = venda.valorTotal;
     if (venda.itens.length > 0) {
       this.listaItensVenda = venda.itens;
+    }
+  }
+
+  abrirModalVerificacao() {
+    this.abrirModalVerificar = true;
+  }
+
+  fecharModalVerificacao() {
+    this.abrirModalVerificar = false;
+  }
+
+  getExibirMensagemAlerta(mensagem: string, icone: string, tipo: string, fixarMsg: boolean) {
+    this.mensagem = mensagem;
+    this.tipoIcone = icone;
+    this.tipoMensagem = tipo;
+    this.exibirMensagem = true;
+    if (!fixarMsg) {
+      setInterval(() => {
+        this.exibirMensagem = false;
+      }, 10000);
     }
   }
 
@@ -122,14 +194,14 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     })
   }
 
-  limparFiltros(){
+  limparFiltros() {
     this.dataFinal = "";
     this.dataInicial = "";
     this.listaVendas = [];
     this.vendedorVenda = new Colaborador();
     this.habilitarConsultar = false;
     this.listaVazia = false;
-    this.comissaoVendedor = 0;
+    this.valorTotalComissaoVendedor = 0;
     this.habilitarMarcarTodos = false;
   }
 

@@ -121,9 +121,9 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   marcarDesmarcarTodos(marcou: boolean) {
     this.listaVendas.forEach(venda => {
       if (marcou) {
-        venda.escolheu = true;
+        venda.pago = true;
       } else {
-        venda.escolheu = false;
+        venda.pago = false;
       }
     })
   }

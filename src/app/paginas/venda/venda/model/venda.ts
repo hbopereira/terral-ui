@@ -14,5 +14,6 @@ export class Venda {
     valorVendedor: number = 0;
     vendedor: Colaborador = new Colaborador();
     itens: ItemVenda[] = [];
-    escolheu: boolean = false;
+    pago: boolean = false;
+    desabilitar: boolean = false;
 }

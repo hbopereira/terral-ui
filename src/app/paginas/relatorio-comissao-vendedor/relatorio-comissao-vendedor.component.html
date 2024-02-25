@@ -1,11 +1,13 @@
 <div class="container">
+    <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
+        <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
+        {{ mensagem }}
+    </div>
     <h2 class="text-center">Relatório Comissão de Vendedores</h2>
     <div class="crud--conten-title_table">
         <label class="crud--content-label">FILTROS</label>
         <div class="crud--content-line"></div>
     </div>
-
-
     <div class="row">
         <div class="col-3">
             <input type="date" class="form-control" placeholder="data Inicial" [(ngModel)]="dataInicial">
@@ -75,7 +77,10 @@
                     Vr.Total <p-sortIcon field="valorTotal"></p-sortIcon>
                 </th>
 
-                <th scope="col"></th>
+                <th scope="col" pSortableColumn="pago">
+                    Pago <p-sortIcon field="pago"></p-sortIcon>
+                </th>
+
                 <th scope="col">Ações</th>
             </tr>
         </ng-template>
@@ -88,7 +93,8 @@
                 <td>{{venda.percentualDesconto}}%</td>
                 <td>{{venda.valorTotal | currency}}</td>
                 <td>
-                    <p-inputSwitch [(ngModel)]="venda.escolheu"></p-inputSwitch>
+                    <p-inputSwitch pTooltip="Pagar ?" [disabled]="venda.desabilitar" [(ngModel)]="venda.pago"
+                        (ngModelChange)="setarPagoVendas($event,venda)"></p-inputSwitch>
                 </td>
                 <!--<td>{{venda.valorTotalComDesconto | currency}}</td> -->
                 <!-- <td>{{venda.valorVendedor | currency}}</td> -->
@@ -101,18 +107,25 @@
             </tr>
         </ng-template>
     </p-table>
+    <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
+        <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
+        {{ mensagem }}
+    </div>
     <div class="row">
-        <div class="col-8">
+        <div class="col-6">
         </div>
-        <div class="col-4">
-            <h4>Valor Total Comissão: {{comissaoVendedor | currency}}</h4>
+        <div class="col-3">
+            <h4>Valor Pago: {{valorPagoComissaoVendedor | currency}}</h4>
+        </div>
+        <div class="col-3">
+            <h4>Valor Comissão: {{valorTotalComissaoVendedor | currency}}</h4>
         </div>
     </div>
     <div class="row">
         <div class="col-11">
         </div>
         <div class="col-1">
-            <button type="button" class="btn btn-success">Pagar</button>
+            <button [disabled]="!habilitarPagar" type="button" class="btn btn-success" (click)="abrirModalVerificacao()">Pagar</button>
         </div>
     </div>
 
@@ -161,6 +174,38 @@
                         class="btn p-button-outlined p-button-secondary p-ripple crud--botao-fechar">
                         Fechar
                     </button>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+
+    <p-dialog [(visible)]="abrirModalVerificar" [style]="{width: '600px'}" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="crud--modal-sucesso">
+                <div class="crud--modal-sucesso-title">
+                    <!--<i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: rgb(255, 0, 0)"> 
+                    </i> -->
+                    <label class="crud--modal-sucesso-label">
+                        <h3>Deseja realmente pagar a comissão deste vendedor ?</h3>
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <button type="button" class="btn btn-success botaoEnviar" (click)="atualizarVendasComoPagas(true)">Sim</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-danger botaoEnviar" (click)="atualizarVendasComoPagas(false)">Não</button>
+                    </div>
+                </div>
+                <div class="crud--modal-sucesso-botao-line">
+                    <div class="crud--modal-sucesso-line"></div>
+                    <div class="crud--modal-sucesso-botao">
+                        <button class="btn p-button-outlined p-button-secondary p-ripple p-button p-component buttons"
+                            pButton id="crud-btn-fechar" type="button" (click)="fecharModalVerificacao()"
+                            label="Fechar">
+                        </button>
+                    </div>
                 </div>
             </div>
         </ng-template>

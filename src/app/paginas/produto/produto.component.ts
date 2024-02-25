@@ -36,6 +36,7 @@ export class ProdutoComponent implements OnInit {
   public listaSecoes: Secao[] = [];
   public produto: ProdutoPostPut = new ProdutoPostPut();
   public produtoEdicao: ProdutoPostPut = new ProdutoPostPut();
+  public descricao: string = "";
 
   constructor(
     private service: ProdutoService,
@@ -93,6 +94,8 @@ export class ProdutoComponent implements OnInit {
   listarProdutosPorColaboradorESecao() {
     let colaboradorCod = "";
     let secaoCod = "";
+    let descricao = "";
+
     this.listaProdutos = [];;
     if (this.colaboradorSelecionado !== undefined) {
       colaboradorCod = this.colaboradorSelecionado.cod;
@@ -100,7 +103,10 @@ export class ProdutoComponent implements OnInit {
     if (this.secaoSelecionada !== undefined) {
       secaoCod = this.secaoSelecionada.cod;
     }
-    this.service.listarProdutosPorColaboradorESecao(colaboradorCod, secaoCod, "").subscribe((response: Produto[]) => {
+    if (this.descricao !== "") {
+      descricao = this.descricao;
+    }
+    this.service.listarProdutosPorColaboradorESecao(colaboradorCod, secaoCod, descricao).subscribe((response: Produto[]) => {
       if (response.length > 0) {
         this.listaProdutos = response;
         this.listaVazia = false;
@@ -235,6 +241,7 @@ export class ProdutoComponent implements OnInit {
   limparFiltros() {
     this.colaboradorSelecionado = undefined;
     this.secaoSelecionada = undefined;
+    this.descricao = "";
     this.listaVazia = false;
     this.listaProdutos = [];
   }

@@ -23,4 +23,8 @@ export class VendaService {
         return this.http.post<Venda>('http://localhost:8080/api/vendas/salvar', venda);
     }
 
+    setarVendasComoPago(listaCodigosVenda: string[]) {
+        return this.http.put<string>('http://localhost:8080/api/vendas/setarVendasComoPago', listaCodigosVenda);
+    }
+
 }

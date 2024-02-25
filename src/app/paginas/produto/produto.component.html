@@ -5,7 +5,7 @@
         <div class="crud--content-line"></div>
     </div>
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
                 [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroColaborador($event)" field="nome">
@@ -14,7 +14,7 @@
                 </ng-template>
             </p-autoComplete>
         </div>
-        <div class="col-4">
+        <div class="col-3">
             <p-autoComplete placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
                 [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
                 (completeMethod)="filtroSecao($event)" field="descricaoSecao">
@@ -22,6 +22,9 @@
                     <div>{{secao.descricaoSecao}}</div>
                 </ng-template>
             </p-autoComplete>
+        </div>
+        <div class="col-3">
+            <input type="text" class="form-control" placeholder="Informe o produto" [(ngModel)]="descricao">
         </div>
         <div class="col">
             <button type="button" class="btn btn-primary"
