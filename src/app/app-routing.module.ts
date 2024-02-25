@@ -8,9 +8,10 @@ import { ComandaComponent } from './paginas/comanda/comanda.component';
 import { LoginComponent } from './paginas/login/login.component';
 import { RelatorioComissaoVendedorComponent } from './paginas/relatorio-comissao-vendedor/relatorio-comissao-vendedor.component';
 import { RelatorioProdutoColaboradorComponent } from './paginas/relatorio-produto-colaborador/relatorio-produto-colaborador.component';
+import { DashboardComponent } from './paginas/dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
  // { path: 'pagina-nao-encontrada', component: PaginaNaoEncontradaComponent },
  // { path: 'nao-autorizado', component: NaoAutorizadoComponent},
   { path: 'colaboradores', component: ColaboradorComponent  },
@@ -20,7 +21,8 @@ const routes: Routes = [
   { path: 'comandas', component: ComandaComponent  },
   { path: 'login', component: LoginComponent  },
   { path: 'comissao-vendedores', component: RelatorioComissaoVendedorComponent  },
-  { path: 'produto-colaborador', component: RelatorioProdutoColaboradorComponent  }
+  { path: 'produto-colaborador', component: RelatorioProdutoColaboradorComponent  },
+  { path: 'dashboard', component: DashboardComponent  }
 
 ];;
 

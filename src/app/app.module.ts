@@ -18,6 +18,7 @@ import { ComandaModule } from './paginas/comanda/comanda.module';
 import { LoginComponent } from './paginas/login/login.component';
 import { RelatorioComissaoVendedorModule } from './paginas/relatorio-comissao-vendedor/relatorio-comissao-vendedor.module';
 import { RelatorioProdutoColaboradorModule } from './paginas/relatorio-produto-colaborador/relatorio-produto-colaborador.module';
+import { DashboardModule } from './paginas/dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { RelatorioProdutoColaboradorModule } from './paginas/relatorio-produto-c
     ComandaModule,
     RelatorioComissaoVendedorModule,
     RelatorioProdutoColaboradorModule,
+    DashboardModule,
     AppRoutingModule
   ],
   providers: [

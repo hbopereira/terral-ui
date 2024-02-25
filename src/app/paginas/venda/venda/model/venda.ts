@@ -3,7 +3,7 @@ import { ItemVenda } from "./item-venda";
 
 export class Venda {
     cod: string = "";
-    dataVenda: string = "";
+    dataVenda: any;
     valorTotal: number = 0;
     valorTotalComDesconto: number = 0;
     percentualDesconto: number = 0;
@@ -16,4 +16,5 @@ export class Venda {
     itens: ItemVenda[] = [];
     pago: boolean = false;
     desabilitar: boolean = false;
+    total: number = 0;
 }

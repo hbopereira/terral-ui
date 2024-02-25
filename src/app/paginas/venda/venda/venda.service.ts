@@ -27,4 +27,8 @@ export class VendaService {
         return this.http.put<string>('http://localhost:8080/api/vendas/setarVendasComoPago', listaCodigosVenda);
     }
 
+    listarPorDia(){
+        return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listarPorDia');
+    }
+
 }
