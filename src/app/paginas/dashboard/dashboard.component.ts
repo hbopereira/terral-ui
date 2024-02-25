@@ -32,7 +32,8 @@ export class DashboardComponent implements OnInit {
       if (response.length > 0) {
         response.forEach(venda => {
           venda.dataVenda = this.converterStringParaData(venda.dataVenda);
-          venda.total = response.filter(v => v.formaPagamento === venda.formaPagamento).length;
+          // venda.total = response.filter(v => v.formaPagamento === venda.formaPagamento).length;
+          //alert(venda.dataVenda + "--" + venda.formaPagamento + "---" + venda.total)
         })
         let diasDoMes = this.configurarDiasMes();
         let totaisDebito = this.totaisPorCadaDiaMes(
@@ -94,13 +95,11 @@ export class DashboardComponent implements OnInit {
     const totais: number[] = [];
     for (const dia of diasDoMes) {
       let total = 0;
-      for (const dia of diasDoMes) {
-        let total = 0;
-        dados.filter(d => d.dataVenda.getDate() + 1 === dia).forEach(di => {
-          total = di.total;
-        });
-        totais.push(total);
-      }
+      dados.filter(d => d.dataVenda.getDate() + 1 === dia).forEach(di => {
+        di.total = dados.filter(v => v.formaPagamento === di.formaPagamento && v.dataVenda.getDate() + 1 === dia).length;
+        //alert(di.dataVenda + "--" + di.formaPagamento + "---" + di.total)
+        total = di.total;
+      });
       totais.push(total);
     }
     return totais;
