@@ -59,6 +59,7 @@ export class ComandaComponent implements OnInit {
   public dataFinal: string = "";
   public descricao: string = "";
   public vendedorComanda: any;;
+  public entrou: boolean = false;
 
   constructor(
     private produtoService: ProdutoService,
@@ -452,21 +453,23 @@ export class ComandaComponent implements OnInit {
             this.listaItens.push(this.itemComanda);
             this.habilitarFormaPagamento = true;
           } else {
-            this.listaItens.filter(i => i.codProduto === this.itemComanda.codProduto).forEach(item => {
-              prod.quantidade = this.diminuirQuantidade(produto);
-              this.produtoService.setarQuantidade(prod).subscribe(() => { });
-              item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
-              entrou = true;
-            })
+            for (let item of this.listaItens) {
+              if (item.codProduto === this.itemComanda.codProduto) {
+                prod.quantidade = this.diminuirQuantidade(produto);
+                this.produtoService.setarQuantidade(prod).subscribe(() => { });
+                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                entrou = true;
+                break;
+              }
+            }
             if (!entrou) {
               prod.quantidade = this.diminuirQuantidade(produto);
-              this.produtoService.setarQuantidade(prod).subscribe(() => {
-                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
-                this.listaItens.push(this.itemComanda)
-              });
+              this.produtoService.setarQuantidade(prod).subscribe(() => { });
+              this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
+              this.listaItens.push(this.itemComanda)
             }
+            this.calcularValorTotalComanda();
           }
-          this.calcularValorTotalComanda();
           this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
         } else {
@@ -480,10 +483,13 @@ export class ComandaComponent implements OnInit {
             this.listaItens.push(this.itemComanda);
             this.habilitarFormaPagamento = true;
           } else {
-            this.listaItens.filter(i => i.codProduto === this.itemComanda.codProduto).forEach(item => {
-              item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
-              entrou = true;
-            })
+            for (let item of this.listaItens) {
+              if (item.codProduto === this.itemComanda.codProduto) {
+                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                entrou = true;
+                break;
+              }
+            }
             if (!entrou) {
               this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
               this.listaItens.push(this.itemComanda);
@@ -494,6 +500,7 @@ export class ComandaComponent implements OnInit {
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
         }
       }
+      // this.calcularValorTotalComanda();
       this.listarProdutos();
     }
   }
@@ -569,9 +576,10 @@ export class ComandaComponent implements OnInit {
 
   calcularValorTotalComanda() {
     this.valorTotalComanda = 0;
-    this.listaItens.forEach(item => {
+    for (let item of this.listaItens) {
       this.valorTotalComanda = this.valorTotalComanda + Number(item.valor) * Number(item.quantidade);
-    })
+    }
+
   }
 
   listarProdutos() {
