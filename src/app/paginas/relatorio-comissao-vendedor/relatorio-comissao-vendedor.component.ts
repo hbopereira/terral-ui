@@ -112,7 +112,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
 
   atualizarVendasComoPagas(atualizar: boolean) {
     if (atualizar) {
-      this.vendaService.setarVendasComoPago(this.listaCodVendaASeremPagas).subscribe(() => {
+      this.vendaService.setarVendasItensVendaComoPago(this.listaCodVendaASeremPagas,true).subscribe(() => {
         this.listarDadosRelatorioComissaoVendedores();
         this.mensagem = "Comissao paga sucesso!";
         this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
@@ -147,11 +147,13 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         if (!venda.desabilitar) {
           venda.pago = true;
           this.listaCodVendaASeremPagas.push(venda.cod);
+          this.habilitarPagar = true;
         }
       } else {
         if (!venda.desabilitar) {
           venda.pago = false;
           this.listaCodVendaASeremPagas = [];
+          this.habilitarPagar = false;
         }
       }
     })

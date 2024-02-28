@@ -16,4 +16,6 @@ export class ItemComanda {
     valorColaboradorComTaxa: number = 0;
     valorFinal: number = 0;
     valorFinalColaborador: number = 0;
+    pago : boolean = false;
+    desabilitar: boolean = false;
 }

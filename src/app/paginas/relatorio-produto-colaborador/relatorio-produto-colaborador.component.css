@@ -288,3 +288,9 @@ nício Título tela */
     #crud-btn-fechar {
     width: 87px;
     }
+
+    .botaoEnviar{
+        width: 150px;
+        border-radius: 6px;
+        font-size: 18px;
+    }

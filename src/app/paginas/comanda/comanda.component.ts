@@ -500,7 +500,6 @@ export class ComandaComponent implements OnInit {
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
         }
       }
-      // this.calcularValorTotalComanda();
       this.listarProdutos();
     }
   }
@@ -688,6 +687,7 @@ export class ComandaComponent implements OnInit {
   }
 
   abrirModalEditar(comanda: any) {
+    this.desabilitarBotoes = false;
     if (comanda.status === 'FECHADA') {
       this.desabilitarBotoes = true;
     }

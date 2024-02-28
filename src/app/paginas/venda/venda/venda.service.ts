@@ -23,11 +23,11 @@ export class VendaService {
         return this.http.post<Venda>('http://localhost:8080/api/vendas/salvar', venda);
     }
 
-    setarVendasComoPago(listaCodigosVenda: string[]) {
-        return this.http.put<string>('http://localhost:8080/api/vendas/setarVendasComoPago', listaCodigosVenda);
+    setarVendasItensVendaComoPago(listaCodigosVenda: string[], isVenda: boolean) {
+        return this.http.put<string>('http://localhost:8080/api/vendas/setarVendasItensVendaComoPago?isVenda=' + isVenda, listaCodigosVenda);
     }
 
-    listarPorDia(){
+    listarPorDia() {
         return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listarPorDia');
     }
 

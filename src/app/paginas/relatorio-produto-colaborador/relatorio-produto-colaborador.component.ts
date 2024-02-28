@@ -11,20 +11,26 @@ import { ColaboradorService } from '../colaborador/colaborador.service';
   styleUrls: ['./relatorio-produto-colaborador.component.css']
 })
 export class RelatorioProdutoColaboradorComponent implements OnInit {
-
+  mensagem: string = "";
+  exibirMensagem = false;
+  tipoMensagem = 'info';
+  tipoIcone = 'info'
   public dataInicial: string = "";
   public dataFinal: string = "";
   public vendedorVenda: Colaborador = new Colaborador();
   public listaVazia: boolean = false;
   public listaItensVenda: ItemVenda[] = [];
+  public listaCodItemVendaASeremPagas: string[] = [];
   public abrirModalItens: boolean = false;
   public listaVendedores: Colaborador[] = [];
-  public listaVendas: Venda[] = [];
   public vendedorFiltrado: any[] = [];
   public habilitarConsultar: boolean = false;
+  public abrirModalVerificar: boolean = false;
   public habilitarMarcarTodos: boolean = false;
+  public habilitarPagar: boolean = false;
   public valorTotalColaborador: number = 0;
-  public calculoTaxaDebito : number = 0.75 / 100;
+  public valorPagoColaborador: number = 0;
+  public calculoTaxaDebito: number = 0.75 / 100;
   public calculoTaxaCredito: number = 0.95 / 100;
 
   constructor(private vendaService: VendaService,
@@ -37,8 +43,10 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   listarDadosRelatorioProdutoColaborador() {
     let taxa = 0;
     let valor = 0;
-    this.listaVendas = [];
+    this.listaItensVenda = [];
     this.valorTotalColaborador = 0;
+    this.habilitarPagar = false;
+    this.valorPagoColaborador = 0;
     let dataInicial = new Date();
     let dataFinal = new Date();
     let codVendedor = "";
@@ -82,6 +90,10 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
           item.valorFinal = item.valor * item.quantidade;
           item.valorFinalColaborador = item.valorColaborador * item.quantidade
           this.valorTotalColaborador = this.valorTotalColaborador + valor;
+          if (item.pago) {
+            item.desabilitar = true;
+            this.valorPagoColaborador = this.valorPagoColaborador + valor;
+          }
         })
         this.listaVazia = false;
       } else {
@@ -92,8 +104,40 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
     })
   }
 
-  getTaxa(){
+  atualizarItensVendasComoPagas(atualizar: boolean) {
+    if (atualizar) {
+      this.vendaService.setarVendasItensVendaComoPago(this.listaCodItemVendaASeremPagas, false).subscribe(() => {
+        this.listarDadosRelatorioProdutoColaborador();
+        this.mensagem = "valor colaborador pago sucesso!";
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+        this.fecharModalVerificacao();
+      });
+    } else {
+       this.fecharModalVerificacao();
+    }
+  }
 
+  setarPagoItensVendas(event: any, itemVenda: ItemVenda) {
+    this.listaItensVenda.filter(v => v.cod === itemVenda.cod).forEach(ve => {
+      ve.pago = event;
+      if (event) {
+        this.listaCodItemVendaASeremPagas.push(ve.cod);
+      } else {
+        this.remover(ve.cod);
+      }
+    })
+    if (this.listaCodItemVendaASeremPagas.length === 0) {
+      this.habilitarPagar = false;
+    } else {
+      this.habilitarPagar = true;;
+    }
+  }
+
+
+
+  remover(cod: string) {
+    let indice = this.listaCodItemVendaASeremPagas.indexOf(cod);
+    this.listaCodItemVendaASeremPagas.splice(indice, 1);
   }
 
   calcularValorColaborador(itemVenda: ItemVenda) {
@@ -119,11 +163,19 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   }
 
   marcarDesmarcarTodos(marcou: boolean) {
-    this.listaVendas.forEach(venda => {
+    this.listaItensVenda.forEach(item => {
       if (marcou) {
-        venda.pago = true;
+        if (!item.desabilitar) {
+          item.pago = true;
+          this.listaCodItemVendaASeremPagas.push(item.cod);
+          this.habilitarPagar = true;
+        }
       } else {
-        venda.pago = false;
+        if (!item.desabilitar) {
+          item.pago = false;
+          this.listaCodItemVendaASeremPagas = [];
+          this.habilitarPagar = false;
+        }
       }
     })
   }
@@ -146,6 +198,26 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
       }
     }
     this.vendedorFiltrado = filtrados;
+  }
+
+  getExibirMensagemAlerta(mensagem: string, icone: string, tipo: string, fixarMsg: boolean) {
+    this.mensagem = mensagem;
+    this.tipoIcone = icone;
+    this.tipoMensagem = tipo;
+    this.exibirMensagem = true;
+    if (!fixarMsg) {
+      setInterval(() => {
+        this.exibirMensagem = false;
+      }, 10000);
+    }
+  }
+
+  abrirModalVerificacao() {
+    this.abrirModalVerificar = true;
+  }
+
+  fecharModalVerificacao() {
+    this.abrirModalVerificar = false;
   }
 
 
