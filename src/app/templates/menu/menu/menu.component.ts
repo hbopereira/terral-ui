@@ -38,6 +38,10 @@ export class MenuComponent implements OnInit {
         routerLink: 'vendas'
       },
       {
+        label: 'Lançamentos',
+        routerLink: 'lancamentos'
+      },
+      {
         label: 'Relatorios',
         items: [
           {
@@ -50,7 +54,6 @@ export class MenuComponent implements OnInit {
           }
         ]
       }
-
-    ];
+    ]
   }
 }

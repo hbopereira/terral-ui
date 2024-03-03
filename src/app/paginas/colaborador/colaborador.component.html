@@ -37,6 +37,7 @@
             <tr>
                 <th scope="col" pSortableColumn="nome">Colaborador</th>
                 <th scope="col" pSortableColumn="senha">Senha</th>
+                <th scope="col" pSortableColumn="porcentagem">Porcentagem</th>
                 <th scope="col">Ações</th>
             </tr>
         </ng-template>
@@ -45,6 +46,7 @@
             <tr>
                 <td>{{colaborador.nome}}</td>
                 <td>{{colaborador.senha}}</td>
+                <td>{{colaborador.porcentagem}}%</td>
                 <td>
                     <p-button pTooltip="Editar" icon="pi pi-file-edit"
                         (click)="abrirModalEditar(colaborador)"></p-button>
@@ -67,7 +69,7 @@
             </div>
             <br />
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     <div class="crud--detalhes-parametro-sistema" *ngIf="novoColaborador">
                         <label>Colaborador</label>
                         <input class="form-control" [(ngModel)]="colaborador.nome"
@@ -79,16 +81,26 @@
                             placeholder="informe o colaborador" />
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <div class="crud--detalhes-parametro-sistema" *ngIf="novoColaborador">
                         <label>Senha</label>
-                        <input class="form-control" [(ngModel)]="colaborador.senha"
-                            placeholder="informe a senha" />
+                        <input class="form-control" [(ngModel)]="colaborador.senha" placeholder="informe a senha" />
                     </div>
                     <div class="crud--detalhes-parametro-sistema" *ngIf="editarColaborador">
                         <label>Senha</label>
                         <input class="form-control" [(ngModel)]="colaboradorEdicao.senha"
                             placeholder="informe a senha" />
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="crud--detalhes-parametro-sistema" *ngIf="novoColaborador">
+                        <label>Porcentagem</label>
+                        <input class="form-control" [(ngModel)]="colaborador.porcentagem" placeholder="informe a porcentagem" />
+                    </div>
+                    <div class="crud--detalhes-parametro-sistema" *ngIf="editarColaborador">
+                        <label>Porcentagem</label>
+                        <input class="form-control" [(ngModel)]="colaboradorEdicao.porcentagem"
+                            placeholder="informe a porcentagem" />
                     </div>
                 </div>
             </div>

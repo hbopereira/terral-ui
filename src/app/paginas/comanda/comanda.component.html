@@ -43,7 +43,7 @@
         <div class="crud--content-line"></div>
     </div>
     <p-table class="table table-striped" [value]="listaComandas" emptyMessage="Não existem comandas cadastradas"
-        [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
+        [rows]="10" [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
 
         <ng-template pTemplate="header">
             <tr>
@@ -71,16 +71,6 @@
                 <th scope="col" pSortableColumn="status">
                     Status <p-sortIcon field="status"></p-sortIcon>
                 </th>
-                <!-- <th scope="col" pSortableColumn="valorTotalComDesconto">
-                    Vr.Tot.Desc <p-sortIcon field="valorTotalComDesconto"></p-sortIcon>
-                </th>
-
-                <th scope="col" pSortableColumn="valorVendedor">
-                    Vr.Vendedor <p-sortIcon field="valorVendedor"></p-sortIcon>
-                </th>
-                <th scope="col" pSortableColumn="valorDesconto">
-                    Vr.Desconto <p-sortIcon field="valorDesconto"></p-sortIcon>
-                </th> -->
                 <th scope="col">Ações</th>
             </tr>
             <tr>
@@ -109,19 +99,6 @@
                     <p-columnFilter type="text" field="status" [showMenu]="false">
                     </p-columnFilter>
                 </th>
-
-                <!--<th scope="row">
-                    <p-columnFilter type="text" field="valorTotalComDesconto" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="valorVendedor" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="valorDesconto" [showMenu]="false">
-                    </p-columnFilter>
-                </th> -->
                 <th scope="row"></th>
             </tr>
         </ng-template>
@@ -134,9 +111,6 @@
                 <td>{{comanda.formaPagamento}}</td>
                 <td>{{comanda.valorTotal | currency}}</td>
                 <td>{{comanda.status}}</td>
-                <!--- <td>{{venda.valorTotalComDesconto | currency}}</td>
-                <td>{{venda.valorVendedor | currency}}</td>
-                <td>{{venda.valorDesconto}}%</td> -->
                 <td>
                     <p-button pTooltip="Editar" icon="pi pi-file-edit" (click)="abrirModalEditar(comanda)"></p-button>
                 </td>

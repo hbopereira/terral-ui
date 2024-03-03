@@ -14,24 +14,36 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.configurarGraficoLinha();
+    this.configurarGraficoPizza();
   }
 
-  pieChartData = {
-    labels: ['Loja', 'Café', 'Conveniência'],
-    datasets: [
-      {
-        data: [2500, 2700, 550],
-        backgroundColor: ['#FF9900', '#109618', '#990099']
-      }
-    ]
-  };
   public lineChartData: any;
+  public pieChartData: any;
+
+
+  configurarGraficoPizza() {
+    this.vendaService.listarVendasProdutoSecao().subscribe((response: Venda[]) => {
+      if (response.length > 0) {
+        this.pieChartData = {
+          labels: response.map(dado => dado.descricao_Secao),
+          datasets: [
+            {
+              data: response.map(dado => dado.valorTotal),
+              backgroundColor: ['#FF9900', '#109618', '#990099', '#3B3EAC', '#0099C6',
+                                  '#DD4477', '#3366CC', '#DC3912']
+            }
+          ]
+        };
+      }
+    })
+  }
 
   configurarGraficoLinha() {
     this.vendaService.listarPorDia().subscribe((response: Venda[]) => {
       if (response.length > 0) {
         response.forEach(venda => {
           venda.dataVenda = this.converterStringParaData(venda.dataVenda);
+
         })
         let diasDoMes = this.configurarDiasMes();
         let totaisDebito = this.totaisPorCadaDiaMes(
@@ -74,6 +86,7 @@ export class DashboardComponent implements OnInit {
 
   converterStringParaData(dataVenda: any) {
     let data = new Date(dataVenda);
+    data.setDate(data.getDate() + 1);
     return data;
   }
 
@@ -93,8 +106,8 @@ export class DashboardComponent implements OnInit {
     const totais: number[] = [];
     for (const dia of diasDoMes) {
       let total = 0;
-      dados.filter(d => d.dataVenda.getDate() + 1 === dia).forEach(di => {
-        di.total = dados.filter(v => v.formaPagamento === di.formaPagamento && v.dataVenda.getDate() + 1 === dia).length;
+      dados.filter(d => d.dataVenda.getDate() === dia).forEach(di => {
+        di.total = dados.filter(v => v.formaPagamento === di.formaPagamento && v.dataVenda.getDate() === dia).length;
         total = di.total;
       });
       totais.push(total);

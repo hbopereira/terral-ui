@@ -17,4 +17,5 @@ export class Venda {
     pago: boolean = false;
     desabilitar: boolean = false;
     total: number = 0;
+    descricao_Secao: string = "";
 }

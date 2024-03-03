@@ -7,12 +7,21 @@ import { ProdutoPostPut } from "./model/produto-post-put";
 export class ProdutoService {
     constructor(private http: HttpClient) { }
 
-    listarProdutosPorColaboradorESecao(colaboradorCod: string, secaoCod: string, descricao: string) {
-        return this.http.get<Produto[]>('http://localhost:8080/api/produtos/listar?colaboradorCod=' + colaboradorCod + '&secaoCod=' + secaoCod + '&descricao=' + descricao);
+    listarProdutosPorColaboradorESecao(colaboradorCod: string, secaoCod: string,
+        descricao: string, codFabricante: string, codLoja: string) {
+        return this.http.get<Produto[]>('http://localhost:8080/api/produtos/listar?colaboradorCod=' + colaboradorCod
+            + '&secaoCod=' + secaoCod
+            + '&descricao=' + descricao
+            + '&codFabricante=' + codFabricante
+            + '&codLoja=' + codLoja);
     }
 
     salvar(produto: ProdutoPostPut) {
         return this.http.post<ProdutoPostPut>('http://localhost:8080/api/produtos', produto);
+    }
+
+    salvarEmLote(listaProdutos: ProdutoPostPut[]) {
+        return this.http.post<Number>('http://localhost:8080/api/produtos/salvarEmLote', listaProdutos)
     }
 
     editar(produto: ProdutoPostPut) {
@@ -23,7 +32,7 @@ export class ProdutoService {
         return this.http.put('http://localhost:8080/api/produtos/setarQuantidade', produto);
     }
 
-    devolverQuantidadeProduto(produtoCod: string){
+    devolverQuantidadeProduto(produtoCod: string) {
         return this.http.get<Produto>('http://localhost:8080/api/produtos/devolverQuantidadeProduto?produtoCod=' + produtoCod);
     }
 }

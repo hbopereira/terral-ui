@@ -11,4 +11,6 @@ export class ProdutoPostPut {
     porcentagemColaborador: number = 0;
     quantidade: number = 0;
     temEstoque: number = 0;
+    codFabricante : string = "";
+    codLoja: string = "";
 ;}

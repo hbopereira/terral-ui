@@ -31,4 +31,8 @@ export class VendaService {
         return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listarPorDia');
     }
 
+    listarVendasProdutoSecao() {
+        return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listarVendasProdutoSecao');
+    }
+
 }

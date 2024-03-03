@@ -1,5 +1,5 @@
-import { ProdutoRoutingModule } from "./produto.routing.module";
-import { ProdutoComponent } from "./produto.component";
+
+import { LancamentoComponent } from "./lancamento.component";
 import { NgModule } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { HttpClientModule } from '@angular/common/http';
@@ -15,7 +15,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
     imports: [
-      ProdutoRoutingModule,
       HttpClientModule,
       TableModule,
       ButtonModule,
@@ -28,9 +27,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       ProgressSpinnerModule
     ],
     declarations: [
-      ProdutoComponent,
+      LancamentoComponent,
     ],
     exports: [],
-    bootstrap: [ProdutoComponent]
+    bootstrap: [LancamentoComponent]
   })
-  export class ProdutoModule { }
+  export class LancamentoModule { }

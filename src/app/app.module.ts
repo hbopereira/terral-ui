@@ -19,11 +19,13 @@ import { LoginComponent } from './paginas/login/login.component';
 import { RelatorioComissaoVendedorModule } from './paginas/relatorio-comissao-vendedor/relatorio-comissao-vendedor.module';
 import { RelatorioProdutoColaboradorModule } from './paginas/relatorio-produto-colaborador/relatorio-produto-colaborador.module';
 import { DashboardModule } from './paginas/dashboard/dashboard.module';
+import { LancamentoModule } from './paginas/lancamento/lancamento.module';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +40,7 @@ import { DashboardModule } from './paginas/dashboard/dashboard.module';
     RelatorioComissaoVendedorModule,
     RelatorioProdutoColaboradorModule,
     DashboardModule,
+    LancamentoModule,
     AppRoutingModule
   ],
   providers: [

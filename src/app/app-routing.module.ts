@@ -9,6 +9,7 @@ import { LoginComponent } from './paginas/login/login.component';
 import { RelatorioComissaoVendedorComponent } from './paginas/relatorio-comissao-vendedor/relatorio-comissao-vendedor.component';
 import { RelatorioProdutoColaboradorComponent } from './paginas/relatorio-produto-colaborador/relatorio-produto-colaborador.component';
 import { DashboardComponent } from './paginas/dashboard/dashboard.component';
+import { LancamentoComponent } from './paginas/lancamento/lancamento.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent  },
   { path: 'comissao-vendedores', component: RelatorioComissaoVendedorComponent  },
   { path: 'produto-colaborador', component: RelatorioProdutoColaboradorComponent  },
-  { path: 'dashboard', component: DashboardComponent  }
+  { path: 'dashboard', component: DashboardComponent  },
+  { path: 'lancamentos', component: LancamentoComponent  }
 
 ];;
 

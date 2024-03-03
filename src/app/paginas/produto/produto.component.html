@@ -37,6 +37,14 @@
             <button type="button" class="btn btn-success" (click)="abrirModalIncluir()">Incluir</button>
         </div>
     </div>
+    <div class="row">
+        <div class="col-9">
+        </div>
+        <div class="col-3">
+            <input type="file" placeholder="Importar Produto" (input)="onFileChange($event)" multiple="false">
+
+        </div>
+    </div>
     <div *ngIf="listaVazia">
         <label>Não existem produtos para os filtros selecionados</label>
     </div>
@@ -44,8 +52,17 @@
         <label class="crud--content-label">LISTAGEM DE PRODUTOS</label>
         <div class="crud--content-line"></div>
     </div>
-    <p-table class="table table-striped" [value]="listaProdutos" emptyMessage="Não existem produtos cadastrados"
-        [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
+    <div *ngIf="habilitarSpinner">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+            animationDuration=".5s"></p-progressSpinner>
+    </div>
+    <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
+        <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
+        {{ mensagem }}
+    </div>
+    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaProdutos"
+        emptyMessage="Não existem produtos cadastrados" [rows]="10" [paginator]="true"
+        [rowsPerPageOptions]="[5,10,15,20]">
 
         <ng-template pTemplate="header">
             <tr>
@@ -57,12 +74,16 @@
                     Produto <p-sortIcon field="descricao_Produto"></p-sortIcon>
                 </th>
 
+                <th scope="col" pSortableColumn="cod_Fabricante">
+                    Cod.Fab <p-sortIcon field="cod_Fabricante"></p-sortIcon>
+                </th>
+
                 <th scope="col" pSortableColumn="valor">
-                    valor final(etiqueta) <p-sortIcon field="valor"></p-sortIcon>
+                    Vr.Final(etiqueta) <p-sortIcon field="valor"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="valor_Colaborador">
-                    valor colaborador <p-sortIcon field="valor_Colaborador"></p-sortIcon>
+                    Vr.Colab <p-sortIcon field="valor_Colaborador"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="descricao_Secao">
@@ -78,6 +99,10 @@
                 </th>
                 <th scope="row">
                     <p-columnFilter type="text" field="descricao_Produto" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
+                    <p-columnFilter type="text" field="cod_Fabricante" [showMenu]="false">
                     </p-columnFilter>
                 </th>
                 <th scope="row">
@@ -100,6 +125,7 @@
             <tr>
                 <td>{{produto.nome}}</td>
                 <td>{{produto.descricao_Produto}}</td>
+                <td>{{produto.cod_Fabricante}}</td>
                 <td>{{produto.valor | currency}}</td>
                 <td>{{produto.valor_Colaborador | currency}}</td>
                 <td>{{produto.descricao_Secao}}</td>
@@ -234,7 +260,7 @@
                         Fechar
                     </button>
                     <button id="crud-btn-salvar" type="button" class="btn btn-success buttons" *ngIf="novoProduto"
-                        (click)="salvar()">
+                        (click)="salvar(false)">
                         Salvar
                     </button>
                     <button id="crud-btn-salvar" type="button" class="btn btn-success buttons" *ngIf="editarProduto"

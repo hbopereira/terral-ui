@@ -6,6 +6,7 @@ import { Colaborador } from 'src/app/model/colaborador';
 import { Secao } from 'src/app/model/secao';
 import { ColaboradorService } from '../colaborador/colaborador.service';
 import { SecaoService } from '../secao/secao.service';
+import * as XLSX from "xlsx";
 
 @Component({
   selector: 'app-produto',
@@ -24,6 +25,7 @@ export class ProdutoComponent implements OnInit {
   public novoProduto: boolean = false;
   public editarProduto: boolean = false;
   public abrirModalProduto: boolean = false;
+  public habilitarSpinner: boolean = false;
   public colaboradorModal: any;
   public secaoModal: any;
   public colaboradorSelecionado: any;
@@ -31,12 +33,16 @@ export class ProdutoComponent implements OnInit {
   public colaboradorFiltrado: any[] = [];
   public secaoFiltrada: any[] = [];
   public listaVazia = false;
+  public colaborador: Colaborador = new Colaborador();
   public listaProdutos: Produto[] = [];
+  public listaProdutosASeremEnviados: ProdutoPostPut[] = [];
   public listaColaboradores: Colaborador[] = [];
   public listaSecoes: Secao[] = [];
   public produto: ProdutoPostPut = new ProdutoPostPut();
   public produtoEdicao: ProdutoPostPut = new ProdutoPostPut();
   public descricao: string = "";
+
+
 
   constructor(
     private service: ProdutoService,
@@ -46,9 +52,76 @@ export class ProdutoComponent implements OnInit {
   ngOnInit(): void {
     this.listarColaboradores();
     this.listarSecoes();
-    this.listarProdutosPorColaboradorESecao();
   }
 
+  onFileChange(evt: any) {
+    let encontrou = false;
+    let lista: any[] = [];
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length > 1) {
+      alert('Multiple files are not allowed');
+      return;
+    }
+    else {
+      const reader: FileReader = new FileReader();
+      reader.onload = (e: any) => {
+        const bstr: string = e.target.result;
+        const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+        let data: any = (XLSX.utils.sheet_to_json(ws, { header: 1 }));
+
+        for (let i = 0; i <= data.length; i++) {
+          lista.push(data[i]);
+        }
+
+        lista.filter(i => i !== undefined).forEach(item => {
+          this.produto = new ProdutoPostPut();
+          let [nomeColaborador, codFabrica, descricaoProduto, quantidade, valorFabricante, valorFinal, teste] = item;
+          this.produto.descricaoProduto = descricaoProduto;
+          let valor = Number(valorFinal)
+          this.produto.valor = valor.toString();
+          this.produto.codFabricante = codFabrica;
+          if (!encontrou) {
+            encontrou = this.setarColaboradorAoEnviarEmLote(nomeColaborador);
+          }
+          if ((this.colaborador !== undefined) && (this.colaborador !== null)) {
+            this.produto.colaborador = this.colaborador;
+            this.produto.porcentagemColaborador = this.colaborador.porcentagem;
+            this.produto.valorColaborador = this.calcularValorColaborador(this.produto);
+            let secao: Secao = new Secao();
+            secao.cod = "2";
+            this.produto.secao = secao;
+          }
+          if (quantidade > 0) {
+            this.produto.temEstoque = 1
+            this.produto.quantidade = quantidade;
+          } else {
+            this.produto.temEstoque = 0;
+          }
+          if ((this.produto.valor !== "0")
+            && (this.produto.descricaoProduto !== undefined)
+            && (this.produto.valor !== "NaN")) {
+            this.listaProdutosASeremEnviados.push(this.produto);
+          }
+        });
+        this.salvar(true);
+        this.colaborador = new Colaborador();
+      }
+      reader.readAsBinaryString(target.files[0]);
+    }
+  }
+
+  setarColaboradorAoEnviarEmLote(nomeColaborador: any) {
+    let encontrou = false;
+    if (nomeColaborador !== undefined) {
+      this.listaColaboradores.filter(colab => colab.nome.toLowerCase() === nomeColaborador.toLowerCase()).forEach(colaborador => {
+        this.colaborador = colaborador;
+        encontrou = true;
+      });
+    }
+    return encontrou;
+  }
 
   filtroColaborador(event: any) {
     let filtrados: any[] = [];
@@ -95,6 +168,8 @@ export class ProdutoComponent implements OnInit {
     let colaboradorCod = "";
     let secaoCod = "";
     let descricao = "";
+    let codFabricante = "";
+    let codLoja = "";
 
     this.listaProdutos = [];;
     if (this.colaboradorSelecionado !== undefined) {
@@ -106,20 +181,24 @@ export class ProdutoComponent implements OnInit {
     if (this.descricao !== "") {
       descricao = this.descricao;
     }
-    this.service.listarProdutosPorColaboradorESecao(colaboradorCod, secaoCod, descricao).subscribe((response: Produto[]) => {
-      if (response.length > 0) {
-        this.listaProdutos = response;
-        this.listaVazia = false;
-      } else {
-        this.listaVazia = true;
-      }
-    })
+    this.service.listarProdutosPorColaboradorESecao(
+      colaboradorCod,
+      secaoCod,
+      descricao,
+      codFabricante,
+      codLoja).subscribe((response: Produto[]) => {
+        if (response.length > 0) {
+          this.listaProdutos = response;
+          this.listaVazia = false;
+        } else {
+          this.listaVazia = true;
+        }
+      })
   }
 
   validarCampos() {
     if (this.novoProduto) {
       if ((this.produto.colaborador === undefined)
-        || (this.produto.secao === undefined)
         || (this.produto.valor === "")
         || (this.produto.descricaoProduto === "")) {
         this.mensagem = "Favor preencher os campos obrigatórios antes de incluir um registro!"
@@ -129,7 +208,6 @@ export class ProdutoComponent implements OnInit {
     }
     if (this.editarProduto) {
       if ((this.produtoEdicao.colaborador.nome === undefined)
-        || (this.produtoEdicao.secao.descricaoSecao === undefined)
         || (this.produtoEdicao.valor === null)
         || (this.produtoEdicao.descricaoProduto === "")) {
         this.mensagem = "Favor preencher os campos obrigatórios antes de editar um registro!"
@@ -144,20 +222,36 @@ export class ProdutoComponent implements OnInit {
     return valorColaborador;
   }
 
-  salvar() {
-    this.camposVazios = false;
-    this.produto.colaborador = this.colaboradorModal;
-    this.produto.secao = this.secaoModal;
-    if ((this.produto.quantidade > 0) && (this.produto.quantidade !== undefined)) {
-      this.produto.temEstoque = 1;
-    }
-    this.validarCampos();
-    if (!this.camposVazios) {
-      this.service.salvar(this.produto).subscribe(() => {
-        this.mensagem = "Produto cadastrado com sucesso!";
-        this.fecharModal();
-        this.abrirModalSucesso();
-        this.listarProdutosPorColaboradorESecao()
+  salvar(salvarEmLote: boolean) {
+    if (!salvarEmLote) {
+      this.camposVazios = false;
+      this.produto.colaborador = this.colaboradorModal;
+      this.produto.secao = this.secaoModal;
+      if ((this.produto.quantidade > 0) && (this.produto.quantidade !== undefined)) {
+        this.produto.temEstoque = 1;
+      }
+      this.validarCampos();
+      if (!this.camposVazios) {
+        this.service.salvar(this.produto).subscribe(() => {
+          this.mensagem = "Produto cadastrado com sucesso!";
+          this.fecharModal();
+          this.abrirModalSucesso();
+          this.listarProdutosPorColaboradorESecao()
+        }, error => {
+          if (error) {
+            this.mensagem = error.message;
+            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
+          }
+        })
+      }
+    } else {
+      this.habilitarSpinner = true;
+      this.service.salvarEmLote(this.listaProdutosASeremEnviados).subscribe((response: Number) => {
+        if (response !== 0) {
+          this.habilitarSpinner = false;
+          this.mensagem = "Produtos importados com sucesso!";
+          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+        }
       }, error => {
         if (error) {
           this.mensagem = error.message;
@@ -165,6 +259,7 @@ export class ProdutoComponent implements OnInit {
         }
       })
     }
+
   }
 
   editar() {

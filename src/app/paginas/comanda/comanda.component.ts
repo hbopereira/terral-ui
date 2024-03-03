@@ -468,7 +468,6 @@ export class ComandaComponent implements OnInit {
               this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
               this.listaItens.push(this.itemComanda)
             }
-            this.calcularValorTotalComanda();
           }
           this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
@@ -495,10 +494,10 @@ export class ComandaComponent implements OnInit {
               this.listaItens.push(this.itemComanda);
             }
           }
-          this.calcularValorTotalComanda();
           this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
           this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
         }
+        this.calcularValorTotalComanda();
       }
       this.listarProdutos();
     }
@@ -591,8 +590,7 @@ export class ComandaComponent implements OnInit {
     if (this.descricao !== "") {
       descricao = this.descricao;
     }
-    // alert(descricao)
-    this.produtoService.listarProdutosPorColaboradorESecao(colaboradorCod, "", descricao).subscribe((response: Produto[]) => {
+    this.produtoService.listarProdutosPorColaboradorESecao(colaboradorCod, "", descricao, "", "").subscribe((response: Produto[]) => {
       if (response.length > 0) {
         this.listaProdutos = response;
         this.listaVaziaProdutos = false;

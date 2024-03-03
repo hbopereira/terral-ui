@@ -10,6 +10,8 @@ export class Produto {
     cod_Colaborador: string = "";
     quantidade: number = 0;
     tem_Estoque: number = 0;
+    cod_Fabricante: string = "";
+    cod_Loja: string = "";
     quantidadeDesconto: number = 0;
     escolheu: boolean = false;
 }

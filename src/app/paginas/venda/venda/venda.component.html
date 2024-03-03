@@ -35,7 +35,7 @@
         <label class="crud--content-label">LISTAGEM DE VENDAS</label>
         <div class="crud--content-line"></div>
     </div>
-    <p-table class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="5"
+    <p-table class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="10"
         [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
 
         <ng-template pTemplate="header">
@@ -60,17 +60,6 @@
                 <th scope="col" pSortableColumn="valorTotal">
                     Vr.Total <p-sortIcon field="valorTotal"></p-sortIcon>
                 </th>
-
-                <!-- <th scope="col" pSortableColumn="valorTotalComDesconto">
-                    Vr.Tot.Desc <p-sortIcon field="valorTotalComDesconto"></p-sortIcon>
-                </th> 
-
-                <th scope="col" pSortableColumn="valorVendedor">
-                    Vr.Vendedor <p-sortIcon field="valorVendedor"></p-sortIcon>
-                </th> -->
-                <!---  <th scope="col" pSortableColumn="valorDesconto">
-                    Vr.Desconto <p-sortIcon field="valorDesconto"></p-sortIcon>
-                </th> -->
                 <th scope="col">Ações</th>
             </tr>
             <tr>
@@ -94,18 +83,6 @@
                     <p-columnFilter type="text" field="valorTotal" [showMenu]="false">
                     </p-columnFilter>
                 </th>
-                <!--<th scope="row">
-                    <p-columnFilter type="text" field="valorTotalComDesconto" [showMenu]="false">
-                    </p-columnFilter>
-                </th> 
-                <th scope="row">
-                    <p-columnFilter type="text" field="valorVendedor" [showMenu]="false">
-                    </p-columnFilter>
-                </th> -->
-                <!--  <th scope="row">
-                    <p-columnFilter type="text" field="valorDesconto" [showMenu]="false">
-                    </p-columnFilter>
-                </th> -->
                 <th scope="row"></th>
             </tr>
         </ng-template>
@@ -117,9 +94,6 @@
                 <td>{{venda.dataVenda |date : 'dd/MM/yyyy'}}</td>
                 <td>{{venda.formaPagamento}}</td>
                 <td>{{venda.valorTotal | currency}}</td>
-                <!--<td>{{venda.valorTotalComDesconto | currency}}</td> -->
-                <!-- <td>{{venda.valorVendedor | currency}}</td> -->
-                <!-- <td>{{venda.valorDesconto}}%</td> -->
                 <td>
                     <p-button pTooltip="Visualizar" icon="pi pi-search"
                         (click)="abrirModalListagemItens(venda)"></p-button>
