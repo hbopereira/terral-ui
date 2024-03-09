@@ -7,15 +7,15 @@ export class SecaoService {
     constructor(private http: HttpClient) { }
 
     listarSecoes() {
-        return this.http.get<Secao[]>('http://localhost:8080/api/secoes');
+        return this.http.get<Secao[]>('https://terral-api.onrender.com/api/secoes');
     }
 
     salvar(secao: Secao) {
-        return this.http.post<Secao>('http://localhost:8080/api/secoes', secao);
+        return this.http.post<Secao>('https://terral-api.onrender.com/api/secoes', secao);
     }
 
     editar(secao: Secao) {
-        return this.http.put<Secao>('http://localhost:8080/api/secoes', secao);
+        return this.http.put<Secao>('https://terral-api.onrender.com/api/secoes', secao);
     }
 }
 
