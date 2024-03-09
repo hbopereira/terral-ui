@@ -16,4 +16,5 @@ export class Comanda {
     valorVendedor: number = 0;
     vendedor: Colaborador = new Colaborador();
     itens: ItemComanda[] = [];
+    cor: string = "";
 }

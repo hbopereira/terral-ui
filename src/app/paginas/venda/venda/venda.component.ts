@@ -62,6 +62,21 @@ export class VendaComponent implements OnInit {
         this.somaValorTotalVenda = 0;
         this.listaVendas = response;
         this.listaVendas.forEach(venda => {
+          switch (venda.formaPagamento) {
+            case "DEBITO":
+              venda.cor = "#808080";
+              break;
+            case "CREDITO":
+              venda.cor = "#3366CC";
+              break;
+            case "PIX":
+              venda.cor = "#000000";
+              break;
+            case "DINHEIRO":
+              venda.cor = "#00FF00";
+              break;
+            default:
+          }
           this.calcularValorTotalVendas(venda);
         })
         this.listaVazia = false;

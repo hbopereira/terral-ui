@@ -7,7 +7,7 @@
 
     <div class="row">
         <div class="col-8">
-            <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
+            <p-autoComplete [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
                 [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroColaborador($event)" field="nome">
                 <ng-template let-colaborador pTemplate="colab">

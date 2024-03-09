@@ -41,6 +41,7 @@ export class ProdutoComponent implements OnInit {
   public produto: ProdutoPostPut = new ProdutoPostPut();
   public produtoEdicao: ProdutoPostPut = new ProdutoPostPut();
   public descricao: string = "";
+  public totalProdutos : number = 0;
 
 
 
@@ -76,9 +77,11 @@ export class ProdutoComponent implements OnInit {
         }
 
         lista.filter(i => i !== undefined).forEach(item => {
+          encontrou = false;
           this.produto = new ProdutoPostPut();
-          let [nomeColaborador, codFabrica, descricaoProduto, quantidade, valorFabricante, valorFinal, teste] = item;
+          let [nomeColaborador, codFabrica, codLoja, descricaoProduto, quantidade, valorFabricante, valorFinal] = item;
           this.produto.descricaoProduto = descricaoProduto;
+          this.produto.codLoja = codLoja;
           let valor = Number(valorFinal)
           this.produto.valor = valor.toString();
           this.produto.codFabricante = codFabrica;
@@ -98,7 +101,7 @@ export class ProdutoComponent implements OnInit {
             this.produto.quantidade = quantidade;
           } else {
             this.produto.temEstoque = 0;
-          }
+;          }
           if ((this.produto.valor !== "0")
             && (this.produto.descricaoProduto !== undefined)
             && (this.produto.valor !== "NaN")) {
@@ -106,6 +109,7 @@ export class ProdutoComponent implements OnInit {
           }
         });
         this.salvar(true);
+       console.log(this.listaProdutosASeremEnviados);
         this.colaborador = new Colaborador();
       }
       reader.readAsBinaryString(target.files[0]);
@@ -179,7 +183,7 @@ export class ProdutoComponent implements OnInit {
       secaoCod = this.secaoSelecionada.cod;
     }
     if (this.descricao !== "") {
-      descricao = this.descricao;
+      descricao = this.descricao.toLocaleLowerCase();
     }
     this.service.listarProdutosPorColaboradorESecao(
       colaboradorCod,
@@ -189,6 +193,7 @@ export class ProdutoComponent implements OnInit {
       codLoja).subscribe((response: Produto[]) => {
         if (response.length > 0) {
           this.listaProdutos = response;
+          this.totalProdutos = this.listaProdutos.length;
           this.listaVazia = false;
         } else {
           this.listaVazia = true;
@@ -312,8 +317,11 @@ export class ProdutoComponent implements OnInit {
     this.produtoEdicao.valor = produto.valor;
     this.produtoEdicao.cod = produto.cod_Produto;
     this.produtoEdicao.porcentagemColaborador = produto.porcentagem_Colaborador;
-    this.produtoEdicao.quantidade = produto.quantidade;
     this.produtoEdicao.temEstoque = produto.tem_Estoque;
+    if(this.produtoEdicao.temEstoque === 0){
+      produto.quantidade = null;
+    }
+    this.produtoEdicao.quantidade = produto.quantidade;
     this.novoProduto = false;
     this.abrirModalProduto = true;
     this.editarProduto = true;
@@ -334,6 +342,7 @@ export class ProdutoComponent implements OnInit {
   }
 
   limparFiltros() {
+    this.totalProdutos = 0;
     this.colaboradorSelecionado = undefined;
     this.secaoSelecionada = undefined;
     this.descricao = "";

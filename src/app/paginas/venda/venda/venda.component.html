@@ -13,7 +13,7 @@
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
         <div class="col-3">
-            <p-autoComplete placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorVenda"
+            <p-autoComplete [forceSelection]="true" placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorVenda"
                 [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroVendedor($event)" field="nome">
                 <ng-template let-vendedor pTemplate="colab">
@@ -92,7 +92,7 @@
                 <td>{{venda.vendedor.nome}}</td>
                 <td>{{venda.nomeCliente}}</td>
                 <td>{{venda.dataVenda |date : 'dd/MM/yyyy'}}</td>
-                <td>{{venda.formaPagamento}}</td>
+                <td [ngStyle]="{color: venda.cor}">{{venda.formaPagamento}}</td>
                 <td>{{venda.valorTotal | currency}}</td>
                 <td>
                     <p-button pTooltip="Visualizar" icon="pi pi-search"

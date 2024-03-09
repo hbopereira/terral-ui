@@ -17,7 +17,7 @@
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
         <div class="col-3">
-            <p-autoComplete placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorComanda"
+            <p-autoComplete [forceSelection]="true" placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorComanda"
                 [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroVendedor($event)" field="nome">
                 <ng-template let-vendedor pTemplate="colab">
@@ -110,7 +110,7 @@
                 <td>{{comanda.dataComanda |date : 'dd/MM/yyyy'}}</td>
                 <td>{{comanda.formaPagamento}}</td>
                 <td>{{comanda.valorTotal | currency}}</td>
-                <td>{{comanda.status}}</td>
+                <td [ngStyle]="{color: comanda.cor}">{{comanda.status}}</td>
                 <td>
                     <p-button pTooltip="Editar" icon="pi pi-file-edit" (click)="abrirModalEditar(comanda)"></p-button>
                 </td>
@@ -134,7 +134,7 @@
                 <div class="row">
                     <div class="col-3" *ngIf="novaComanda">
                         <label>Vendedor</label>
-                        <p-autoComplete placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorModal"
+                        <p-autoComplete [forceSelection]="true" placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorModal"
                             [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
                             (completeMethod)="filtroVendedor($event)" field="nome">
                             <ng-template let-vendedor pTemplate="colab">
@@ -144,7 +144,7 @@
                     </div>
                     <div class="col-3" *ngIf="editarComanda">
                         <label>Vendedor</label>
-                        <p-autoComplete [disabled]="desabilitarVendedor" placeholder="Informe um vendedor"
+                        <p-autoComplete [forceSelection]="true" [disabled]="desabilitarVendedor" placeholder="Informe um vendedor"
                             (onSelect)="true" [(ngModel)]="comandaEdicao.vendedor" [dropdown]="true"
                             [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
                             (completeMethod)="filtroVendedor($event)" field="nome">
@@ -167,7 +167,7 @@
 
                     <div class="col-3" *ngIf="novaComanda">
                         <label>Forma Pagamento</label>
-                        <p-autoComplete [disabled]="!habilitarFormaPagamento" placeholder="Forma de pagamento" (onSelect)="true" [(ngModel)]="comanda.forma"
+                        <p-autoComplete [forceSelection]="true" [disabled]="!habilitarFormaPagamento" placeholder="Forma de pagamento" (onSelect)="true" [(ngModel)]="comanda.forma"
                             [dropdown]="true" [suggestions]="formaFiltrada" [style]="{'width': '100%'}"
                             (completeMethod)="filtroFormaPagamento($event)"
                             field="descricao">
@@ -178,7 +178,7 @@
                     </div>
                     <div class="col-3" *ngIf="editarComanda">
                         <label>Forma Pagamento</label>
-                        <p-autoComplete [disabled]="desabilitarBotoes" placeholder="Forma de pagamento"
+                        <p-autoComplete [forceSelection]="true" [disabled]="desabilitarBotoes" placeholder="Forma de pagamento"
                             (onSelect)="true" [(ngModel)]="comandaEdicao.forma" [dropdown]="true"
                             [suggestions]="formaFiltrada" [style]="{'width': '100%'}"
                             (completeMethod)="filtroFormaPagamento($event)"
@@ -296,7 +296,7 @@
                 <br />
                 <div class="row">
                     <div class="col-2">
-                        <p-autoComplete placeholder="Colaborador" (onSelect)="true"
+                        <p-autoComplete [forceSelection]="true" placeholder="Colaborador" (onSelect)="true"
                             [(ngModel)]="colaboradorSelecionado" [dropdown]="true" [suggestions]="colaboradorFiltrado"
                             [style]="{'width': '100%'}" (completeMethod)="filtroColaborador($event)" field="nome">
                             <ng-template let-colaborador pTemplate="colab">
@@ -308,10 +308,10 @@
                         <input type="text" class="form-control" placeholder="Produto" [(ngModel)]="descricao">
                     </div>
                     <div class="col-2">
-                        <input type="text" class="form-control" placeholder="cod loja">
+                        <input type="text" class="form-control" placeholder="cod loja" [(ngModel)]="codLoja">
                     </div>
                     <div class="col-2">
-                        <input type="text" class="form-control" placeholder="cod fabricante">
+                        <input type="text" class="form-control" placeholder="cod fabricante" [(ngModel)]="codFabricante">
                     </div>
                     <div class="col-2" style="text-align: right;">
                         <button type="button" class="btn btn-primary" (click)="listarProdutos()">Consultar</button>

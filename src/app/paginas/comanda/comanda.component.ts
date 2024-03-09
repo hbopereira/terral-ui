@@ -58,6 +58,8 @@ export class ComandaComponent implements OnInit {
   public dataInicial: string = "";
   public dataFinal: string = "";
   public descricao: string = "";
+  public codFabricante: string = "";
+  public codLoja: string = "";
   public vendedorComanda: any;;
   public entrou: boolean = false;
 
@@ -98,6 +100,13 @@ export class ComandaComponent implements OnInit {
     this.comandaService.listarPorDataEVendedor(dataInicial, dataFinal, codVendedor).subscribe((response: Comanda[]) => {
       if (response.length > 0) {
         this.listaComandas = response;
+        this.listaComandas.forEach(item => {
+          if (item.status === "ABERTA") {
+            item.cor = "green";
+          } else {
+            item.cor = "red";
+          }
+        })
         this.listaVazia = false;
         this.calcularValorTotalComanda();
       } else {
@@ -582,22 +591,22 @@ export class ComandaComponent implements OnInit {
 
   listarProdutos() {
     let colaboradorCod = "";
-    let descricao = "";
     this.listaProdutos = [];
     if ((this.colaboradorFiltrado !== undefined) && (this.colaboradorSelecionado !== undefined)) {
       colaboradorCod = this.colaboradorSelecionado.cod;
     }
-    if (this.descricao !== "") {
-      descricao = this.descricao;
-    }
-    this.produtoService.listarProdutosPorColaboradorESecao(colaboradorCod, "", descricao, "", "").subscribe((response: Produto[]) => {
-      if (response.length > 0) {
-        this.listaProdutos = response;
-        this.listaVaziaProdutos = false;
-      } else {
-        this.listaVaziaProdutos = true;
-      }
-    })
+    this.produtoService.listarProdutosPorColaboradorESecao(colaboradorCod,
+      "",
+      this.descricao.toLowerCase(),
+      this.codFabricante.toLowerCase(),
+      this.codLoja.toLowerCase()).subscribe((response: Produto[]) => {
+        if (response.length > 0) {
+          this.listaProdutos = response;
+          this.listaVaziaProdutos = false;
+        } else {
+          this.listaVaziaProdutos = true;
+        }
+      })
   }
 
   listarVendedores() {

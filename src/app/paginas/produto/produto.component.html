@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <div class="col-3">
-            <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
+            <p-autoComplete [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
                 [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroColaborador($event)" field="nome">
                 <ng-template let-colaborador pTemplate="colab">
@@ -15,7 +15,7 @@
             </p-autoComplete>
         </div>
         <div class="col-3">
-            <p-autoComplete placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
+            <p-autoComplete [forceSelection]="true" placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
                 [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
                 (completeMethod)="filtroSecao($event)" field="descricaoSecao">
                 <ng-template let-secao pTemplate="colab">
@@ -38,7 +38,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-9">
+        <div class="col-3">
+            <h4>Total Produtos: {{totalProdutos}}</h4>
+        </div>
+        <div class="col-6">
         </div>
         <div class="col-3">
             <input type="file" placeholder="Importar Produto" (input)="onFileChange($event)" multiple="false">
@@ -78,8 +81,12 @@
                     Cod.Fab <p-sortIcon field="cod_Fabricante"></p-sortIcon>
                 </th>
 
+                <th scope="col" pSortableColumn="cod_Loja">
+                    Cod.Loja <p-sortIcon field="cod_Loja"></p-sortIcon>
+                </th>
+
                 <th scope="col" pSortableColumn="valor">
-                    Vr.Final(etiqueta) <p-sortIcon field="valor"></p-sortIcon>
+                    Vr.Final <p-sortIcon field="valor"></p-sortIcon>
                 </th>
 
                 <th scope="col" pSortableColumn="valor_Colaborador">
@@ -106,6 +113,10 @@
                     </p-columnFilter>
                 </th>
                 <th scope="row">
+                    <p-columnFilter type="text" field="cod_Loja" [showMenu]="false">
+                    </p-columnFilter>
+                </th>
+                <th scope="row">
                     <p-columnFilter type="text" field="valor" [showMenu]="false">
                     </p-columnFilter>
                 </th>
@@ -126,6 +137,7 @@
                 <td>{{produto.nome}}</td>
                 <td>{{produto.descricao_Produto}}</td>
                 <td>{{produto.cod_Fabricante}}</td>
+                <td>{{produto.cod_Loja}}</td>
                 <td>{{produto.valor | currency}}</td>
                 <td>{{produto.valor_Colaborador | currency}}</td>
                 <td>{{produto.descricao_Secao}}</td>
@@ -156,7 +168,7 @@
                     <div class="col">
                         <div class="crud--detalhes-parametro-sistema" *ngIf="novoProduto">
                             <label>Colaborador</label>
-                            <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true"
+                            <p-autoComplete [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
                                 [(ngModel)]="colaboradorModal" [dropdown]="true" [suggestions]="colaboradorFiltrado"
                                 [style]="{'width': '100%'}" (completeMethod)="filtroColaborador($event)" field="nome">
                                 <ng-template let-colaborador pTemplate="colab">
@@ -166,7 +178,7 @@
                         </div>
                         <div class="crud--detalhes-parametro-sistema" *ngIf="editarProduto">
                             <label>Colaborador</label>
-                            <p-autoComplete placeholder="Informe um colaborador" (onSelect)="true"
+                            <p-autoComplete [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
                                 [(ngModel)]="produtoEdicao.colaborador" [dropdown]="true"
                                 [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                                 (completeMethod)="filtroColaborador($event)" field="nome">
@@ -179,7 +191,7 @@
                     <div class="col">
                         <div class="crud--detalhes-parametro-sistema" *ngIf="novoProduto">
                             <label>Seção</label>
-                            <p-autoComplete placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoModal"
+                            <p-autoComplete [forceSelection]="true" placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoModal"
                                 [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
                                 (completeMethod)="filtroSecao($event)" field="descricaoSecao">
                                 <ng-template let-secao pTemplate="colab">
@@ -189,7 +201,7 @@
                         </div>
                         <div class="crud--detalhes-parametro-sistema" *ngIf="editarProduto">
                             <label>Seção</label>
-                            <p-autoComplete placeholder="Informe uma Seção" (onSelect)="true"
+                            <p-autoComplete [forceSelection]="true" placeholder="Informe uma Seção" (onSelect)="true"
                                 [(ngModel)]="produtoEdicao.secao" [dropdown]="true" [suggestions]="secaoFiltrada"
                                 [style]="{'width': '100%'}" (completeMethod)="filtroSecao($event)"
                                 field="descricaoSecao">

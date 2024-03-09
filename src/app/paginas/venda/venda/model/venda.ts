@@ -18,4 +18,5 @@ export class Venda {
     desabilitar: boolean = false;
     total: number = 0;
     descricao_Secao: string = "";
+    cor: string = "";
 }
