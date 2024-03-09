@@ -16,23 +16,23 @@ export class VendaService {
     }
 
     listarDadosRelatorioProdutoColaborador(dataInicial: Date, dataFinal: Date, codVendedor: string) {
-        return this.http.get<ItemVenda[]>('http://localhost:8080/api/vendas/produtoColaborador?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
+        return this.http.get<ItemVenda[]>('https://terral-api.onrender.com/api/vendas/produtoColaborador?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
     }
 
     salvar(venda: Venda) {
-        return this.http.post<Venda>('http://localhost:8080/api/vendas/salvar', venda);
+        return this.http.post<Venda>('https://terral-api.onrender.com/api/vendas/salvar', venda);
     }
 
     setarVendasItensVendaComoPago(listaCodigosVenda: string[], isVenda: boolean) {
-        return this.http.put<string>('http://localhost:8080/api/vendas/setarVendasItensVendaComoPago?isVenda=' + isVenda, listaCodigosVenda);
+        return this.http.put<string>('https://terral-api.onrender.com/api/vendas/setarVendasItensVendaComoPago?isVenda=' + isVenda, listaCodigosVenda);
     }
 
     listarPorDia() {
-        return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listarPorDia');
+        return this.http.get<Venda[]>('https://terral-api.onrender.com/api/vendas/listarPorDia');
     }
 
     listarVendasProdutoSecao() {
-        return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listarVendasProdutoSecao');
+        return this.http.get<Venda[]>('https://terral-api.onrender.com/api/vendas/listarVendasProdutoSecao');
     }
 
 }

@@ -7,19 +7,19 @@ export class ColaboradorService {
     constructor(private http: HttpClient) { }
 
     listarColaboradores() {
-        return this.http.get<Colaborador[]>('http://localhost:8080/api/colaboradores');
+        return this.http.get<Colaborador[]>('https://terral-api.onrender.com/api/colaboradores');
     }
 
     listarPorCod(cod: string) {
-        return this.http.get<Colaborador>('http://localhost:8080/api/colaboradores/listarPorCod?cod=' + cod);
+        return this.http.get<Colaborador>('https://terral-api.onrender.com/api/colaboradores/listarPorCod?cod=' + cod);
     }
 
     salvar(colaborador: Colaborador) {
-        return this.http.post<Colaborador>('http://localhost:8080/api/colaboradores', colaborador);
+        return this.http.post<Colaborador>('https://terral-api.onrender.com/api/colaboradores', colaborador);
     }
 
     editar(colaborador: Colaborador) {
-        return this.http.put<Colaborador>('http://localhost:8080/api/colaboradores', colaborador);
+        return this.http.put<Colaborador>('https://terral-api.onrender.com/api/colaboradores', colaborador);
     }
 }
 

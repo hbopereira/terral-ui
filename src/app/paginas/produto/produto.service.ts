@@ -9,7 +9,7 @@ export class ProdutoService {
 
     listarProdutosPorColaboradorESecao(colaboradorCod: string, secaoCod: string,
         descricao: string, codFabricante: string, codLoja: string) {
-        return this.http.get<Produto[]>('http://localhost:8080/api/produtos/listar?colaboradorCod=' + colaboradorCod
+        return this.http.get<Produto[]>('https://terral-api.onrender.com/api/produtos/listar?colaboradorCod=' + colaboradorCod
             + '&secaoCod=' + secaoCod
             + '&descricao=' + descricao
             + '&codFabricante=' + codFabricante
@@ -17,22 +17,22 @@ export class ProdutoService {
     }
 
     salvar(produto: ProdutoPostPut) {
-        return this.http.post<ProdutoPostPut>('http://localhost:8080/api/produtos', produto);
+        return this.http.post<ProdutoPostPut>('https://terral-api.onrender.com/api/produtos', produto);
     }
 
     salvarEmLote(listaProdutos: ProdutoPostPut[]) {
-        return this.http.post<Number>('http://localhost:8080/api/produtos/salvarEmLote', listaProdutos)
+        return this.http.post<Number>('https://terral-api.onrender.com/api/produtos/salvarEmLote', listaProdutos)
     }
 
     editar(produto: ProdutoPostPut) {
-        return this.http.put<ProdutoPostPut>('http://localhost:8080/api/produtos', produto);
+        return this.http.put<ProdutoPostPut>('https://terral-api.onrender.com/api/produtos', produto);
     }
 
     setarQuantidade(produto: ProdutoPostPut) {
-        return this.http.put('http://localhost:8080/api/produtos/setarQuantidade', produto);
+        return this.http.put('https://terral-api.onrender.com/api/produtos/setarQuantidade', produto);
     }
 
     devolverQuantidadeProduto(produtoCod: string) {
-        return this.http.get<Produto>('http://localhost:8080/api/produtos/devolverQuantidadeProduto?produtoCod=' + produtoCod);
+        return this.http.get<Produto>('https://terral-api.onrender.com/api/produtos/devolverQuantidadeProduto?produtoCod=' + produtoCod);
     }
 }

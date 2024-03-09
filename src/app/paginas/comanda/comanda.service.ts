@@ -17,23 +17,23 @@ export class ComandaService {
    }
 
    adicionarItem(itemComanda: ItemComanda, codComanda: string) {
-      return this.http.put<ItemComanda>('http://localhost:8080/api/comandas/adicionarItem?codComanda=' + codComanda, itemComanda);
+      return this.http.put<ItemComanda>('https://terral-api.onrender.com/api/comandas/adicionarItem?codComanda=' + codComanda, itemComanda);
    }
 
    removerItem(codItem: string) {
-      return this.http.delete<ItemComanda>('http://localhost:8080/api/comandas/removerItem?codItem=' + codItem);
+      return this.http.delete<ItemComanda>('https://terral-api.onrender.com/api/comandas/removerItem?codItem=' + codItem);
    }
 
    listarPorDataEVendedor(dataInicial: Date, dataFinal: Date, codVendedor: string) {
-      return this.http.get<Comanda[]>('http://localhost:8080/api/comandas/listarPorDataEVendedor?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
+      return this.http.get<Comanda[]>('https://terral-api.onrender.com/api/comandas/listarPorDataEVendedor?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
    }
 
    listarPorCodComanda(codComanda: string) {
-      return this.http.get<ItemComanda[]>('http://localhost:8080/api/comandas/listarPorCodComanda?codComanda=' + codComanda);
+      return this.http.get<ItemComanda[]>('https://terral-api.onrender.com/api/comandas/listarPorCodComanda?codComanda=' + codComanda);
    }
 
    setarQuantidade(item: ItemComanda) {
-      return this.http.put('http://localhost:8080/api/comandas/setarQuantidade', item);
+      return this.http.put('https://terral-api.onrender.com/api/comandas/setarQuantidade', item);
    }
 
    setarValorVenda(comanda: Comanda) {
