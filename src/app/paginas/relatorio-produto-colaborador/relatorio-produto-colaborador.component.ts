@@ -32,6 +32,8 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   public valorPagoColaborador: number = 0;
   public calculoTaxaDebito: number = 0.75 / 100;
   public calculoTaxaCredito: number = 0.95 / 100;
+  public totalItens : number = 0;
+  public habilitarSpinner : boolean = false;
 
   constructor(private vendaService: VendaService,
     private colaboradorService: ColaboradorService) { }
@@ -41,6 +43,7 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   }
 
   listarDadosRelatorioProdutoColaborador() {
+    this.habilitarSpinner = true;
     let taxa = 0;
     let valor = 0;
     this.listaItensVenda = [];
@@ -66,8 +69,10 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
     }
     this.vendaService.listarDadosRelatorioProdutoColaborador(dataInicial, dataFinal, codVendedor).subscribe((response: ItemVenda[]) => {
       if (response.length > 0 && response !== null) {
+        this.habilitarSpinner = false;
         this.habilitarMarcarTodos = true;
         this.listaItensVenda = response;
+        this.totalItens = this.listaItensVenda.length;
         this.listaItensVenda.forEach(item => {
           valor = item.valorColaborador * item.quantidade;
           if (item.formaPagamento === "CREDITO") {
@@ -97,6 +102,7 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
         })
         this.listaVazia = false;
       } else {
+        this.habilitarSpinner = false;
         this.listaVazia = true;
         this.listaItensVenda = [];
         this.habilitarMarcarTodos = false;
@@ -154,6 +160,7 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
     this.listaVazia = false;
     this.habilitarMarcarTodos = false;
     this.valorTotalColaborador = 0;
+    this.totalItens = 0;
   }
 
   habilitarBotaoConsultar(event: any) {

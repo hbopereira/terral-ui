@@ -169,6 +169,7 @@ export class ProdutoComponent implements OnInit {
   }
 
   listarProdutosPorColaboradorESecao() {
+    this.habilitarSpinner = true;
     let colaboradorCod = "";
     let secaoCod = "";
     let descricao = "";
@@ -192,11 +193,13 @@ export class ProdutoComponent implements OnInit {
       codFabricante,
       codLoja).subscribe((response: Produto[]) => {
         if (response.length > 0) {
+          this.habilitarSpinner = false;
           this.listaProdutos = response;
           this.totalProdutos = this.listaProdutos.length;
           this.listaVazia = false;
         } else {
           this.listaVazia = true;
+          this.habilitarSpinner = false;
         }
       })
   }

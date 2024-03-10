@@ -9,6 +9,7 @@ import { CommonModule } from "@angular/common";
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { ProgressSpinnerModule } from 'primeng/progressspinner'
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
         CommonModule,
         DialogModule,
         InputNumberModule,
-        TooltipModule
+        TooltipModule,
+        ProgressSpinnerModule
     ],
     declarations: [
         VendaComponent,

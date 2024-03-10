@@ -16,9 +16,10 @@
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
         <div class="col-2">
-            <p-autoComplete [forceSelection]="true" placeholder="Colaborador" (ngModelChange)="habilitarBotaoConsultar($event)"
-                (onSelect)="true" [(ngModel)]="vendedorVenda" [dropdown]="true" [suggestions]="vendedorFiltrado"
-                [style]="{'width': '100%'}" (completeMethod)="filtroVendedor($event)" field="nome">
+            <p-autoComplete [forceSelection]="true" placeholder="Colaborador"
+                (ngModelChange)="habilitarBotaoConsultar($event)" (onSelect)="true" [(ngModel)]="vendedorVenda"
+                [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
+                (completeMethod)="filtroVendedor($event)" field="nome">
                 <ng-template let-vendedor pTemplate="colab">
                     <div>{{vendedor.nome}}</div>
                 </ng-template>
@@ -40,9 +41,13 @@
                 (click)="marcarDesmarcarTodos(false)"></p-button>
         </div>
     </div>
-
-    <div>
-        <h4>Colaborador(a): {{vendedorVenda.nome}}</h4>
+    <div class="row">
+        <div class="col-4">
+            <h4>Colaborador(a): {{vendedorVenda.nome}}</h4>
+        </div>
+        <div class="col-4">
+            <h4>Total Itens: {{totalItens}}</h4>
+        </div>
     </div>
     <div *ngIf="listaVazia">
         <label>Não existem vendas para os produtos deste colaborador</label>
@@ -51,8 +56,11 @@
         <label class="crud--content-label">LISTAGEM DE PRODUTOS VENDIDOS</label>
         <div class="crud--content-line"></div>
     </div>
-
-    <p-table class="table table-striped" [value]="listaItensVenda"
+    <div *ngIf="habilitarSpinner">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+            animationDuration=".5s"></p-progressSpinner>
+    </div>
+    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaItensVenda"
         emptyMessage="Não existem vendas para os produtos deste colaborador" [rows]="10" [paginator]="true"
         [rowsPerPageOptions]="[5,10,15,20]">
 

@@ -16,9 +16,10 @@
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
         <div class="col-2">
-            <p-autoComplete [forceSelection]="true" placeholder="vendedor" (ngModelChange)="habilitarBotaoConsultar($event)" (onSelect)="true"
-                [(ngModel)]="vendedorVenda" [dropdown]="true" [suggestions]="vendedorFiltrado"
-                [style]="{'width': '100%'}" (completeMethod)="filtroVendedor($event)" field="nome">
+            <p-autoComplete [forceSelection]="true" placeholder="vendedor"
+                (ngModelChange)="habilitarBotaoConsultar($event)" (onSelect)="true" [(ngModel)]="vendedorVenda"
+                [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
+                (completeMethod)="filtroVendedor($event)" field="nome">
                 <ng-template let-vendedor pTemplate="colab">
                     <div>{{vendedor.nome}}</div>
                 </ng-template>
@@ -40,9 +41,16 @@
                 (click)="marcarDesmarcarTodos(false)"></p-button>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-4">
+            <h4>Vendedor(a): {{vendedorVenda.nome}}</h4>
+        </div>
+        <div class="col-4">
+            <h4>Total Vendas: {{totalVendas}}</h4>
+        </div>
+    </div>
     <div>
-        <h4>Vendedor(a): {{vendedorVenda.nome}}</h4>
+       
     </div>
     <div *ngIf="listaVazia">
         <label>Não existem vendas para os filtros selecionados</label>
@@ -51,7 +59,11 @@
         <label class="crud--content-label">LISTAGEM DE VENDAS</label>
         <div class="crud--content-line"></div>
     </div>
-    <p-table class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="10"
+    <div *ngIf="habilitarSpinner">
+        <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+            animationDuration=".5s"></p-progressSpinner>
+    </div>
+    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="10"
         [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
 
         <ng-template pTemplate="header">
@@ -125,7 +137,8 @@
         <div class="col-11">
         </div>
         <div class="col-1">
-            <button [disabled]="!habilitarPagar" type="button" class="btn btn-success" (click)="abrirModalVerificacao()">Pagar</button>
+            <button [disabled]="!habilitarPagar" type="button" class="btn btn-success"
+                (click)="abrirModalVerificacao()">Pagar</button>
         </div>
     </div>
 
@@ -192,10 +205,12 @@
                 </div>
                 <div class="row">
                     <div class="col-6 text-center">
-                        <button type="button" class="btn btn-success botaoEnviar" (click)="atualizarVendasComoPagas(true)">Sim</button>
+                        <button type="button" class="btn btn-success botaoEnviar"
+                            (click)="atualizarVendasComoPagas(true)">Sim</button>
                     </div>
                     <div class="col-6">
-                        <button type="button" class="btn btn-danger botaoEnviar" (click)="atualizarVendasComoPagas(false)">Não</button>
+                        <button type="button" class="btn btn-danger botaoEnviar"
+                            (click)="atualizarVendasComoPagas(false)">Não</button>
                     </div>
                 </div>
                 <div class="crud--modal-sucesso-botao-line">

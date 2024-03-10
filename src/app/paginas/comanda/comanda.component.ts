@@ -62,6 +62,8 @@ export class ComandaComponent implements OnInit {
   public codLoja: string = "";
   public vendedorComanda: any;;
   public entrou: boolean = false;
+  public totalComandas : number = 0;
+  public habilitarSpinner: boolean = false;
 
   constructor(
     private produtoService: ProdutoService,
@@ -80,6 +82,7 @@ export class ComandaComponent implements OnInit {
   }
 
   listarPorDataEVendedor() {
+    this.habilitarSpinner = true;
     let dataInicial = new Date();
     let dataFinal = new Date();
     let codVendedor = "";
@@ -99,7 +102,9 @@ export class ComandaComponent implements OnInit {
     }
     this.comandaService.listarPorDataEVendedor(dataInicial, dataFinal, codVendedor).subscribe((response: Comanda[]) => {
       if (response.length > 0) {
+        this.habilitarSpinner = false;
         this.listaComandas = response;
+        this.totalComandas = this.listaComandas.length;
         this.listaComandas.forEach(item => {
           if (item.status === "ABERTA") {
             item.cor = "green";
@@ -110,6 +115,7 @@ export class ComandaComponent implements OnInit {
         this.listaVazia = false;
         this.calcularValorTotalComanda();
       } else {
+        this.habilitarSpinner = false;
         this.listaVazia = true;
         this.listaComandas = [];
       }
@@ -691,6 +697,7 @@ export class ComandaComponent implements OnInit {
     this.dataFinal = "";
     this.vendedorComanda = undefined;
     this.listaComandas = [];
+    this.totalComandas = 0;
   }
 
   abrirModalEditar(comanda: any) {

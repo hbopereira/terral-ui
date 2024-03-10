@@ -35,6 +35,8 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
   public valorTotalComissaoVendedor: number = 0;
   public valorPagoComissaoVendedor: number = 0;
   public valorTotal = 0;
+  public totalVendas: number = 0;
+  public habilitarSpinner: boolean = false;
 
   constructor(private vendaService: VendaService,
     private colaboradorService: ColaboradorService) { }
@@ -51,6 +53,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
 
 
   listarDadosRelatorioComissaoVendedores() {
+    this.habilitarSpinner = true;
     this.habilitarPagar = false;
     this.listaVendas = [];
     this.valorTotalComissaoVendedor = 0;
@@ -74,8 +77,10 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     }
     this.vendaService.listarPorDataEVendedor(dataInicial, dataFinal, codVendedor).subscribe((response: Venda[]) => {
       if (response.length > 0 && response !== null) {
+        this.habilitarSpinner = false;
         this.habilitarMarcarTodos = true;
         this.listaVendas = response;
+        this.totalVendas = this.listaVendas.length;
         this.listaVendas.forEach(v => {
           if (v.percentualDesconto === null) {
             v.percentualDesconto = 0;
@@ -88,6 +93,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         })
         this.listaVazia = false;
       } else {
+        this.habilitarSpinner = false;
         this.listaVazia = true;
         this.habilitarMarcarTodos = false;
       }
@@ -205,6 +211,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     this.listaVazia = false;
     this.valorTotalComissaoVendedor = 0;
     this.habilitarMarcarTodos = false;
+    this.totalVendas = 0;
   }
 
   fecharModal() {

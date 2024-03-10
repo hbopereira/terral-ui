@@ -27,6 +27,8 @@ export class VendaComponent implements OnInit {
   public descricao: string = "";
   public vendedorVenda: any;
   public listaVazia: boolean = false;
+  public totalVendas: number = 0;
+  public habilitarSpinner: boolean = false;
 
 
   constructor(private vendaService: VendaService,
@@ -39,6 +41,7 @@ export class VendaComponent implements OnInit {
 
 
   listarPorDataEVendedor() {
+    this.habilitarSpinner = true;
     this.listaVendas = [];
     let dataInicial = new Date();
     let dataFinal = new Date();
@@ -59,8 +62,10 @@ export class VendaComponent implements OnInit {
     }
     this.vendaService.listarPorDataEVendedor(dataInicial, dataFinal, codVendedor).subscribe((response: Venda[]) => {
       if (response.length > 0) {
+        this.habilitarSpinner = false;
         this.somaValorTotalVenda = 0;
         this.listaVendas = response;
+        this.totalVendas = this.listaVendas.length;
         this.listaVendas.forEach(venda => {
           switch (venda.formaPagamento) {
             case "DEBITO":
@@ -81,6 +86,7 @@ export class VendaComponent implements OnInit {
         })
         this.listaVazia = false;
       } else {
+        this.habilitarSpinner = false;
         this.listaVazia = true;
         this.listaVendas = [];
         this.somaValorTotalVenda = 0;
@@ -139,6 +145,7 @@ export class VendaComponent implements OnInit {
     this.vendedorVenda = undefined;
     this.listaVendas = [];
     this.somaValorTotalVenda = 0;
+    this.totalVendas = 0;
   }
 
   abrirModalListagemItens(venda: Venda) {

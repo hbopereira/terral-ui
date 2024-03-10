@@ -10,6 +10,7 @@ import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ProgressSpinnerModule } from 'primeng/progressspinner'
 
 @NgModule({
     imports: [
@@ -21,7 +22,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
         DialogModule,
         InputNumberModule,
         TooltipModule,
-        InputSwitchModule
+        InputSwitchModule,
+        ProgressSpinnerModule
     ],
     declarations: [
         RelatorioComissaoVendedorComponent,
