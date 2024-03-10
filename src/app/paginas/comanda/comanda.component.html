@@ -217,8 +217,8 @@
                     <div class="crud--content-line"></div>
                 </div>
                 <p-table class="table table-striped" [value]="listaItens"
-                    emptyMessage="Não existem itens para esta comanda" [rows]="5" [paginator]="true"
-                    [rowsPerPageOptions]="[2,10,15,20]">
+                    emptyMessage="Não existem itens para esta comanda" [rows]="10" [paginator]="true"
+                    [rowsPerPageOptions]="[10,15,20]">
 
                     <ng-template pTemplate="header">
                         <tr>
@@ -326,7 +326,7 @@
                     <label>Não existem produtos para os filtros selecionados</label>
                 </div>
                 <p-table class="table table-striped" [value]="listaProdutos" emptyMessage="Não existem itens "
-                    [rows]="3" [paginator]="true" [rowsPerPageOptions]="[3,10,15,20]">
+                    [rows]="10" [paginator]="true" [rowsPerPageOptions]="[3,10,15,20]">
 
                     <ng-template pTemplate="header">
                         <tr>

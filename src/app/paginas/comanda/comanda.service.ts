@@ -2,38 +2,39 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Comanda } from "./model/comanda";
 import { ItemComanda } from "./model/item-comanda";
+import { Constantes } from "src/app/constantes/constantes";
 
 @Injectable()
 export class ComandaService {
-
+   constantes: Constantes = new Constantes();
    constructor(private http: HttpClient) { }
 
    salvar(comanda: Comanda) {
-      return this.http.post<Comanda>('https://terral-api.onrender.com/api/comandas/salvar', comanda);
+      return this.http.post<Comanda>(this.constantes.PATH_LOCAL +'/api/comandas/salvar', comanda);
    }
 
    editar(comanda: Comanda) {
-      return this.http.put<Comanda>('https://terral-api.onrender.com/api/comandas', comanda);
+      return this.http.put<Comanda>(this.constantes.PATH_LOCAL +'/api/comandas', comanda);
    }
 
    adicionarItem(itemComanda: ItemComanda, codComanda: string) {
-      return this.http.put<ItemComanda>('https://terral-api.onrender.com/api/comandas/adicionarItem?codComanda=' + codComanda, itemComanda);
+      return this.http.put<ItemComanda>(this.constantes.PATH_LOCAL +'/api/comandas/adicionarItem?codComanda=' + codComanda, itemComanda);
    }
 
    removerItem(codItem: string) {
-      return this.http.delete<ItemComanda>('https://terral-api.onrender.com/api/comandas/removerItem?codItem=' + codItem);
+      return this.http.delete<ItemComanda>(this.constantes.PATH_LOCAL +'/api/comandas/removerItem?codItem=' + codItem);
    }
 
    listarPorDataEVendedor(dataInicial: Date, dataFinal: Date, codVendedor: string) {
-      return this.http.get<Comanda[]>('https://terral-api.onrender.com/api/comandas/listarPorDataEVendedor?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
+      return this.http.get<Comanda[]>(this.constantes.PATH_LOCAL +'/api/comandas/listarPorDataEVendedor?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
    }
 
    listarPorCodComanda(codComanda: string) {
-      return this.http.get<ItemComanda[]>('https://terral-api.onrender.com/api/comandas/listarPorCodComanda?codComanda=' + codComanda);
+      return this.http.get<ItemComanda[]>(this.constantes.PATH_LOCAL +'/api/comandas/listarPorCodComanda?codComanda=' + codComanda);
    }
 
    setarQuantidade(item: ItemComanda) {
-      return this.http.put('https://terral-api.onrender.com/api/comandas/setarQuantidade', item);
+      return this.http.put(this.constantes.PATH_LOCAL +'/api/comandas/setarQuantidade', item);
    }
 
    setarValorVenda(comanda: Comanda) {

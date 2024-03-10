@@ -724,6 +724,12 @@ export class ComandaComponent implements OnInit {
     this.abrirModalComanda = true;
     this.novaComanda = true;
     this.editarComanda = false;
+    this.listaItens = [];
+    this.valorTotalComanda = 0;
+    this.comanda = new Comanda();
+    this.vendedorModal = null;
+    this.desabilitarVendedor = false;
+    this.desabilitarBotoes = false;
   }
 
   fecharModalComanda() {
