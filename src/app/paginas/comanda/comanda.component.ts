@@ -62,7 +62,9 @@ export class ComandaComponent implements OnInit {
   public codLoja: string = "";
   public vendedorComanda: any;;
   public entrou: boolean = false;
-  public totalComandas : number = 0;
+  public totalComandas: number = 0;
+  public totalAbertas: number = 0;
+  public totalFechadas: number = 0;
   public habilitarSpinner: boolean = false;
 
   constructor(
@@ -107,8 +109,10 @@ export class ComandaComponent implements OnInit {
         this.totalComandas = this.listaComandas.length;
         this.listaComandas.forEach(item => {
           if (item.status === "ABERTA") {
+            this.totalAbertas++;
             item.cor = "green";
           } else {
+            this.totalFechadas++;
             item.cor = "red";
           }
         })
