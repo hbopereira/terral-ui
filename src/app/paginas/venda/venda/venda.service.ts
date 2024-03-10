@@ -8,11 +8,11 @@ export class VendaService {
     constructor(private http: HttpClient) { }
 
     listarVendas() {
-        return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listar');
+        return this.http.get<Venda[]>('https://terral-api.onrender.com/api/vendas/listar');
     }
 
     listarPorDataEVendedor(dataInicial: Date, dataFinal: Date, codVendedor: string) {
-        return this.http.get<Venda[]>('http://localhost:8080/api/vendas/listarPorDataEVendedor?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
+        return this.http.get<Venda[]>('https://terral-api.onrender.com/api/vendas/listarPorDataEVendedor?dataInicial=' + dataInicial + '&dataFinal=' + dataFinal + '&codVendedor=' + codVendedor);
     }
 
     listarDadosRelatorioProdutoColaborador(dataInicial: Date, dataFinal: Date, codVendedor: string) {
