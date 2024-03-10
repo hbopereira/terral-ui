@@ -96,6 +96,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.habilitarSpinner = false;
         this.listaVazia = true;
         this.habilitarMarcarTodos = false;
+        this.totalVendas = 0;
       }
     })
   }

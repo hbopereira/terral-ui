@@ -106,6 +106,7 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
         this.listaVazia = true;
         this.listaItensVenda = [];
         this.habilitarMarcarTodos = false;
+        this.totalItens = 0;
       }
     })
   }

@@ -90,6 +90,7 @@ export class VendaComponent implements OnInit {
         this.listaVazia = true;
         this.listaVendas = [];
         this.somaValorTotalVenda = 0;
+        this.totalVendas = 0;
       }
     })
   }

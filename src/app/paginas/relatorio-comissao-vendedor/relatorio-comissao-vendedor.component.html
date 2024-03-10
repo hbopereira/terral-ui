@@ -42,15 +42,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             <h4>Vendedor(a): {{vendedorVenda.nome}}</h4>
         </div>
-        <div class="col-4">
+        <div class="col-3">
             <h4>Total Vendas: {{totalVendas}}</h4>
+        </div>
+        <div class="col-3">
+            <h4>Vr.Pago: {{valorPagoComissaoVendedor | currency}}</h4>
+        </div>
+        <div class="col-3">
+            <h4>Vr.Comissão: {{valorTotalComissaoVendedor | currency}}</h4>
         </div>
     </div>
     <div>
-       
+
     </div>
     <div *ngIf="listaVazia">
         <label>Não existem vendas para os filtros selecionados</label>
@@ -63,8 +69,9 @@
         <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
             animationDuration=".5s"></p-progressSpinner>
     </div>
-    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="10"
-        [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
+    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaVendas"
+        emptyMessage="Não existem vendas cadastradas" [rows]="10" [paginator]="true"
+        [rowsPerPageOptions]="[5,10,15,20]">
 
         <ng-template pTemplate="header">
             <tr>
@@ -122,16 +129,6 @@
     <div *ngIf="exibirMensagem" class="break-line alert alert-{{tipoMensagem}} alert-dismissible col-md-12">
         <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
         {{ mensagem }}
-    </div>
-    <div class="row">
-        <div class="col-6">
-        </div>
-        <div class="col-3">
-            <h4>Valor Pago: {{valorPagoComissaoVendedor | currency}}</h4>
-        </div>
-        <div class="col-3">
-            <h4>Valor Comissão: {{valorTotalComissaoVendedor | currency}}</h4>
-        </div>
     </div>
     <div class="row">
         <div class="col-11">

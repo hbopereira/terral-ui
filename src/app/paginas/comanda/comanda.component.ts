@@ -118,6 +118,7 @@ export class ComandaComponent implements OnInit {
         this.habilitarSpinner = false;
         this.listaVazia = true;
         this.listaComandas = [];
+        this.totalComandas = 0;
       }
     })
   }
