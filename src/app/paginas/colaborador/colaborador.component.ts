@@ -99,6 +99,7 @@ export class ColaboradorComponent implements OnInit {
         this.fecharModal();
         this.abrirModalSucesso();
         this.listarColaboradores()
+        //this.service.setarPorcentagemProduto(this.colaboradorEdicao).subscribe(() => {})
       }, error => {
         if (error) {
           this.mensagem = error.message;
@@ -106,6 +107,16 @@ export class ColaboradorComponent implements OnInit {
         }
       })
     }
+  }
+
+  setarPorcentagemProduto(){
+    this.service.setarPorcentagemProduto(this.colaboradorEdicao).subscribe(() => {
+    }, error => {
+      if (error) {
+        this.mensagem = error.message;
+        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
+      }
+    })
   }
 
   filtroColaborador(event: any) {

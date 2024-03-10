@@ -29,10 +29,11 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-3">
+        <div class="col-4">
             <h4>Total Vendas: {{totalVendas}}</h4>
         </div>
-        <div class="col-9">
+        <div class="col-4">
+            <h4>Valor Total Vendas: {{somaValorTotalVenda | currency}}</h4>
         </div>
     </div>
     <div *ngIf="listaVazia">
@@ -113,14 +114,6 @@
             </tr>
         </ng-template>
     </p-table>
-    <div class="row">
-        <div class="col-8">
-        </div>
-        <div class="col-4">
-            <h4>Valor Total Vendas: {{somaValorTotalVenda | currency}}</h4>
-        </div>
-    </div>
-
     <p-dialog (onHide)="fecharModal()" [(visible)]="abrirModalItens" [style]="{width: '726px'}" [modal]=true
         styleClass="p-fluid">
 

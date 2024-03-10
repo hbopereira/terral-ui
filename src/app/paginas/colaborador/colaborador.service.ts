@@ -23,6 +23,10 @@ export class ColaboradorService {
     editar(colaborador: Colaborador) {
         return this.http.put<Colaborador>(this.constantes.PATH_LOCAL +'/api/colaboradores', colaborador);
     }
+
+    setarPorcentagemProduto(colaborador: Colaborador) {
+        return this.http.put<Colaborador>(this.constantes.PATH_LOCAL +'/api/colaboradores/setarPorcentagemProduto', colaborador);
+    }
 }
 
 
