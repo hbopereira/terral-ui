@@ -596,6 +596,7 @@ export class ComandaComponent implements OnInit {
   }
 
   listarProdutos() {
+    this.habilitarSpinner = true;
     let colaboradorCod = "";
     this.listaProdutos = [];
     if ((this.colaboradorFiltrado !== undefined) && (this.colaboradorSelecionado !== undefined)) {
@@ -607,9 +608,11 @@ export class ComandaComponent implements OnInit {
       this.codFabricante.toLowerCase(),
       this.codLoja.toLowerCase()).subscribe((response: Produto[]) => {
         if (response.length > 0) {
+          this.habilitarSpinner = false;
           this.listaProdutos = response;
           this.listaVaziaProdutos = false;
         } else {
+          this.habilitarSpinner = false;
           this.listaVaziaProdutos = true;
         }
       })
