@@ -9,11 +9,11 @@ export class ComandaService {
    constructor(private http: HttpClient) { }
 
    salvar(comanda: Comanda) {
-      return this.http.post<Comanda>('http://localhost:8080/api/comandas/salvar', comanda);
+      return this.http.post<Comanda>('https://terral-api.onrender.com/api/comandas/salvar', comanda);
    }
 
    editar(comanda: Comanda) {
-      return this.http.put<Comanda>('http://localhost:8080/api/comandas', comanda);
+      return this.http.put<Comanda>('https://terral-api.onrender.com/api/comandas', comanda);
    }
 
    adicionarItem(itemComanda: ItemComanda, codComanda: string) {
@@ -37,11 +37,11 @@ export class ComandaService {
    }
 
    setarValorVenda(comanda: Comanda) {
-      return this.http.put('http://localhost:8080/api/comandas/setarValorVenda', comanda);
+      return this.http.put('https://terral-api.onrender.com/api/comandas/setarValorVenda', comanda);
    }
 
    setarValorItem(item: ItemComanda) {
-      return this.http.put('http://localhost:8080/api/comandas/setarValorItem', item);
+      return this.http.put('https://terral-api.onrender.com/api/comandas/setarValorItem', item);
    }
 
 }
