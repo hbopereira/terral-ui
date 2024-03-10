@@ -123,6 +123,8 @@ export class ComandaComponent implements OnInit {
         this.listaVazia = true;
         this.listaComandas = [];
         this.totalComandas = 0;
+        this.totalAbertas = 0;
+        this.totalFechadas = 0;
       }
     })
   }
@@ -706,6 +708,8 @@ export class ComandaComponent implements OnInit {
     this.vendedorComanda = undefined;
     this.listaComandas = [];
     this.totalComandas = 0;
+    this.totalAbertas = 0;
+    this.totalFechadas = 0;
   }
 
   abrirModalEditar(comanda: any) {
