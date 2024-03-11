@@ -347,15 +347,29 @@ export class ComandaComponent implements OnInit {
   }
 
   atualizarQuantidadeItemComanda(itemComanda: ItemComanda) {
-    let produto: ProdutoPostPut = new ProdutoPostPut();
-    produto.cod = itemComanda.codProduto;
-    this.listaItens.forEach(i => {
-      if (i.codProduto === itemComanda.codProduto) {
-        this.produtoService.devolverQuantidadeProduto(itemComanda.codProduto).subscribe((response: Produto) => {
-          if (response.tem_Estoque === 1) {
-            if (response.quantidade > 0) {
-              produto.quantidade = response.quantidade - 1;
-              this.produtoService.setarQuantidade(produto).subscribe(() => { });
+    if (!this.desabilitarBotoes) {
+      let produto: ProdutoPostPut = new ProdutoPostPut();
+      produto.cod = itemComanda.codProduto;
+      this.listaItens.forEach(i => {
+        if (i.codProduto === itemComanda.codProduto) {
+          this.produtoService.devolverQuantidadeProduto(itemComanda.codProduto).subscribe((response: Produto) => {
+            if (response.tem_Estoque === 1) {
+              if (response.quantidade > 0) {
+                produto.quantidade = response.quantidade - 1;
+                this.produtoService.setarQuantidade(produto).subscribe(() => { });
+                i.quantidade = this.aumentarQuantidade(i.quantidade);
+                if (this.editarComanda) {
+                  this.comandaService.setarQuantidade(i).subscribe(() => {
+                    this.listarItensComanda(this.comandaEdicao.cod, false);
+                  });
+                } else {
+                  this.calcularValorTotalComanda();
+                }
+              } else {
+                this.mensagem = "Produto: " + itemComanda.descricao + " sem estoque, favor cadastrar quantidade para o produto";
+                this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+              }
+            } else {
               i.quantidade = this.aumentarQuantidade(i.quantidade);
               if (this.editarComanda) {
                 this.comandaService.setarQuantidade(i).subscribe(() => {
@@ -364,23 +378,11 @@ export class ComandaComponent implements OnInit {
               } else {
                 this.calcularValorTotalComanda();
               }
-            } else {
-              this.mensagem = "Produto: " + itemComanda.descricao + " sem estoque, favor cadastrar quantidade para o produto";
-              this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
             }
-          } else {
-            i.quantidade = this.aumentarQuantidade(i.quantidade);
-            if (this.editarComanda) {
-              this.comandaService.setarQuantidade(i).subscribe(() => {
-                this.listarItensComanda(this.comandaEdicao.cod, false);
-              });
-            } else {
-              this.calcularValorTotalComanda();
-            }
-          }
-        })
-      }
-    })
+          })
+        }
+      })
+    }
   }
 
   habilitarAdicionar(produto: Produto, event: any) {
@@ -414,114 +416,116 @@ export class ComandaComponent implements OnInit {
   }
 
   adicionarItem(produto: Produto) {
-    let entrou = false;
-    let temItemNaLista = false;
-    let prod: ProdutoPostPut = new ProdutoPostPut();
-    if (!this.validarEdicaoPreco(produto)) {
-      this.itemComanda = new ItemComanda();
-      this.itemComanda.codProduto = produto.cod_Produto;
-      this.itemComanda.descricao = produto.descricao_Produto;
-      this.itemComanda.valor = produto.valor;
-      this.itemComanda.porcentagemColaborador = produto.porcentagem_Colaborador
-      this.itemComanda.valorColaborador = produto.valor_Colaborador;
-      this.itemComanda.quantidadeDesconto = produto.quantidadeDesconto;
-      this.itemComanda.nomeColaborador = produto.nome;
-      // quantidade de estoque do produto
-      prod.cod = produto.cod_Produto;
+    if (produto.escolheu) {
+      let entrou = false;
+      let temItemNaLista = false;
+      let prod: ProdutoPostPut = new ProdutoPostPut();
+      if (!this.validarEdicaoPreco(produto)) {
+        this.itemComanda = new ItemComanda();
+        this.itemComanda.codProduto = produto.cod_Produto;
+        this.itemComanda.descricao = produto.descricao_Produto;
+        this.itemComanda.valor = produto.valor;
+        this.itemComanda.porcentagemColaborador = produto.porcentagem_Colaborador
+        this.itemComanda.valorColaborador = produto.valor_Colaborador;
+        this.itemComanda.quantidadeDesconto = produto.quantidadeDesconto;
+        this.itemComanda.nomeColaborador = produto.nome;
+        // quantidade de estoque do produto
+        prod.cod = produto.cod_Produto;
 
-      if (this.editarComanda) {
-        if ((produto.quantidade > 0)
-          && (produto.tem_Estoque === 1)
-          && (produto.quantidade >= produto.quantidadeDesconto)) {
-          prod.quantidade = this.diminuirQuantidade(produto);
-          temItemNaLista = this.setarQuantidadeItem(this.itemComanda);
-          this.produtoService.setarQuantidade(prod).subscribe(() => { });
-
-          if (!temItemNaLista) {
-            this.itemComanda.quantidade = produto.quantidadeDesconto;
-            this.adicionar(this.itemComanda);
-          } else {
-            this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
-            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-          }
-        } else {
-          this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
-          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
-          this.listaItensAux = [];
-          this.listarItensComanda(this.comandaEdicao.cod, false);
-        }
-
-        if (produto.tem_Estoque === 0) {
-          temItemNaLista = this.setarQuantidadeItem(this.itemComanda);
-          if (!temItemNaLista) {
-            this.itemComanda.quantidade = produto.quantidadeDesconto;
-            this.adicionar(this.itemComanda);
-          } else {
-            this.listarItensComanda(this.comandaEdicao.cod, false);
-            this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
-            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-          }
-        }
-      }
-
-      if (this.novaComanda) {
-        if ((produto.quantidade > 0)
-          && (produto.tem_Estoque === 1)
-          && (produto.quantidade >= produto.quantidadeDesconto)) {
-          if (this.listaItens.length === 0) {
+        if (this.editarComanda) {
+          if ((produto.quantidade > 0)
+            && (produto.tem_Estoque === 1)
+            && (produto.quantidade >= produto.quantidadeDesconto)) {
             prod.quantidade = this.diminuirQuantidade(produto);
+            temItemNaLista = this.setarQuantidadeItem(this.itemComanda);
             this.produtoService.setarQuantidade(prod).subscribe(() => { });
-            this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
-            this.listaItens.push(this.itemComanda);
-            this.habilitarFormaPagamento = true;
-          } else {
-            for (let item of this.listaItens) {
-              if (item.codProduto === this.itemComanda.codProduto) {
-                prod.quantidade = this.diminuirQuantidade(produto);
-                this.produtoService.setarQuantidade(prod).subscribe(() => { });
-                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
-                entrou = true;
-                break;
-              }
+
+            if (!temItemNaLista) {
+              this.itemComanda.quantidade = produto.quantidadeDesconto;
+              this.adicionar(this.itemComanda);
+            } else {
+              this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+              this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
             }
-            if (!entrou) {
+          } else {
+            this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
+            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+            this.listaItensAux = [];
+            this.listarItensComanda(this.comandaEdicao.cod, false);
+          }
+
+          if (produto.tem_Estoque === 0) {
+            temItemNaLista = this.setarQuantidadeItem(this.itemComanda);
+            if (!temItemNaLista) {
+              this.itemComanda.quantidade = produto.quantidadeDesconto;
+              this.adicionar(this.itemComanda);
+            } else {
+              this.listarItensComanda(this.comandaEdicao.cod, false);
+              this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+              this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+            }
+          }
+        }
+
+        if (this.novaComanda) {
+          if ((produto.quantidade > 0)
+            && (produto.tem_Estoque === 1)
+            && (produto.quantidade >= produto.quantidadeDesconto)) {
+            if (this.listaItens.length === 0) {
               prod.quantidade = this.diminuirQuantidade(produto);
               this.produtoService.setarQuantidade(prod).subscribe(() => { });
-              this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
-              this.listaItens.push(this.itemComanda)
-            }
-          }
-          this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
-          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
-        } else {
-          this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
-          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
-        }
-
-        if (produto.tem_Estoque === 0) {
-          if (this.listaItens.length === 0) {
-            this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
-            this.listaItens.push(this.itemComanda);
-            this.habilitarFormaPagamento = true;
-          } else {
-            for (let item of this.listaItens) {
-              if (item.codProduto === this.itemComanda.codProduto) {
-                item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
-                entrou = true;
-                break;
+              this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
+              this.listaItens.push(this.itemComanda);
+              this.habilitarFormaPagamento = true;
+            } else {
+              for (let item of this.listaItens) {
+                if (item.codProduto === this.itemComanda.codProduto) {
+                  prod.quantidade = this.diminuirQuantidade(produto);
+                  this.produtoService.setarQuantidade(prod).subscribe(() => { });
+                  item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                  entrou = true;
+                  break;
+                }
+              }
+              if (!entrou) {
+                prod.quantidade = this.diminuirQuantidade(produto);
+                this.produtoService.setarQuantidade(prod).subscribe(() => { });
+                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                this.listaItens.push(this.itemComanda)
               }
             }
-            if (!entrou) {
-              this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
-              this.listaItens.push(this.itemComanda);
-            }
+            this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+          } else {
+            this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
+            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
           }
-          this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
-          this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+
+          if (produto.tem_Estoque === 0) {
+            if (this.listaItens.length === 0) {
+              this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
+              this.listaItens.push(this.itemComanda);
+              this.habilitarFormaPagamento = true;
+            } else {
+              for (let item of this.listaItens) {
+                if (item.codProduto === this.itemComanda.codProduto) {
+                  item.quantidade = item.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                  entrou = true;
+                  break;
+                }
+              }
+              if (!entrou) {
+                this.itemComanda.quantidade = this.itemComanda.quantidade + Number(this.itemComanda.quantidadeDesconto);
+                this.listaItens.push(this.itemComanda);
+              }
+            }
+            this.mensagem = "Produto: " + produto.descricao_Produto + " adicionado com sucesso!";
+            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
+          }
+          this.calcularValorTotalComanda();
         }
-        this.calcularValorTotalComanda();
+        this.listarProdutos();
       }
-      this.listarProdutos();
     }
   }
 
@@ -550,37 +554,39 @@ export class ComandaComponent implements OnInit {
 
 
   removerItem(item: ItemComanda) {
-    let prod: ProdutoPostPut = new ProdutoPostPut();
-    prod.cod = item.codProduto;
-    if (this.listaItens.length > 0) {
-      this.listaItens.forEach(i => {
-        if (i.codProduto === item.codProduto) {
-          this.produtoService.devolverQuantidadeProduto(prod.cod).subscribe((response: Produto) => {
-            if (response.tem_Estoque === 1) {
-              prod.quantidade = this.aumentarQuantidade(response.quantidade);
-              this.produtoService.setarQuantidade(prod).subscribe(() => { });
-            }
-            i.quantidade = i.quantidade - 1;
-            this.comandaService.setarQuantidade(i).subscribe(() => {
-              if (this.editarComanda) {
-                this.listarItensComanda(this.comandaEdicao.cod, true);
-              } else {
-                if (i.quantidade === 0) {
-                  let indice = this.listaItens.indexOf(i);
-                  this.listaItens.splice(indice, 1);
-                }
-                this.calcularValorTotalComanda();
+    if (!this.desabilitarBotoes) {
+      let prod: ProdutoPostPut = new ProdutoPostPut();
+      prod.cod = item.codProduto;
+      if (this.listaItens.length > 0) {
+        this.listaItens.forEach(i => {
+          if (i.codProduto === item.codProduto) {
+            this.produtoService.devolverQuantidadeProduto(prod.cod).subscribe((response: Produto) => {
+              if (response.tem_Estoque === 1) {
+                prod.quantidade = this.aumentarQuantidade(response.quantidade);
+                this.produtoService.setarQuantidade(prod).subscribe(() => { });
               }
+              i.quantidade = i.quantidade - 1;
+              this.comandaService.setarQuantidade(i).subscribe(() => {
+                if (this.editarComanda) {
+                  this.listarItensComanda(this.comandaEdicao.cod, true);
+                } else {
+                  if (i.quantidade === 0) {
+                    let indice = this.listaItens.indexOf(i);
+                    this.listaItens.splice(indice, 1);
+                  }
+                  this.calcularValorTotalComanda();
+                }
+              });
             });
-          });
-        }
-      })
+          }
+        })
+      }
+      if (this.listaItens.length === 1) {
+        this.habilitarFormaPagamento = false;
+      }
+      this.mensagem = "Produto: " + item.descricao + " removido com sucesso!"
+      this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
     }
-    if (this.listaItens.length === 1) {
-      this.habilitarFormaPagamento = false;
-    }
-    this.mensagem = "Produto: " + item.descricao + " removido com sucesso!"
-    this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
   }
 
   calcularValorTotalComDesconto(porcentagemDesconto: number) {
@@ -591,6 +597,14 @@ export class ComandaComponent implements OnInit {
         valorTotalComDesconto = valorTotalComDesconto * (1 - porcentagemDesconto / 100);
         this.valorTotalComanda = valorTotalComDesconto;
       }
+      if (this.valorTotalComanda < 0) {
+        if (this.novaComanda) {
+          this.comanda.percentualDesconto = 0
+        } else {
+          this.comandaEdicao.percentualDesconto = 0;
+        }
+        this.calcularValorTotalComanda();
+      }
     }
   }
 
@@ -599,7 +613,6 @@ export class ComandaComponent implements OnInit {
     for (let item of this.listaItens) {
       this.valorTotalComanda = this.valorTotalComanda + Number(item.valor) * Number(item.quantidade);
     }
-
   }
 
   listarProdutos() {
