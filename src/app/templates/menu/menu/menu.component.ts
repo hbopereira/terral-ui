@@ -37,10 +37,10 @@ export class MenuComponent implements OnInit {
         label: 'Vendas',
         routerLink: 'vendas'
       },
-      {
-        label: 'Lançamentos',
-        routerLink: 'lancamentos'
-      },
+      //{
+      //  label: 'Lançamentos',
+      //  routerLink: 'lancamentos'
+      //},
       {
         label: 'Relatorios',
         items: [
