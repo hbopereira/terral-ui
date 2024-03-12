@@ -58,7 +58,7 @@
             animationDuration=".5s"></p-progressSpinner>
     </div>
     <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaComandas" emptyMessage="Não existem comandas cadastradas"
-        [rows]="30" [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
+        [rows]="30" [paginator]="true" [rowsPerPageOptions]="[30,35,40,45]">
 
         <ng-template pTemplate="header">
             <tr>
@@ -421,10 +421,10 @@
                 </div>
                 <div class="row">
                     <div class="col-6 text-center">
-                        <button type="button" class="btn btn-success botaoEnviar" (click)="salvar(true)">Sim</button>
+                        <button [disabled]="desabilitarSim" type="button" class="btn btn-success botaoEnviar" (click)="salvar(true)">Sim</button>
                     </div>
                     <div class="col-6">
-                        <button type="button" class="btn btn-danger botaoEnviar" (click)="salvar(false)">Não</button>
+                        <button [disabled]="desabilitarSim" type="button" class="btn btn-danger botaoEnviar" (click)="salvar(false)">Não</button>
                     </div>
                 </div>
                 <div *ngIf="habilitarSpinner">

@@ -66,6 +66,7 @@ export class ComandaComponent implements OnInit {
   public totalAbertas: number = 0;
   public totalFechadas: number = 0;
   public habilitarSpinner: boolean = false;
+  public desabilitarSim: boolean = false;
 
   constructor(
     private produtoService: ProdutoService,
@@ -84,6 +85,8 @@ export class ComandaComponent implements OnInit {
   }
 
   listarPorDataEVendedor() {
+    this.totalAbertas = 0;
+    this.totalFechadas = 0;
     this.habilitarSpinner = true;
     let dataInicial = new Date();
     let dataFinal = new Date();
@@ -140,6 +143,7 @@ export class ComandaComponent implements OnInit {
   }
 
   salvar(fechaComanda: boolean) {
+    this.desabilitarSim = true;
     let comanda: Comanda = new Comanda();
     if ((!this.camposVazios) && (this.novaComanda)) {
       this.comanda.vendedor = this.vendedorModal;
@@ -418,6 +422,11 @@ export class ComandaComponent implements OnInit {
     return valorColaborador;
   }
 
+  isDecimal(valor : any) {
+    if(isNaN(valor)) return false;             // false para não numéricos
+    return parseInt(valor) != parseFloat(valor); // false para inteiros
+}
+
   adicionarItem(produto: Produto) {
     if (produto.escolheu) {
       let entrou = false;
@@ -530,6 +539,10 @@ export class ComandaComponent implements OnInit {
         this.listarProdutos();
       }
     }
+  }
+
+  calcularValorGrama(grama: any, valorProduto: any){
+     return grama * 1000;
   }
 
   listarItensComanda(codComanda: any, remover: Boolean) {
@@ -810,6 +823,7 @@ export class ComandaComponent implements OnInit {
 
   fecharModalVerificacao() {
     this.abrirModalVerificar = false;
+    this.desabilitarSim = false;
   }
 
 }
