@@ -47,8 +47,8 @@
         <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
             animationDuration=".5s"></p-progressSpinner>
     </div>
-    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="30"
-        [paginator]="true" [rowsPerPageOptions]="[5,10,15,20]">
+    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaVendas" emptyMessage="Não existem vendas cadastradas" [rows]="10"
+        [paginator]="true" [rowsPerPageOptions]="[10,15,20,25]">
 
         <ng-template pTemplate="header">
             <tr>
