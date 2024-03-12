@@ -250,6 +250,7 @@ export class ComandaComponent implements OnInit {
   }
 
   transfomarComandaEmVenda(comanda: Comanda, fechaComanda: Boolean) {
+    this.habilitarSpinner = true;
     let venda: Venda = new Venda()
     venda.formaPagamento = comanda.formaPagamento
     venda.valorTotal = comanda.valorTotal;
@@ -264,10 +265,12 @@ export class ComandaComponent implements OnInit {
     this.vendaService.salvar(venda).subscribe(() => {
       this.mensagem = "Venda cadastrada com sucesso!";
       if (fechaComanda) {
+        this.habilitarSpinner = false;
         this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
       }
     }, error => {
       if (error) {
+        this.habilitarSpinner = false;
         this.mensagem = error.message;
         this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
       }
