@@ -67,6 +67,7 @@ export class ComandaComponent implements OnInit {
   public totalFechadas: number = 0;
   public habilitarSpinner: boolean = false;
   public desabilitarSim: boolean = false;
+  public calculaValorProdutoEmGramas: boolean = false;
 
   constructor(
     private produtoService: ProdutoService,
@@ -422,13 +423,17 @@ export class ComandaComponent implements OnInit {
     return valorColaborador;
   }
 
-  isDecimal(valor : any) {
-    if(isNaN(valor)) return false;             // false para não numéricos
-    return parseInt(valor) != parseFloat(valor); // false para inteiros
-}
+  setarValorGramaItemComanda(event: any) {
+    if (event) {
+      this.calculaValorProdutoEmGramas = true;
+    } else {
+      this.calculaValorProdutoEmGramas = false;
+    }
+  }
 
   adicionarItem(produto: Produto) {
     if (produto.escolheu) {
+      let quantidadeGramas = 0;
       let entrou = false;
       let temItemNaLista = false;
       let prod: ProdutoPostPut = new ProdutoPostPut();
@@ -436,6 +441,12 @@ export class ComandaComponent implements OnInit {
         this.itemComanda = new ItemComanda();
         this.itemComanda.codProduto = produto.cod_Produto;
         this.itemComanda.descricao = produto.descricao_Produto;
+        if (this.calculaValorProdutoEmGramas) {
+          produto.valor = this.calcularValorGrama(produto.quantidadeDesconto, produto.valor);
+          quantidadeGramas = produto.quantidadeDesconto;
+          produto.quantidadeDesconto = 1;
+          this.itemComanda.quantidadeGramas = quantidadeGramas;
+        }
         this.itemComanda.valor = produto.valor;
         this.itemComanda.porcentagemColaborador = produto.porcentagem_Colaborador
         this.itemComanda.valorColaborador = produto.valor_Colaborador;
@@ -539,10 +550,11 @@ export class ComandaComponent implements OnInit {
         this.listarProdutos();
       }
     }
+    this.calculaValorProdutoEmGramas = false;
   }
 
-  calcularValorGrama(grama: any, valorProduto: any){
-     return grama * 1000;
+  calcularValorGrama(grama: any, valorProduto: any) {
+    return grama * valorProduto / 1000;
   }
 
   listarItensComanda(codComanda: any, remover: Boolean) {

@@ -12,6 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       DialogModule,
       TooltipModule,
       InputNumberModule,
-      ProgressSpinnerModule
+      ProgressSpinnerModule,
+      CheckboxModule
     ],
     declarations: [
       ProdutoComponent,

@@ -13,6 +13,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { TooltipModule } from 'primeng/tooltip';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ComandaComponent } from './comanda.component';
 
 
@@ -29,7 +30,8 @@ import { ComandaComponent } from './comanda.component';
         DropdownModule,
         ProgressSpinnerModule,
         InputSwitchModule,
-        TooltipModule
+        TooltipModule,
+        CheckboxModule
     ],
     declarations: [
         ComandaComponent,

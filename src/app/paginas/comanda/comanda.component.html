@@ -57,8 +57,9 @@
         <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
             animationDuration=".5s"></p-progressSpinner>
     </div>
-    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaComandas" emptyMessage="Não existem comandas cadastradas"
-        [rows]="30" [paginator]="true" [rowsPerPageOptions]="[30,35,40,45]">
+    <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaComandas"
+        emptyMessage="Não existem comandas cadastradas" [rows]="30" [paginator]="true"
+        [rowsPerPageOptions]="[30,35,40,45]">
 
         <ng-template pTemplate="header">
             <tr>
@@ -239,6 +240,7 @@
                         <tr>
                             <th scope="col" pSortableColumn="descricao">Descrição</th>
                             <th scope="col" pSortableColumn="valor">Valor</th>
+                            <th scope="col" pSortableColumn="gramas">Gramas</th>
                             <th scope="col" pSortableColumn="quantidade">Quantidade</th>
                             <th scope="col">Ações</th>
                         </tr>
@@ -256,6 +258,7 @@
                                         {{item.valor | currency}}
                                     </ng-template>
                                 </p-cellEditor></td>
+                            <td>{{item.quantidadeGramas}}G</td>
                             <td>{{item.quantidade}}</td>
                             <td>
                                 <p-button icon="pi pi-plus" pTooltip="Adicionar" [disabled]="desabilitarBotoes"
@@ -346,14 +349,16 @@
                     <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
                         animationDuration=".5s"></p-progressSpinner>
                 </div>
-                <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaProdutos" emptyMessage="Não existem itens "
-                    [rows]="10" [paginator]="true" [rowsPerPageOptions]="[3,10,15,20]">
+                <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaProdutos"
+                    emptyMessage="Não existem itens " [rows]="10" [paginator]="true"
+                    [rowsPerPageOptions]="[3,10,15,20]">
 
                     <ng-template pTemplate="header">
                         <tr>
                             <th scope="col" pSortableColumn="descricao">Colaborador</th>
                             <th scope="col" pSortableColumn="descricao">Descrição</th>
                             <th scope="col" pSortableColumn="valor">Valor</th>
+                            <th scope="col" pSortableColumn="calcularValorProdutoEmGramas">Gramas</th>
                             <th scope="col" pSortableColumn="quantidadeDesconto">Quantidade</th>
                             <th scope="col">Ações</th>
                         </tr>
@@ -370,6 +375,7 @@
                                 <p-columnFilter type="text" field="valor" [showMenu]="false">
                                 </p-columnFilter>
                             </th>
+                            <th scope="row"></th>
                             <th scope="row"></th>
                             <th scope="row"></th>
                         </tr>
@@ -389,6 +395,11 @@
                                         {{item.valor | currency}}
                                     </ng-template>
                                 </p-cellEditor>
+                            </td>
+                            <td>
+                                <p-checkbox [(ngModel)]="item.calcularValorProdutoEmGramas"
+                                    (ngModelChange)="setarValorGramaItemComanda($event)" [binary]="true"
+                                    inputId="binary"></p-checkbox>
                             </td>
                             <td>
                                 <input type="number" class="form-control"
@@ -421,10 +432,12 @@
                 </div>
                 <div class="row">
                     <div class="col-6 text-center">
-                        <button [disabled]="desabilitarSim" type="button" class="btn btn-success botaoEnviar" (click)="salvar(true)">Sim</button>
+                        <button [disabled]="desabilitarSim" type="button" class="btn btn-success botaoEnviar"
+                            (click)="salvar(true)">Sim</button>
                     </div>
                     <div class="col-6">
-                        <button [disabled]="desabilitarSim" type="button" class="btn btn-danger botaoEnviar" (click)="salvar(false)">Não</button>
+                        <button [disabled]="desabilitarSim" type="button" class="btn btn-danger botaoEnviar"
+                            (click)="salvar(false)">Não</button>
                     </div>
                 </div>
                 <div *ngIf="habilitarSpinner">

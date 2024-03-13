@@ -131,6 +131,7 @@
                         <th scope="col" pSortableColumn="nomeColaborador">Colaborador</th>
                         <th scope="col" pSortableColumn="descricao">Descrição</th>
                         <th scope="col" pSortableColumn="valor">Valor</th>
+                        <th scope="col" pSortableColumn="quantidadeGramas">Gramas</th>
                         <th scope="col" pSortableColumn="quantidade">Quantidade</th>
                     </tr>
                 </ng-template>
@@ -140,6 +141,7 @@
                         <td>{{item.nomeColaborador}}</td>
                         <td>{{item.descricao}}</td>
                         <td>{{item.valor | currency}}</td>
+                        <td>{{item.quantidadeGramas}}G</td>
                         <td>{{item.quantidade}}</td>
                     </tr>
                 </ng-template>

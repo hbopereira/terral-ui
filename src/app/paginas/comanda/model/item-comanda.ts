@@ -18,4 +18,5 @@ export class ItemComanda {
     valorFinalColaborador: number = 0;
     pago : boolean = false;
     desabilitar: boolean = false;
+    quantidadeGramas: number = 0;
 }
