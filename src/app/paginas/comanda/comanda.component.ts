@@ -378,7 +378,14 @@ export class ComandaComponent implements OnInit {
                 this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
               }
             } else {
-              i.quantidade = this.aumentarQuantidade(i.quantidade);
+              if ((i.codRandom === itemComanda.codRandom)
+                && (itemComanda.codRandom !== "")
+                && (itemComanda.usaGramas)) {
+                i.quantidade = this.aumentarQuantidade(i.quantidade);
+              }
+              if (!i.usaGramas) {
+                i.quantidade = this.aumentarQuantidade(i.quantidade);
+              }
               if (this.editarComanda) {
                 this.comandaService.setarQuantidade(i).subscribe(() => {
                   this.listarItensComanda(this.comandaEdicao.cod, false);
@@ -392,6 +399,7 @@ export class ComandaComponent implements OnInit {
       })
     }
   }
+
 
   habilitarAdicionar(produto: Produto, event: any) {
     this.listaProdutos.forEach(p => {
@@ -442,10 +450,12 @@ export class ComandaComponent implements OnInit {
         this.itemComanda.codProduto = produto.cod_Produto;
         this.itemComanda.descricao = produto.descricao_Produto;
         if (this.calculaValorProdutoEmGramas) {
+          this.itemComanda.usaGramas = true;
           produto.valor = this.calcularValorGrama(produto.quantidadeDesconto, produto.valor);
           quantidadeGramas = produto.quantidadeDesconto;
           produto.quantidadeDesconto = 1;
           this.itemComanda.quantidadeGramas = quantidadeGramas;
+          this.itemComanda.codRandom = String(Math.floor(Math.random() * 100000));
         }
         this.itemComanda.valor = produto.valor;
         this.itemComanda.porcentagemColaborador = produto.porcentagem_Colaborador
@@ -525,7 +535,7 @@ export class ComandaComponent implements OnInit {
           }
 
           if (produto.tem_Estoque === 0) {
-            if (this.listaItens.length === 0) {
+            if ((this.listaItens.length === 0) || (this.calculaValorProdutoEmGramas)) {
               this.itemComanda.quantidade = this.itemComanda.quantidadeDesconto;
               this.listaItens.push(this.itemComanda);
               this.habilitarFormaPagamento = true;
@@ -593,7 +603,14 @@ export class ComandaComponent implements OnInit {
                 prod.quantidade = this.aumentarQuantidade(response.quantidade);
                 this.produtoService.setarQuantidade(prod).subscribe(() => { });
               }
-              i.quantidade = i.quantidade - 1;
+              if ((i.codRandom === item.codRandom)
+                && (item.codRandom !== "")
+                && (item.usaGramas)) {
+                i.quantidade = i.quantidade - 1;
+              }
+              if (!i.usaGramas) {
+                i.quantidade = i.quantidade - 1;
+              }
               this.comandaService.setarQuantidade(i).subscribe(() => {
                 if (this.editarComanda) {
                   this.listarItensComanda(this.comandaEdicao.cod, true);
@@ -773,6 +790,7 @@ export class ComandaComponent implements OnInit {
     this.editarComanda = true;
     this.novaComanda = false;
     this.abrirModalComanda = true;
+    this.listarItensComanda(this.comandaEdicao, false);
     if (comanda.percentualDesconto !== null) {
       this.calcularValorTotalComDesconto(comanda.percentualDesconto)
     } else {

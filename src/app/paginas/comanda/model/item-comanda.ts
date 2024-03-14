@@ -19,4 +19,6 @@ export class ItemComanda {
     pago : boolean = false;
     desabilitar: boolean = false;
     quantidadeGramas: number = 0;
+    codRandom: string = "";
+    usaGramas: boolean = false;
 }
