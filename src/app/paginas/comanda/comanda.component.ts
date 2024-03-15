@@ -468,7 +468,7 @@ export class ComandaComponent implements OnInit {
         if (this.editarComanda) {
           if ((produto.quantidade > 0)
             && (produto.tem_Estoque === 1)
-            && (produto.quantidade >= produto.quantidadeDesconto)) {
+            && (produto.quantidadeDesconto <= produto.quantidade)) {
             prod.quantidade = this.diminuirQuantidade(produto);
             temItemNaLista = this.setarQuantidadeItem(this.itemComanda);
             this.produtoService.setarQuantidade(prod).subscribe(() => { });
@@ -481,10 +481,12 @@ export class ComandaComponent implements OnInit {
               this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
             }
           } else {
-            this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
-            this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
-            this.listaItensAux = [];
-            this.listarItensComanda(this.comandaEdicao.cod, false);
+            if (!this.calculaValorProdutoEmGramas) {
+              this.mensagem = "Produto: " + produto.descricao_Produto + " sem estoque, favor cadastrar quantidade para o produto";
+              this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'warning', false);
+              this.listaItensAux = [];
+              this.listarItensComanda(this.comandaEdicao.cod, false);
+            }
           }
 
           if (produto.tem_Estoque === 0) {
@@ -503,7 +505,7 @@ export class ComandaComponent implements OnInit {
         if (this.novaComanda) {
           if ((produto.quantidade > 0)
             && (produto.tem_Estoque === 1)
-            && (produto.quantidade >= produto.quantidadeDesconto)) {
+            && (produto.quantidadeDesconto <= produto.quantidade)) {
             if (this.listaItens.length === 0) {
               prod.quantidade = this.diminuirQuantidade(produto);
               this.produtoService.setarQuantidade(prod).subscribe(() => { });
