@@ -559,10 +559,10 @@ export class ComandaComponent implements OnInit {
           }
           this.calcularValorTotalComanda();
         }
-        this.listarProdutos();
       }
     }
     this.calculaValorProdutoEmGramas = false;
+    this.listarProdutos();
   }
 
   calcularValorGrama(grama: any, valorProduto: any) {
