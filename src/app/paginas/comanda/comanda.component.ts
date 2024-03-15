@@ -323,7 +323,7 @@ export class ComandaComponent implements OnInit {
 
   setarQuantidadeItem(itemComanda: ItemComanda) {
     let entrou = false;
-    if (this.editarComanda) {
+    if ((this.editarComanda) && (!this.calculaValorProdutoEmGramas)) {
       this.listaItensAux = this.listaItens;
       this.listaItensAux.push(itemComanda);
       this.listaItensAux.filter((it) => it.cod !== "").forEach(i => {
