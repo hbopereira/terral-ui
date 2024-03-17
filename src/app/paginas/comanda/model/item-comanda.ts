@@ -21,4 +21,5 @@ export class ItemComanda {
     quantidadeGramas: number = 0;
     codRandom: string = "";
     usaGramas: boolean = false;
+    desabilitarPagarTable: boolean = false;
 }

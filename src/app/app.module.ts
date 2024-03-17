@@ -20,12 +20,13 @@ import { RelatorioComissaoVendedorModule } from './paginas/relatorio-comissao-ve
 import { RelatorioProdutoColaboradorModule } from './paginas/relatorio-produto-colaborador/relatorio-produto-colaborador.module';
 import { DashboardModule } from './paginas/dashboard/dashboard.module';
 import { LancamentoModule } from './paginas/lancamento/lancamento.module';
+import { LoginModule } from './paginas/login/login.module';
+import { LoginService } from './paginas/login/login.service';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,14 +42,16 @@ import { LancamentoModule } from './paginas/lancamento/lancamento.module';
     RelatorioProdutoColaboradorModule,
     DashboardModule,
     LancamentoModule,
-    AppRoutingModule
+    AppRoutingModule,
+    LoginModule
   ],
   providers: [
     ProdutoService,
     ColaboradorService,
     SecaoService,
     VendaService,
-    ComandaService
+    ComandaService,
+    LoginService
 ],
   bootstrap: [AppComponent]
 })

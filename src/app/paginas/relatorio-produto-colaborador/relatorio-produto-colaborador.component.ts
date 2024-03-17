@@ -32,14 +32,28 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
   public valorPagoColaborador: number = 0;
   public calculoTaxaDebito: number = 0.75 / 100;
   public calculoTaxaCredito: number = 0.95 / 100;
-  public totalItens : number = 0;
-  public habilitarSpinner : boolean = false;
+  public totalItens: number = 0;
+  public habilitarSpinner: boolean = false;
+  public desabilitar: boolean = false;
 
   constructor(private vendaService: VendaService,
     private colaboradorService: ColaboradorService) { }
 
   ngOnInit(): void {
     this.listarVendedores();
+    this.setarColaboradorLogado();
+  }
+
+  setarColaboradorLogado() {
+    let usuario = localStorage.getItem('usuario');
+    if (usuario !== null) {
+      let colaborador: Colaborador = JSON.parse(usuario);
+      if (colaborador.papel === 'USUARIO') {
+        this.vendedorVenda = colaborador;
+        this.desabilitar = true;
+        this.habilitarConsultar = true;
+      }
+    }
   }
 
   listarDadosRelatorioProdutoColaborador() {
@@ -53,6 +67,7 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
     let dataInicial = new Date();
     let dataFinal = new Date();
     let codVendedor = "";
+    let usuario = localStorage.getItem('usuario');
 
     if (this.vendedorVenda !== undefined) {
       codVendedor = this.vendedorVenda.cod;
@@ -99,6 +114,12 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
             item.desabilitar = true;
             this.valorPagoColaborador = this.valorPagoColaborador + valor;
           }
+          if (usuario !== null) {
+            let colaborador: Colaborador = JSON.parse(usuario);
+            if (colaborador.papel === 'USUARIO') {
+              item.desabilitarPagarTable = true;
+            }
+          }
         })
         this.listaVazia = false;
       } else {
@@ -120,7 +141,7 @@ export class RelatorioProdutoColaboradorComponent implements OnInit {
         this.fecharModalVerificacao();
       });
     } else {
-       this.fecharModalVerificacao();
+      this.fecharModalVerificacao();
     }
   }
 

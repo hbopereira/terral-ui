@@ -41,7 +41,9 @@ export class ProdutoComponent implements OnInit {
   public produto: ProdutoPostPut = new ProdutoPostPut();
   public produtoEdicao: ProdutoPostPut = new ProdutoPostPut();
   public descricao: string = "";
-  public totalProdutos : number = 0;
+  public totalProdutos: number = 0;
+  public desabilitar: boolean = false;
+  public desabilitarValorEtiqueta: boolean = false;
 
 
 
@@ -53,6 +55,22 @@ export class ProdutoComponent implements OnInit {
   ngOnInit(): void {
     this.listarColaboradores();
     this.listarSecoes();
+    this.setarColaboradorLogado();
+  }
+
+  setarColaboradorLogado() {
+    let usuario = localStorage.getItem('usuario');
+    if (usuario !== null) {
+      let colaborador: Colaborador = JSON.parse(usuario);
+      if(colaborador.papel === 'USUARIO'){
+         this.colaboradorSelecionado = colaborador;
+         this.colaboradorModal = colaborador;
+         this.desabilitar = true;
+      }else {
+        this.desabilitar = false;
+        this.desabilitarValorEtiqueta = false;
+      }
+    }
   }
 
   onFileChange(evt: any) {
@@ -101,7 +119,8 @@ export class ProdutoComponent implements OnInit {
             this.produto.quantidade = quantidade;
           } else {
             this.produto.temEstoque = 0;
-;          }
+            ;
+          }
           if ((this.produto.valor !== "0")
             && (this.produto.descricaoProduto !== undefined)
             && (this.produto.valor !== "NaN")) {
@@ -109,7 +128,7 @@ export class ProdutoComponent implements OnInit {
           }
         });
         this.salvar(true);
-       console.log(this.listaProdutosASeremEnviados);
+        console.log(this.listaProdutosASeremEnviados);
         this.colaborador = new Colaborador();
       }
       reader.readAsBinaryString(target.files[0]);
@@ -312,6 +331,8 @@ export class ProdutoComponent implements OnInit {
   }
 
   abrirModalEditar(produto: any) {
+    this.desabilitar = true;
+    this.desabilitarValorEtiqueta = true;
     this.produtoEdicao.colaborador.cod = produto.cod_Colaborador;
     this.produtoEdicao.colaborador.nome = produto.nome;
     this.produtoEdicao.secao.cod = produto.cod_Secao;
@@ -321,19 +342,23 @@ export class ProdutoComponent implements OnInit {
     this.produtoEdicao.cod = produto.cod_Produto;
     this.produtoEdicao.porcentagemColaborador = produto.porcentagem_Colaborador;
     this.produtoEdicao.temEstoque = produto.tem_Estoque;
-    if(this.produtoEdicao.temEstoque === 0){
+    if (this.produtoEdicao.temEstoque === 0) {
       produto.quantidade = null;
     }
     this.produtoEdicao.quantidade = produto.quantidade;
     this.novoProduto = false;
     this.abrirModalProduto = true;
     this.editarProduto = true;
+    this.setarColaboradorLogado();
+    
   }
 
   abrirModalIncluir() {
+    this.desabilitarValorEtiqueta = false;
     this.abrirModalProduto = true;
     this.editarProduto = false;
     this.novoProduto = true;
+    this.setarColaboradorLogado();
   }
 
   abrirModalSucesso() {

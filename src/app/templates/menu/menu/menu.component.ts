@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { Router } from '@angular/router';
+import { Colaborador } from 'src/app/model/colaborador';
+
 
 @Component({
   selector: 'app-menu',
@@ -9,23 +12,29 @@ import { MenuItem } from 'primeng/api';
 export class MenuComponent implements OnInit {
   items: MenuItem[] = [];
 
-  public exibirMenu : boolean = false;
+  public exibirMenu: boolean = false;
+
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+    this.verificarUsuario();
     this.items = [
       {
         label: 'Dashboard',
-        routerLink: 'dashboard'
-
+        routerLink: 'dashboard',
+        disabled: !this.exibirMenu
       },
       {
         label: 'Colaboradores',
-        routerLink: 'colaboradores'
+        routerLink: 'colaboradores',
+        disabled: !this.exibirMenu
 
       },
       {
         label: 'Seções',
-        routerLink: 'secoes'
+        routerLink: 'secoes',
+        disabled: !this.exibirMenu
       },
       {
         label: 'Produtos',
@@ -57,5 +66,19 @@ export class MenuComponent implements OnInit {
         ]
       }
     ]
+  }
+  verificarUsuario() {
+    let usuario = localStorage.getItem('usuario')
+    if (usuario !== null) {
+      let colaborador: Colaborador = JSON.parse(usuario);
+      if (colaborador.papel === 'ADMIN') {
+        this.exibirMenu = true;
+      }
+    }
+  }
+  limparUsuario() {
+    localStorage.setItem('usuario', '');
+    localStorage.setItem('', '')
+    this.router.navigate(['login']);
   }
 }

@@ -19,7 +19,7 @@ export class ProdutoService {
     }
 
     salvar(produto: ProdutoPostPut) {
-        return this.http.post<ProdutoPostPut>(this.constantes.PATH_LOCAL + 'https://terral-api.onrender.com/api/produtos', produto);
+        return this.http.post<ProdutoPostPut>(this.constantes.PATH_LOCAL + '/api/produtos', produto);
     }
 
     salvarEmLote(listaProdutos: ProdutoPostPut[]) {

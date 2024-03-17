@@ -37,12 +37,26 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
   public valorTotal = 0;
   public totalVendas: number = 0;
   public habilitarSpinner: boolean = false;
+  public desabilitar: boolean = false;
 
   constructor(private vendaService: VendaService,
     private colaboradorService: ColaboradorService) { }
 
   ngOnInit(): void {
     this.listarVendedores();
+    this.setarColaboradorLogado();
+  }
+
+  setarColaboradorLogado() {
+    let usuario = localStorage.getItem('usuario');
+    if (usuario !== null) {
+      let colaborador: Colaborador = JSON.parse(usuario);
+      if (colaborador.papel === 'USUARIO') {
+        this.vendedorVenda = colaborador;
+        this.desabilitar = true;
+        this.habilitarConsultar = true;
+      }
+    }
   }
 
   habilitarBotaoConsultar(event: any) {
@@ -61,6 +75,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     let dataInicial = new Date();
     let dataFinal = new Date();
     let codVendedor = "";
+    let usuario = localStorage.getItem('usuario');
 
     if (this.vendedorVenda !== undefined) {
       codVendedor = this.vendedorVenda.cod;
@@ -84,6 +99,13 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.listaVendas.forEach(v => {
           if (v.percentualDesconto === null) {
             v.percentualDesconto = 0;
+          }
+
+          if (usuario !== null) {
+            let colaborador: Colaborador = JSON.parse(usuario);
+            if (colaborador.papel === 'USUARIO') {
+              v.desabilitarPagarTable = true;
+            }
           }
           if (v.pago) {
             v.desabilitar = true;
@@ -110,7 +132,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.remover(ve.cod);
       }
     })
-    if(this.listaCodVendaASeremPagas.length === 0){
+    if (this.listaCodVendaASeremPagas.length === 0) {
       this.habilitarPagar = false;
     } else {
       this.habilitarPagar = true;;
@@ -119,14 +141,14 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
 
   atualizarVendasComoPagas(atualizar: boolean) {
     if (atualizar) {
-      this.vendaService.setarVendasItensVendaComoPago(this.listaCodVendaASeremPagas,true).subscribe(() => {
+      this.vendaService.setarVendasItensVendaComoPago(this.listaCodVendaASeremPagas, true).subscribe(() => {
         this.listarDadosRelatorioComissaoVendedores();
         this.mensagem = "Comissao paga sucesso!";
         this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'info', false);
         this.fecharModalVerificacao();
       });
     } else {
-       this.fecharModalVerificacao();
+      this.fecharModalVerificacao();
     }
   }
 

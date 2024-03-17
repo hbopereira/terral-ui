@@ -12,7 +12,7 @@ import { DashboardComponent } from './paginas/dashboard/dashboard.component';
 import { LancamentoComponent } from './paginas/lancamento/lancamento.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
  // { path: 'pagina-nao-encontrada', component: PaginaNaoEncontradaComponent },
  // { path: 'nao-autorizado', component: NaoAutorizadoComponent},
   { path: 'colaboradores', component: ColaboradorComponent  },

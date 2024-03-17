@@ -68,6 +68,7 @@ export class ComandaComponent implements OnInit {
   public habilitarSpinner: boolean = false;
   public desabilitarSim: boolean = false;
   public calculaValorProdutoEmGramas: boolean = false;
+  public desabilitar: boolean = false;
 
   constructor(
     private produtoService: ProdutoService,
@@ -83,6 +84,17 @@ export class ComandaComponent implements OnInit {
       { descricao: 'DEBITO' },
       { descricao: 'DINHEIRO' },
       { descricao: 'PIX' }];
+  }
+
+  setarColaboradorLogado() {
+    let usuario = localStorage.getItem('usuario');
+    if (usuario !== null) {
+      let colaborador: Colaborador = JSON.parse(usuario);
+      if(colaborador.papel === 'USUARIO'){
+         this.vendedorModal = colaborador;
+         this.desabilitar = true;
+      }
+    }
   }
 
   listarPorDataEVendedor() {
@@ -810,6 +822,7 @@ export class ComandaComponent implements OnInit {
     this.vendedorModal = null;
     this.desabilitarVendedor = false;
     this.desabilitarBotoes = false;
+    this.setarColaboradorLogado();
   }
 
   fecharModalComanda() {

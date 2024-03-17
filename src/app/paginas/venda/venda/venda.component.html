@@ -13,7 +13,7 @@
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
         <div class="col-3">
-            <p-autoComplete [forceSelection]="true" placeholder="Informe um vendedor" (onSelect)="true"
+            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um vendedor" (onSelect)="true"
                 [(ngModel)]="vendedorVenda" [dropdown]="true" [suggestions]="vendedorFiltrado"
                 [style]="{'width': '100%'}" (completeMethod)="filtroVendedor($event)" field="nome">
                 <ng-template let-vendedor pTemplate="colab">

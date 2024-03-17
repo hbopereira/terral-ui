@@ -19,4 +19,5 @@ export class Venda {
     total: number = 0;
     descricao_Secao: string = "";
     cor: string = "";
+    desabilitarPagarTable: boolean = false;
 }

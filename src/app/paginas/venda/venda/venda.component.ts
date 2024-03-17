@@ -29,6 +29,7 @@ export class VendaComponent implements OnInit {
   public listaVazia: boolean = false;
   public totalVendas: number = 0;
   public habilitarSpinner: boolean = false;
+  public desabilitar: boolean = false;
 
 
   constructor(private vendaService: VendaService,
@@ -37,8 +38,19 @@ export class VendaComponent implements OnInit {
   ngOnInit(): void {
     this.listarVendedores();
     this.listarPorDataEVendedor();
+    this.setarColaboradorLogado();
   }
 
+  setarColaboradorLogado() {
+    let usuario = localStorage.getItem('usuario');
+    if (usuario !== null) {
+      let colaborador: Colaborador = JSON.parse(usuario);
+      if(colaborador.papel === 'USUARIO'){
+         this.vendedorVenda = colaborador;
+         this.desabilitar = true;
+      }
+    }
+  }
 
   listarPorDataEVendedor() {
     this.habilitarSpinner = true;

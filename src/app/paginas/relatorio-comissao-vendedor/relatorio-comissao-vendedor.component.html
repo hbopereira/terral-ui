@@ -16,7 +16,7 @@
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
         <div class="col-2">
-            <p-autoComplete [forceSelection]="true" placeholder="vendedor"
+            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="vendedor"
                 (ngModelChange)="habilitarBotaoConsultar($event)" (onSelect)="true" [(ngModel)]="vendedorVenda"
                 [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroVendedor($event)" field="nome">
@@ -112,7 +112,7 @@
                 <td>{{venda.percentualDesconto}}%</td>
                 <td>{{venda.valorTotal | currency}}</td>
                 <td>
-                    <p-inputSwitch pTooltip="Pagar ?" [disabled]="venda.desabilitar" [(ngModel)]="venda.pago"
+                    <p-inputSwitch pTooltip="Pagar ?" [disabled]="venda.desabilitar || venda.desabilitarPagarTable" [(ngModel)]="venda.pago"
                         (ngModelChange)="setarPagoVendas($event,venda)"></p-inputSwitch>
                 </td>
                 <!--<td>{{venda.valorTotalComDesconto | currency}}</td> -->

@@ -17,4 +17,5 @@ export class ItemVenda {
     valorFinalColaborador: number = 0;
     pago : boolean = false;
     desabilitar: boolean = false;
+    desabilitarPagarTable: boolean = false;
 }

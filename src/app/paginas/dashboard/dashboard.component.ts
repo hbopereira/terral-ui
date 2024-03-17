@@ -9,6 +9,15 @@ import { Venda } from '../venda/venda/model/venda';
 })
 export class DashboardComponent implements OnInit {
 
+  mensagem: string = "";
+  exibirMensagem = false;
+  tipoMensagem = 'info';
+  tipoIcone = 'info';
+  public entrou : boolean = false;
+  public lineChartData: any;
+  public pieChartData: any;
+
+
   constructor(private vendaService: VendaService) {
   }
 
@@ -16,10 +25,6 @@ export class DashboardComponent implements OnInit {
     this.configurarGraficoLinha();
     this.configurarGraficoPizza();
   }
-
-  public lineChartData: any;
-  public pieChartData: any;
-
 
   configurarGraficoPizza() {
     this.vendaService.listarVendasProdutoSecao().subscribe((response: Venda[]) => {
@@ -113,6 +118,18 @@ export class DashboardComponent implements OnInit {
       totais.push(total);
     }
     return totais;
+  }
+
+  getExibirMensagemAlerta(mensagem: string, icone: string, tipo: string, fixarMsg: boolean) {
+    this.mensagem = mensagem;
+    this.tipoIcone = icone;
+    this.tipoMensagem = tipo;
+    this.exibirMensagem = true;
+    if (!fixarMsg) {
+      setInterval(() => {
+        this.exibirMensagem = false;
+      }, 10000);
+    }
   }
 
 }

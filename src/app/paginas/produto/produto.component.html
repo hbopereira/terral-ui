@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <div class="col-3">
-            <p-autoComplete [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
+            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
                 [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroColaborador($event)" field="nome">
                 <ng-template let-colaborador pTemplate="colab">
@@ -168,7 +168,7 @@
                     <div class="col">
                         <div class="crud--detalhes-parametro-sistema" *ngIf="novoProduto">
                             <label>Colaborador</label>
-                            <p-autoComplete [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
+                            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
                                 [(ngModel)]="colaboradorModal" [dropdown]="true" [suggestions]="colaboradorFiltrado"
                                 [style]="{'width': '100%'}" (completeMethod)="filtroColaborador($event)" field="nome">
                                 <ng-template let-colaborador pTemplate="colab">
@@ -178,7 +178,7 @@
                         </div>
                         <div class="crud--detalhes-parametro-sistema" *ngIf="editarProduto">
                             <label>Colaborador</label>
-                            <p-autoComplete [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
+                            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
                                 [(ngModel)]="produtoEdicao.colaborador" [dropdown]="true"
                                 [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                                 (completeMethod)="filtroColaborador($event)" field="nome">
@@ -230,13 +230,13 @@
                     <div class="col">
                         <div class="crud--detalhes-parametro-sistema" *ngIf="novoProduto">
                             <label>V.final(etiqueta)</label>
-                            <p-inputNumber [(ngModel)]="produto.valor" inputId="minmaxfraction" mode="decimal"
+                            <p-inputNumber [disabled]="desabilitarValorEtiqueta" [(ngModel)]="produto.valor" inputId="minmaxfraction" mode="decimal"
                                 [minFractionDigits]="2" [maxFractionDigits]="5">
                             </p-inputNumber>
                         </div>
                         <div class="crud--detalhes-parametro-sistema" *ngIf="editarProduto">
                             <label>V.final(etiqueta)</label>
-                            <p-inputNumber [(ngModel)]="produtoEdicao.valor" inputId="minmaxfraction" mode="decimal"
+                            <p-inputNumber [disabled]="desabilitarValorEtiqueta" [(ngModel)]="produtoEdicao.valor" inputId="minmaxfraction" mode="decimal"
                                 [minFractionDigits]="2" [maxFractionDigits]="5">
                             </p-inputNumber>
                         </div>
@@ -245,7 +245,7 @@
                     <div class="col" *ngIf="editarProduto">
                         <div class="crud--detalhes-parametro-sistema">
                             <label>P.Colaborador</label>
-                            <input class="form-control" placeholder="informe a porcentagem"
+                            <input [disabled]="desabilitar" class="form-control" placeholder="informe a porcentagem"
                                 [(ngModel)]="produtoEdicao.porcentagemColaborador" />
                         </div>
                     </div>
