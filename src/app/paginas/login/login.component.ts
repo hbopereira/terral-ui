@@ -15,17 +15,18 @@ export class LoginComponent implements OnInit {
   tipoMensagem = 'info';
   tipoIcone = 'info';
   public colaborador: Colaborador = new Colaborador();
+  public habilitarSpinner: boolean = false;
 
   constructor(private service: LoginService, private router: Router) { }
 
   ngOnInit(): void {
 
   }
-
-
   autenticar() {
+    this.habilitarSpinner = true;
     this.service.autenticar(this.colaborador).subscribe((response: Colaborador) => {
       if (response !== null && response !== undefined) {
+        this.habilitarSpinner = false;
         localStorage.setItem('usuario', JSON.stringify(response));
         this.mensagem = "Usuário autenticado com sucesso!"
         this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'success', false);
@@ -35,6 +36,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['vendas']);
         }
       } else {
+        this.habilitarSpinner = false;
         this.mensagem = "Usuário inválido!"
         this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
       }

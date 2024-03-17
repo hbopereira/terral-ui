@@ -9,6 +9,7 @@ import { CommonModule } from "@angular/common";
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoginComponent } from './login.component';
 
 
@@ -22,8 +23,8 @@ import { LoginComponent } from './login.component';
         CommonModule,
         DialogModule,
         InputNumberModule,
-        TooltipModule
-
+        TooltipModule,
+        ProgressSpinnerModule
     ],
     declarations: [
         LoginComponent,
