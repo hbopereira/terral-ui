@@ -692,6 +692,10 @@ export class ComandaComponent implements OnInit {
           this.listaProdutos.forEach(item => {
             if(item.tem_Estoque === 0){
               item.quantidade = "Não usa estoque"
+            }else {
+              if(item.quantidade === 0){
+                 item.quantidade = "Sem estoque"
+              }
             }
           })
           this.listaVaziaProdutos = false;
