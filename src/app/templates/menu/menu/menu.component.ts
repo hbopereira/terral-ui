@@ -56,12 +56,12 @@ export class MenuComponent implements OnInit {
         label: 'Relatorios',
         items: [
           {
-            label: 'Comissão Vendedor',
-            routerLink: 'comissao-vendedores'
+            label: 'Meus Itens Vendidos',
+            routerLink: 'produto-colaborador'
           },
           {
-            label: 'Produtos Colaborador',
-            routerLink: 'produto-colaborador'
+            label: 'Minhas comissões',
+            routerLink: 'comissao-vendedores'
           }
         ]
       }

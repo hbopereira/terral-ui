@@ -38,6 +38,8 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
   public totalVendas: number = 0;
   public habilitarSpinner: boolean = false;
   public desabilitar: boolean = false;
+  public calculoTaxaDebito: number = 0.75 / 100;
+  public calculoTaxaCredito: number = 0.95 / 100;
 
   constructor(private vendaService: VendaService,
     private colaboradorService: ColaboradorService) { }
@@ -72,6 +74,8 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     this.listaVendas = [];
     this.valorTotalComissaoVendedor = 0;
     this.valorPagoComissaoVendedor = 0;
+    let taxa = 0;
+    let valor = 0;
     let dataInicial = new Date();
     let dataFinal = new Date();
     let codVendedor = "";
@@ -97,16 +101,32 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.listaVendas = response;
         this.totalVendas = this.listaVendas.length;
         this.listaVendas.forEach(v => {
+          valor = v.valorTotal;
           if (v.percentualDesconto === null) {
             v.percentualDesconto = 0;
           }
-
           if (usuario !== null) {
             let colaborador: Colaborador = JSON.parse(usuario);
             if (colaborador.papel === 'USUARIO') {
               v.desabilitarPagarTable = true;
             }
           }
+         /* if (v.formaPagamento === "CREDITO") {
+           // taxa = valor * this.calculoTaxaCredito;
+            v.taxa = taxa;
+            valor = valor - v.taxa;
+            v.taxa = Number(v.valorVendedor * this.calculoTaxaCredito);
+            v.valorVendedor = v.valorVendedor - v.taxa;
+            v.valorVendedor = this.calcularValorColaborador(v);
+          }
+          if (v.formaPagamento === "DEBITO") {
+            taxa = valor * this.calculoTaxaDebito;
+            v.taxa = taxa;
+            valor = valor - v.taxa;
+            v.taxa = Number(v.valorVendedor * this.calculoTaxaDebito);
+            v.valorVendedor = v.valorVendedor - v.taxa;
+            v.valorVendedor = this.calcularValorColaborador(v);
+          }*/
           if (v.pago) {
             v.desabilitar = true;
             this.valorPagoComissaoVendedor = this.valorPagoComissaoVendedor + v.valorVendedor;
@@ -121,6 +141,11 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.totalVendas = 0;
       }
     })
+  }
+
+  calcularValorColaborador(venda: Venda) {
+    let valorColaborador = Number(venda.valorTotal) * (10 / 100)
+    return valorColaborador;
   }
 
   setarPagoVendas(event: any, venda: Venda) {

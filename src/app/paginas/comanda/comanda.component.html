@@ -150,9 +150,10 @@
                 <div class="row">
                     <div class="col-3" *ngIf="novaComanda">
                         <label>Vendedor</label>
-                        <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um vendedor" (onSelect)="true"
-                            [(ngModel)]="vendedorModal" [dropdown]="true" [suggestions]="vendedorFiltrado"
-                            [style]="{'width': '100%'}" (completeMethod)="filtroVendedor($event)" field="nome">
+                        <p-autoComplete [disabled]="desabilitar" [forceSelection]="true"
+                            placeholder="Informe um vendedor" (onSelect)="true" [(ngModel)]="vendedorModal"
+                            [dropdown]="true" [suggestions]="vendedorFiltrado" [style]="{'width': '100%'}"
+                            (completeMethod)="filtroVendedor($event)" field="nome">
                             <ng-template let-vendedor pTemplate="colab">
                                 <div>{{vendedor.nome}}</div>
                             </ng-template>
@@ -291,7 +292,7 @@
                     </button>
                     <button id="crud-btn-salvar" type="button" class="btn btn-success buttons" *ngIf="novaComanda"
                         (click)="abrirModalVerificacao()">
-                        Salvar
+                        Fechar Comanda
                     </button>
                     <button [disabled]="desabilitarBotoes" id="crud-btn-salvar" type="button"
                         class="btn btn-success buttons" *ngIf="editarComanda" (click)="abrirModalVerificacao()">
@@ -356,28 +357,12 @@
                     <ng-template pTemplate="header">
                         <tr>
                             <th scope="col" pSortableColumn="descricao">Colaborador</th>
-                            <th scope="col" pSortableColumn="descricao">Descrição</th>
+                            <th scope="col" pSortableColumn="descricao">Produto</th>
                             <th scope="col" pSortableColumn="valor">Valor</th>
+                            <th scope="col" pSortableColumn="valor">Estoque</th>
                             <th scope="col" pSortableColumn="calcularValorProdutoEmGramas">Gramas</th>
                             <th scope="col" pSortableColumn="quantidadeDesconto">Quantidade</th>
                             <th scope="col">Ações</th>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <p-columnFilter type="text" field="nome" [showMenu]="false">
-                                </p-columnFilter>
-                            </th>
-                            <th scope="row">
-                                <p-columnFilter type="text" field="descricao_Produto" [showMenu]="false">
-                                </p-columnFilter>
-                            </th>
-                            <th scope="row">
-                                <p-columnFilter type="text" field="valor" [showMenu]="false">
-                                </p-columnFilter>
-                            </th>
-                            <th scope="row"></th>
-                            <th scope="row"></th>
-                            <th scope="row"></th>
                         </tr>
                     </ng-template>
 
@@ -396,6 +381,7 @@
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
+                            <td>{{item.quantidade}}</td>
                             <td>
                                 <p-checkbox [(ngModel)]="item.calcularValorProdutoEmGramas"
                                     (ngModelChange)="setarValorGramaItemComanda($event)" [binary]="true"

@@ -3,7 +3,7 @@
         <h4><i class="pi pi-{{tipoIcone}}" style="font-size: 1.5rem"></i>&nbsp;&nbsp;Atenção!</h4>
         {{ mensagem }}
     </div>
-    <h2 class="text-center">Relatório Comissão de Vendedores</h2>
+    <h2 class="text-center">Minhas Comissões</h2>
     <div class="crud--conten-title_table">
         <label class="crud--content-label">FILTROS</label>
         <div class="crud--content-line"></div>
@@ -89,6 +89,10 @@
                 </th>
 
                 <th scope="col" pSortableColumn="percentualDesconto">
+                    Taxa <p-sortIcon field="percentualDesconto"></p-sortIcon>
+                </th>
+
+                <th scope="col" pSortableColumn="percentualDesconto">
                     P.Desc <p-sortIcon field="percentualDesconto"></p-sortIcon>
                 </th>
 
@@ -109,11 +113,12 @@
                 <td>{{venda.dataVenda |date : 'dd/MM/yyyy'}}</td>
                 <td>{{venda.formaPagamento}}</td>
                 <td>{{venda.valorVendedor | currency}}</td>
+                <td>{{venda.taxa}}</td>
                 <td>{{venda.percentualDesconto}}%</td>
                 <td>{{venda.valorTotal | currency}}</td>
                 <td>
-                    <p-inputSwitch pTooltip="Pagar ?" [disabled]="venda.desabilitar || venda.desabilitarPagarTable" [(ngModel)]="venda.pago"
-                        (ngModelChange)="setarPagoVendas($event,venda)"></p-inputSwitch>
+                    <p-inputSwitch pTooltip="Pagar ?" [disabled]="venda.desabilitar || venda.desabilitarPagarTable"
+                        [(ngModel)]="venda.pago" (ngModelChange)="setarPagoVendas($event,venda)"></p-inputSwitch>
                 </td>
                 <!--<td>{{venda.valorTotalComDesconto | currency}}</td> -->
                 <!-- <td>{{venda.valorVendedor | currency}}</td> -->

@@ -37,8 +37,8 @@ export class VendaComponent implements OnInit {
 
   ngOnInit(): void {
     this.listarVendedores();
-    this.listarPorDataEVendedor();
     this.setarColaboradorLogado();
+    this.listarPorDataEVendedor();
   }
 
   setarColaboradorLogado() {
