@@ -8,7 +8,7 @@ export class Produto {
     descricao_Secao: string = "";
     cod_Secao: string = "";
     cod_Colaborador: string = "";
-    quantidade: number = 0;
+    quantidade: any;
     tem_Estoque: number = 0;
     cod_Fabricante: string = "";
     cod_Loja: string = "";

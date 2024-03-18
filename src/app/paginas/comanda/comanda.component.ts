@@ -689,6 +689,11 @@ export class ComandaComponent implements OnInit {
         if (response.length > 0) {
           this.habilitarSpinner = false;
           this.listaProdutos = response;
+          this.listaProdutos.forEach(item => {
+            if(item.tem_Estoque === 0){
+              item.quantidade = "Não usa estoque"
+            }
+          })
           this.listaVaziaProdutos = false;
         } else {
           this.habilitarSpinner = false;
