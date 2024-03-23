@@ -720,6 +720,7 @@ export class ComandaComponent implements OnInit {
           this.habilitarSpinner = false;
           this.listaVaziaProdutos = true;
           this.listaProdutos = [];
+          this.descricao = "";
         }
       })
   }
