@@ -325,7 +325,7 @@
                         </p-autoComplete>
                     </div>
                     <div class="col-2">
-                        <input type="text" class="form-control" placeholder="Produto" [(ngModel)]="descricao">
+                        <input type="text" class="form-control" placeholder="Produto" (ngModelChange)="listarProdutosPorDescricaoChange($event)" [(ngModel)]="descricao">
                     </div>
                     <div class="col-2">
                         <input type="text" class="form-control" placeholder="cod loja" [(ngModel)]="codLoja">
@@ -342,7 +342,6 @@
                             (click)="limparFiltroColaborador()">Limpar</button>
                     </div>
                 </div>
-                <br />
                 <div *ngIf="listaVaziaProdutos">
                     <label>Não existem produtos para os filtros selecionados</label>
                 </div>
@@ -350,6 +349,7 @@
                     <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
                         animationDuration=".5s"></p-progressSpinner>
                 </div>
+                <h4>Total Produtos: {{listaProdutos.length}}</h4>
                 <p-table *ngIf="!habilitarSpinner" class="table table-striped" [value]="listaProdutos"
                     emptyMessage="Não existem itens " [rows]="10" [paginator]="true"
                     [rowsPerPageOptions]="[3,10,15,20]">

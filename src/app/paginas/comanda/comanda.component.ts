@@ -674,12 +674,27 @@ export class ComandaComponent implements OnInit {
     }
   }
 
+  listarProdutosPorDescricaoChange(descricao: any){
+    if(descricao !== ""){
+      this.buscarProdutos(descricao);
+    }else {
+      this.listaProdutos = [];
+    }
+  }
+
   listarProdutos() {
     this.habilitarSpinner = true;
-    let colaboradorCod = "";
     this.listaProdutos = [];
+    this.buscarProdutos(null);
+  }
+
+  buscarProdutos(descricao: any){
+    let colaboradorCod = "";
     if ((this.colaboradorFiltrado !== undefined) && (this.colaboradorSelecionado !== undefined)) {
       colaboradorCod = this.colaboradorSelecionado.cod;
+    }
+    if(descricao !== null){
+      this.descricao = descricao;
     }
     this.produtoService.listarProdutosPorColaboradorESecao(colaboradorCod,
       "",
@@ -690,6 +705,8 @@ export class ComandaComponent implements OnInit {
           this.habilitarSpinner = false;
           this.listaProdutos = response;
           this.listaProdutos.forEach(item => {
+            item.quantidadeDesconto = 1;
+            item.escolheu = true;
             if(item.tem_Estoque === 0){
               item.quantidade = "Não usa estoque"
             }else {
@@ -702,6 +719,7 @@ export class ComandaComponent implements OnInit {
         } else {
           this.habilitarSpinner = false;
           this.listaVaziaProdutos = true;
+          this.listaProdutos = [];
         }
       })
   }
