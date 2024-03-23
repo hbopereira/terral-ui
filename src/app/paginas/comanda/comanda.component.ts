@@ -78,6 +78,7 @@ export class ComandaComponent implements OnInit {
 
   ngOnInit(): void {
     this.listarVendedores();
+    this.setarColaboradorLogado(true)
     this.listarPorDataEVendedor();
     this.formaPagamentoComanda = [
       { descricao: 'CREDITO' },
@@ -86,13 +87,17 @@ export class ComandaComponent implements OnInit {
       { descricao: 'PIX' }];
   }
 
-  setarColaboradorLogado() {
+  setarColaboradorLogado(isFiltroComanda: boolean) {
     let usuario = localStorage.getItem('usuario');
     if (usuario !== null) {
       let colaborador: Colaborador = JSON.parse(usuario);
-      if(colaborador.papel === 'USUARIO'){
-         this.vendedorModal = colaborador;
-         this.desabilitar = true;
+      if (colaborador.papel === 'USUARIO') {
+        if (isFiltroComanda) {
+          this.vendedorComanda = colaborador;
+        } else {
+          this.vendedorModal = colaborador;
+        }
+        this.desabilitar = true;
       }
     }
   }
@@ -674,10 +679,10 @@ export class ComandaComponent implements OnInit {
     }
   }
 
-  listarProdutosPorDescricaoChange(descricao: any){
-    if(descricao !== "" && descricao.length > 3){
+  listarProdutosPorDescricaoChange(descricao: any) {
+    if (descricao !== "" && descricao.length > 3) {
       this.buscarProdutos(descricao);
-    }else {
+    } else {
       this.listaProdutos = [];
     }
   }
@@ -688,12 +693,12 @@ export class ComandaComponent implements OnInit {
     this.buscarProdutos(null);
   }
 
-  buscarProdutos(descricao: any){
+  buscarProdutos(descricao: any) {
     let colaboradorCod = "";
     if ((this.colaboradorFiltrado !== undefined) && (this.colaboradorSelecionado !== undefined)) {
       colaboradorCod = this.colaboradorSelecionado.cod;
     }
-    if(descricao !== null){
+    if (descricao !== null) {
       this.descricao = descricao;
     }
     this.produtoService.listarProdutosPorColaboradorESecao(colaboradorCod,
@@ -707,11 +712,11 @@ export class ComandaComponent implements OnInit {
           this.listaProdutos.forEach(item => {
             item.quantidadeDesconto = 1;
             item.escolheu = true;
-            if(item.tem_Estoque === 0){
+            if (item.tem_Estoque === 0) {
               item.quantidade = "Não usa estoque"
-            }else {
-              if(item.quantidade === 0){
-                 item.quantidade = "Sem estoque"
+            } else {
+              if (item.quantidade === 0) {
+                item.quantidade = "Sem estoque"
               }
             }
           })
@@ -850,7 +855,7 @@ export class ComandaComponent implements OnInit {
     this.vendedorModal = null;
     this.desabilitarVendedor = false;
     this.desabilitarBotoes = false;
-    this.setarColaboradorLogado();
+    this.setarColaboradorLogado(false);
   }
 
   fecharModalComanda() {

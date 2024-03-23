@@ -33,11 +33,11 @@
             <button type="button" class="btn btn-secondary" (click)="limparFiltros()">limpar</button>
         </div>
         <div class="col">
-            <p-button pTooltip="Marcar todos" icon="pi pi-check-circle" [disabled]="!habilitarMarcarTodos"
+            <p-button pTooltip="Marcar todos" icon="pi pi-check-circle" [disabled]="!habilitarMarcarTodos || desabilitar"
                 (click)="marcarDesmarcarTodos(true)"></p-button>
         </div>
         <div class="col">
-            <p-button pTooltip="Desmarcar todos" icon="pi pi-delete-left" [disabled]="!habilitarMarcarTodos"
+            <p-button pTooltip="Desmarcar todos" icon="pi pi-delete-left" [disabled]="!habilitarMarcarTodos || desabilitar"
                 (click)="marcarDesmarcarTodos(false)"></p-button>
         </div>
     </div>
