@@ -675,7 +675,7 @@ export class ComandaComponent implements OnInit {
   }
 
   listarProdutosPorDescricaoChange(descricao: any){
-    if(descricao !== ""){
+    if(descricao !== "" && descricao.length > 3){
       this.buscarProdutos(descricao);
     }else {
       this.listaProdutos = [];
