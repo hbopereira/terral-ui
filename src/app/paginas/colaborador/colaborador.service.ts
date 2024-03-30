@@ -25,7 +25,7 @@ export class ColaboradorService {
     }
 
     setarPorcentagemProduto(colaborador: Colaborador) {
-        return this.http.put<Colaborador>(this.constantes.PATH_LOCAL +'/api/colaboradores/setarPorcentagemProduto', colaborador);
+        return this.http.put<Colaborador>(this.constantes.PATH_LOCAL +'/api/produtos/setarPorcentagem', colaborador);
     }
 }
 

@@ -96,10 +96,10 @@ export class ColaboradorComponent implements OnInit {
     if (!this.camposVazios) {
       this.service.editar(this.colaboradorEdicao).subscribe(() => {
         this.mensagem = "Colaborador editado com sucesso!";
+        this.service.setarPorcentagemProduto(this.colaboradorEdicao).subscribe(() => { })
         this.fecharModal();
         this.abrirModalSucesso();
         this.listarColaboradores()
-        //this.service.setarPorcentagemProduto(this.colaboradorEdicao).subscribe(() => {})
       }, error => {
         if (error) {
           this.mensagem = error.message;
@@ -109,7 +109,7 @@ export class ColaboradorComponent implements OnInit {
     }
   }
 
-  setarPorcentagemProduto(){
+  setarPorcentagemProduto() {
     this.service.setarPorcentagemProduto(this.colaboradorEdicao).subscribe(() => {
     }, error => {
       if (error) {

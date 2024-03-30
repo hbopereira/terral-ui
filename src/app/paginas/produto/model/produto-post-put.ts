@@ -6,6 +6,7 @@ export class ProdutoPostPut {
     secao: Secao = new Secao();
     cod: string = "";
     valor: string = "";
+    valorFabricante: string = "";
     valorColaborador: number = 0;
     descricaoProduto: string = "";
     porcentagemColaborador: number = 0;

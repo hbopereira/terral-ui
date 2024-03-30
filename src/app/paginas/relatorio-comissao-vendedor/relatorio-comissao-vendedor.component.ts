@@ -101,6 +101,26 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.listaVendas = response;
         this.totalVendas = this.listaVendas.length;
         this.listaVendas.forEach(v => {
+          if (v.formaPagamento === "CREDITO") {
+            for (let item of v.itens) {
+              if (item.nomeColaborador === this.vendedorVenda.nome) {
+                valor = item.valorColaborador * item.quantidade;
+                taxa = valor * this.calculoTaxaCredito;
+              }
+            }
+          }
+          if (v.formaPagamento === "DEBITO") {
+            for (let item of v.itens) {
+              if (item.nomeColaborador === this.vendedorVenda.nome) {
+                valor = item.valorColaborador * item.quantidade;
+                taxa = valor * this.calculoTaxaDebito;
+              }
+            }
+          }
+          if (taxa !== 0) {
+            v.taxa = taxa;
+            v.valorVendedor = v.valorVendedor - v.taxa;
+          }
           valor = v.valorTotal;
           if (v.percentualDesconto === null) {
             v.percentualDesconto = 0;
@@ -111,22 +131,6 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
               v.desabilitarPagarTable = true;
             }
           }
-         /* if (v.formaPagamento === "CREDITO") {
-           // taxa = valor * this.calculoTaxaCredito;
-            v.taxa = taxa;
-            valor = valor - v.taxa;
-            v.taxa = Number(v.valorVendedor * this.calculoTaxaCredito);
-            v.valorVendedor = v.valorVendedor - v.taxa;
-            v.valorVendedor = this.calcularValorColaborador(v);
-          }
-          if (v.formaPagamento === "DEBITO") {
-            taxa = valor * this.calculoTaxaDebito;
-            v.taxa = taxa;
-            valor = valor - v.taxa;
-            v.taxa = Number(v.valorVendedor * this.calculoTaxaDebito);
-            v.valorVendedor = v.valorVendedor - v.taxa;
-            v.valorVendedor = this.calcularValorColaborador(v);
-          }*/
           if (v.pago) {
             v.desabilitar = true;
             this.valorPagoComissaoVendedor = this.valorPagoComissaoVendedor + v.valorVendedor;

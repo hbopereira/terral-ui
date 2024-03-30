@@ -101,7 +101,9 @@ export class ProdutoComponent implements OnInit {
           this.produto.descricaoProduto = descricaoProduto;
           this.produto.codLoja = codLoja;
           let valor = Number(valorFinal)
+          let valorFab = Number(valorFabricante)
           this.produto.valor = valor.toString();
+          this.produto.valorFabricante = valorFab.toString();
           this.produto.codFabricante = codFabrica;
           if (!encontrou) {
             encontrou = this.setarColaboradorAoEnviarEmLote(nomeColaborador);
@@ -121,9 +123,9 @@ export class ProdutoComponent implements OnInit {
             this.produto.temEstoque = 0;
             ;
           }
-          if ((this.produto.valor !== "0")
+          if ((this.produto.valor !== "0" && (this.produto.valorFabricante !== "0"))
             && (this.produto.descricaoProduto !== undefined)
-            && (this.produto.valor !== "NaN")) {
+            && (this.produto.valor !== "NaN") && (this.produto.valorFabricante !== "NaN")) {
             this.listaProdutosASeremEnviados.push(this.produto);
           }
         });
@@ -188,6 +190,7 @@ export class ProdutoComponent implements OnInit {
   }
 
   listarProdutosPorColaboradorESecao() {
+    this.totalProdutos = 0;
     this.habilitarSpinner = true;
     let colaboradorCod = "";
     let secaoCod = "";
@@ -219,6 +222,7 @@ export class ProdutoComponent implements OnInit {
         } else {
           this.listaVazia = true;
           this.habilitarSpinner = false;
+          this.totalProdutos = 0;
         }
       })
   }
@@ -246,6 +250,11 @@ export class ProdutoComponent implements OnInit {
 
   calcularValorColaborador(produto: ProdutoPostPut) {
     let valorColaborador = Number(produto.valor) * (produto.porcentagemColaborador / 100)
+    return valorColaborador;
+  }
+
+  calcularValorColaboradorSecaoConveniencia(produto: ProdutoPostPut){
+    let valorColaborador = (Number(produto.valor) - Number(produto.valorFabricante)) / 2;
     return valorColaborador;
   }
 
@@ -293,9 +302,16 @@ export class ProdutoComponent implements OnInit {
     if ((this.produtoEdicao.quantidade > 0) && (this.produtoEdicao.quantidade !== undefined)) {
       this.produtoEdicao.temEstoque = 1;
     }
+    alert(this.produtoEdicao.secao.cod)
     this.validarCampos();
     if (!this.camposVazios) {
-      this.produtoEdicao.valorColaborador = this.calcularValorColaborador(this.produtoEdicao);
+      let secaoCod = Number(this.produtoEdicao.secao.cod)
+      if(secaoCod === 3){
+        alert("here")
+       this.produtoEdicao.valorColaborador = this.calcularValorColaboradorSecaoConveniencia(this.produtoEdicao);
+      }else {
+        this.produtoEdicao.valorColaborador = this.calcularValorColaborador(this.produtoEdicao);
+      }
       this.service.editar(this.produtoEdicao).subscribe(() => {
         this.mensagem = "Produto editado com sucesso!";
         this.fecharModal();
@@ -331,6 +347,7 @@ export class ProdutoComponent implements OnInit {
   }
 
   abrirModalEditar(produto: any) {
+    alert(produto.valor_Fabricante)
     this.desabilitar = true;
     this.desabilitarValorEtiqueta = true;
     this.produtoEdicao.colaborador.cod = produto.cod_Colaborador;
@@ -342,6 +359,9 @@ export class ProdutoComponent implements OnInit {
     this.produtoEdicao.cod = produto.cod_Produto;
     this.produtoEdicao.porcentagemColaborador = produto.porcentagem_Colaborador;
     this.produtoEdicao.temEstoque = produto.tem_Estoque;
+    this.produtoEdicao.valorFabricante = produto.valor_Fabricante;
+    this.produtoEdicao.codFabricante = produto.cod_Fabricante;
+    this.produto.codLoja = produto.cod_Loja;
     if (this.produtoEdicao.temEstoque === 0) {
       produto.quantidade = null;
     }
