@@ -1,6 +1,7 @@
 export class Produto {
     nome: string = "";
     valor: number = 0;
+    valor_Fabricante: number = 0;
     valor_Colaborador: number = 0;
     porcentagem_Colaborador: number = 0;
     descricao_Produto: string = "";
@@ -14,4 +15,5 @@ export class Produto {
     cod_Loja: string = "";
     quantidadeDesconto: number = 0;
     escolheu: boolean = false;
+
 }

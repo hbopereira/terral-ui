@@ -6,8 +6,9 @@
     </div>
     <div class="row">
         <div class="col-3">
-            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorSelecionado"
-                [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
+            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um colaborador"
+                (onSelect)="true" [(ngModel)]="colaboradorSelecionado" [dropdown]="true"
+                [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                 (completeMethod)="filtroColaborador($event)" field="nome">
                 <ng-template let-colaborador pTemplate="colab">
                     <div>{{colaborador.nome}}</div>
@@ -15,9 +16,9 @@
             </p-autoComplete>
         </div>
         <div class="col-3">
-            <p-autoComplete [forceSelection]="true" placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoSelecionada"
-                [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
-                (completeMethod)="filtroSecao($event)" field="descricaoSecao">
+            <p-autoComplete [forceSelection]="true" placeholder="Informe uma Seção" (onSelect)="true"
+                [(ngModel)]="secaoSelecionada" [dropdown]="true" [suggestions]="secaoFiltrada"
+                [style]="{'width': '100%'}" (completeMethod)="filtroSecao($event)" field="descricaoSecao">
                 <ng-template let-secao pTemplate="colab">
                     <div>{{secao.descricaoSecao}}</div>
                 </ng-template>
@@ -70,65 +71,38 @@
         <ng-template pTemplate="header">
             <tr>
                 <th scope="col" pSortableColumn="nome">
-                    Colaborador<p-sortIcon field="nome"></p-sortIcon>
+                    Colaborador
                 </th>
 
                 <th scope="col" pSortableColumn="descricao_Produto">
-                    Produto <p-sortIcon field="descricao_Produto"></p-sortIcon>
+                    Produto
                 </th>
 
                 <th scope="col" pSortableColumn="cod_Fabricante">
-                    Cod.Fab <p-sortIcon field="cod_Fabricante"></p-sortIcon>
+                    Cod.Fab
                 </th>
 
                 <th scope="col" pSortableColumn="cod_Loja">
-                    Cod.Loja <p-sortIcon field="cod_Loja"></p-sortIcon>
+                    Cod.Loja
+                </th>
+
+                <th scope="col" pSortableColumn="valor_Fabricante">
+                    Vr.Fab
                 </th>
 
                 <th scope="col" pSortableColumn="valor">
-                    Vr.Final <p-sortIcon field="valor"></p-sortIcon>
+                    Vr.Final
                 </th>
 
                 <th scope="col" pSortableColumn="valor_Colaborador">
-                    Vr.Colab <p-sortIcon field="valor_Colaborador"></p-sortIcon>
+                    Vr.Colab
                 </th>
 
                 <th scope="col" pSortableColumn="descricao_Secao">
-                    Seção <p-sortIcon field="descricao_Secao"></p-sortIcon>
+                    Seção
                 </th>
 
                 <th scope="col">Ações</th>
-            </tr>
-            <tr>
-                <th scope="row">
-                    <p-columnFilter type="text" field="nome" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="descricao_Produto" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="cod_Fabricante" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="cod_Loja" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="valor" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="valor_Colaborador" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row">
-                    <p-columnFilter type="text" field="descricaoSecao" [showMenu]="false">
-                    </p-columnFilter>
-                </th>
-                <th scope="row"></th>
             </tr>
         </ng-template>
 
@@ -138,6 +112,7 @@
                 <td>{{produto.descricao_Produto}}</td>
                 <td>{{produto.cod_Fabricante}}</td>
                 <td>{{produto.cod_Loja}}</td>
+                <td>{{produto.valor_Fabricante | currency}}</td>
                 <td>{{produto.valor | currency}}</td>
                 <td>{{produto.valor_Colaborador | currency}}</td>
                 <td>{{produto.descricao_Secao}}</td>
@@ -168,9 +143,10 @@
                     <div class="col">
                         <div class="crud--detalhes-parametro-sistema" *ngIf="novoProduto">
                             <label>Colaborador</label>
-                            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
-                                [(ngModel)]="colaboradorModal" [dropdown]="true" [suggestions]="colaboradorFiltrado"
-                                [style]="{'width': '100%'}" (completeMethod)="filtroColaborador($event)" field="nome">
+                            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true"
+                                placeholder="Informe um colaborador" (onSelect)="true" [(ngModel)]="colaboradorModal"
+                                [dropdown]="true" [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
+                                (completeMethod)="filtroColaborador($event)" field="nome">
                                 <ng-template let-colaborador pTemplate="colab">
                                     <div>{{colaborador.nome}}</div>
                                 </ng-template>
@@ -178,7 +154,8 @@
                         </div>
                         <div class="crud--detalhes-parametro-sistema" *ngIf="editarProduto">
                             <label>Colaborador</label>
-                            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um colaborador" (onSelect)="true"
+                            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true"
+                                placeholder="Informe um colaborador" (onSelect)="true"
                                 [(ngModel)]="produtoEdicao.colaborador" [dropdown]="true"
                                 [suggestions]="colaboradorFiltrado" [style]="{'width': '100%'}"
                                 (completeMethod)="filtroColaborador($event)" field="nome">
@@ -191,9 +168,10 @@
                     <div class="col">
                         <div class="crud--detalhes-parametro-sistema" *ngIf="novoProduto">
                             <label>Seção</label>
-                            <p-autoComplete [forceSelection]="true" placeholder="Informe uma Seção" (onSelect)="true" [(ngModel)]="secaoModal"
-                                [dropdown]="true" [suggestions]="secaoFiltrada" [style]="{'width': '100%'}"
-                                (completeMethod)="filtroSecao($event)" field="descricaoSecao">
+                            <p-autoComplete [forceSelection]="true" placeholder="Informe uma Seção" (onSelect)="true"
+                                [(ngModel)]="secaoModal" [dropdown]="true" [suggestions]="secaoFiltrada"
+                                [style]="{'width': '100%'}" (completeMethod)="filtroSecao($event)"
+                                field="descricaoSecao">
                                 <ng-template let-secao pTemplate="colab">
                                     <div>{{secao.descricaoSecao}}</div>
                                 </ng-template>
@@ -230,14 +208,14 @@
                     <div class="col">
                         <div class="crud--detalhes-parametro-sistema" *ngIf="novoProduto">
                             <label>V.final(etiqueta)</label>
-                            <p-inputNumber [disabled]="desabilitarValorEtiqueta" [(ngModel)]="produto.valor" inputId="minmaxfraction" mode="decimal"
-                                [minFractionDigits]="2" [maxFractionDigits]="5">
+                            <p-inputNumber [disabled]="desabilitarValorEtiqueta" [(ngModel)]="produto.valor"
+                                inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
                             </p-inputNumber>
                         </div>
                         <div class="crud--detalhes-parametro-sistema" *ngIf="editarProduto">
                             <label>V.final(etiqueta)</label>
-                            <p-inputNumber [disabled]="desabilitarValorEtiqueta" [(ngModel)]="produtoEdicao.valor" inputId="minmaxfraction" mode="decimal"
-                                [minFractionDigits]="2" [maxFractionDigits]="5">
+                            <p-inputNumber [disabled]="desabilitarValorEtiqueta" [(ngModel)]="produtoEdicao.valor"
+                                inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
                             </p-inputNumber>
                         </div>
                     </div>
