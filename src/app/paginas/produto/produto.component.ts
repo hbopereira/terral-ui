@@ -302,12 +302,10 @@ export class ProdutoComponent implements OnInit {
     if ((this.produtoEdicao.quantidade > 0) && (this.produtoEdicao.quantidade !== undefined)) {
       this.produtoEdicao.temEstoque = 1;
     }
-    alert(this.produtoEdicao.secao.cod)
     this.validarCampos();
     if (!this.camposVazios) {
       let secaoCod = Number(this.produtoEdicao.secao.cod)
       if(secaoCod === 3){
-        alert("here")
        this.produtoEdicao.valorColaborador = this.calcularValorColaboradorSecaoConveniencia(this.produtoEdicao);
       }else {
         this.produtoEdicao.valorColaborador = this.calcularValorColaborador(this.produtoEdicao);
@@ -347,7 +345,6 @@ export class ProdutoComponent implements OnInit {
   }
 
   abrirModalEditar(produto: any) {
-    alert(produto.valor_Fabricante)
     this.desabilitar = true;
     this.desabilitarValorEtiqueta = true;
     this.produtoEdicao.colaborador.cod = produto.cod_Colaborador;
