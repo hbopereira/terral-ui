@@ -38,8 +38,6 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
   public totalVendas: number = 0;
   public habilitarSpinner: boolean = false;
   public desabilitar: boolean = false;
-  public calculoTaxaDebito: number = 0.75 / 100;
-  public calculoTaxaCredito: number = 0.95 / 100;
 
   constructor(private vendaService: VendaService,
     private colaboradorService: ColaboradorService) { }
@@ -74,8 +72,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
     this.listaVendas = [];
     this.valorTotalComissaoVendedor = 0;
     this.valorPagoComissaoVendedor = 0;
-    let taxa = 0;
-    let valor = 0;
+    let valorTotal = 0;
     let dataInicial = new Date();
     let dataFinal = new Date();
     let codVendedor = "";
@@ -100,28 +97,28 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
         this.habilitarMarcarTodos = true;
         this.listaVendas = response;
         this.totalVendas = this.listaVendas.length;
+        this.listaVendas.forEach(i => {
+          let itemVenda = i.itens.filter(iv => iv.nomeColaborador !== this.vendedorVenda.nome);
+          for (let ii of i.itens) {
+            if ((ii.nomeColaborador === this.vendedorVenda.nome) && (itemVenda.length === 0)) {
+              let indice = this.listaVendas.indexOf(i);
+              this.listaVendas.splice(indice, 1);
+              this.totalVendas = 0;
+              break;
+            }
+          }
+          i.itens.filter(ii => (ii.nomeColaborador === this.vendedorVenda.nome) && (itemVenda.length > 0)).forEach(iv => {
+            let indice = i.itens.indexOf(iv);
+            i.itens.splice(indice, 1);
+          })
+        })
         this.listaVendas.forEach(v => {
-          if (v.formaPagamento === "CREDITO") {
-            for (let item of v.itens) {
-              if (item.nomeColaborador === this.vendedorVenda.nome) {
-                valor = item.valorColaborador * item.quantidade;
-                taxa = valor * this.calculoTaxaCredito;
-              }
-            }
-          }
-          if (v.formaPagamento === "DEBITO") {
-            for (let item of v.itens) {
-              if (item.nomeColaborador === this.vendedorVenda.nome) {
-                valor = item.valorColaborador * item.quantidade;
-                taxa = valor * this.calculoTaxaDebito;
-              }
-            }
-          }
-          if (taxa !== 0) {
-            v.taxa = taxa;
-            v.valorVendedor = v.valorVendedor - v.taxa;
-          }
-          valor = v.valorTotal;
+          valorTotal = 0;
+          v.itens.forEach(ii => {
+            valorTotal = valorTotal + ii.valor * ii.quantidade;
+          })
+          v.valorTotal = valorTotal;
+          v.valorVendedor = this.calcularValorColaborador(v);
           if (v.percentualDesconto === null) {
             v.percentualDesconto = 0;
           }
@@ -148,8 +145,7 @@ export class RelatorioComissaoVendedorComponent implements OnInit {
   }
 
   calcularValorColaborador(venda: Venda) {
-    let valorColaborador = Number(venda.valorTotal) * (10 / 100)
-    return valorColaborador;
+    return Number(venda.valorTotal) * (10 / 100);
   }
 
   setarPagoVendas(event: any, venda: Venda) {

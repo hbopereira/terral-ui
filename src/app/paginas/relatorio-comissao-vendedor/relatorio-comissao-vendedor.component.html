@@ -89,10 +89,6 @@
                 </th>
 
                 <th scope="col" pSortableColumn="percentualDesconto">
-                    Taxa <p-sortIcon field="percentualDesconto"></p-sortIcon>
-                </th>
-
-                <th scope="col" pSortableColumn="percentualDesconto">
                     P.Desc <p-sortIcon field="percentualDesconto"></p-sortIcon>
                 </th>
 
@@ -113,7 +109,6 @@
                 <td>{{venda.dataVenda |date : 'dd/MM/yyyy'}}</td>
                 <td>{{venda.formaPagamento}}</td>
                 <td>{{venda.valorVendedor | currency}}</td>
-                <td>{{venda.taxa | currency }}</td>
                 <td>{{venda.percentualDesconto}}%</td>
                 <td>{{venda.valorTotal | currency}}</td>
                 <td>
