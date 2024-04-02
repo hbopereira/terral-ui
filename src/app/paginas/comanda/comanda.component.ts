@@ -361,12 +361,23 @@ export class ComandaComponent implements OnInit {
       if (this.editarComanda) {
         itemComanda.valor = event;
         itemComanda.valorColaborador = this.calcularValorColaboradorAoEditarValorItem(itemComanda);
-        this.comandaService.setarValorItem(itemComanda).subscribe(() => { });
+        this.comandaService.setarValores(itemComanda).subscribe(() => { });
         this.calcularValorTotalComanda();
       } else {
         itemComanda.valor = event;
         itemComanda.valorColaborador = this.calcularValorColaboradorAoEditarValorItem(itemComanda);
         this.calcularValorTotalComanda();
+      }
+    }
+  }
+
+  atualizarDescricaoItem(event: any, itemComanda: ItemComanda) {
+    if (event !== "") {
+      if (this.editarComanda) {
+        itemComanda.descricao = event;
+        this.comandaService.setarValores(itemComanda).subscribe(() => { });
+      } else {
+        itemComanda.descricao = event;
       }
     }
   }

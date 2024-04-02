@@ -109,16 +109,6 @@ export class ColaboradorComponent implements OnInit {
     }
   }
 
-  setarPorcentagemProduto() {
-    this.service.setarPorcentagemProduto(this.colaboradorEdicao).subscribe(() => {
-    }, error => {
-      if (error) {
-        this.mensagem = error.message;
-        this.getExibirMensagemAlerta(this.mensagem, this.tipoIcone, 'danger', false);
-      }
-    })
-  }
-
   filtroColaborador(event: any) {
     let filtrados: any[] = [];
     let query = event.query;

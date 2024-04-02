@@ -17,8 +17,8 @@
             <input type="date" class="form-control" placeholder="data final" [(ngModel)]="dataFinal">
         </div>
         <div class="col-3">
-            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um vendedor" (onSelect)="true"
-                [(ngModel)]="vendedorComanda" [dropdown]="true" [suggestions]="vendedorFiltrado"
+            <p-autoComplete [disabled]="desabilitar" [forceSelection]="true" placeholder="Informe um vendedor"
+                (onSelect)="true" [(ngModel)]="vendedorComanda" [dropdown]="true" [suggestions]="vendedorFiltrado"
                 [style]="{'width': '100%'}" (completeMethod)="filtroVendedor($event)" field="nome">
                 <ng-template let-vendedor pTemplate="colab">
                     <div>{{vendedor.nome}}</div>
@@ -249,7 +249,16 @@
 
                     <ng-template pTemplate="body" let-item>
                         <tr>
-                            <td>{{item.descricao}}</td>
+                            <td pEditableColumn> <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text"
+                                            (ngModelChange)="atualizarDescricaoItem($event, item)"
+                                            [(ngModel)]="item.descricao" required>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{item.descricao}}
+                                    </ng-template>
+                                </p-cellEditor></td>
                             <td pEditableColumn> <p-cellEditor>
                                     <ng-template pTemplate="input">
                                         <input pInputText type="text" (ngModelChange)="atualizarValorItem($event, item)"
@@ -325,7 +334,8 @@
                         </p-autoComplete>
                     </div>
                     <div class="col-2">
-                        <input type="text" class="form-control" placeholder="Produto" (ngModelChange)="listarProdutosPorDescricaoChange($event)" [(ngModel)]="descricao">
+                        <input type="text" class="form-control" placeholder="Produto"
+                            (ngModelChange)="listarProdutosPorDescricaoChange($event)" [(ngModel)]="descricao">
                     </div>
                     <div class="col-2">
                         <input type="text" class="form-control" placeholder="cod loja" [(ngModel)]="codLoja">
